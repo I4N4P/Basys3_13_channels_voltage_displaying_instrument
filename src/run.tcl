@@ -1,15 +1,26 @@
-set project vga_example
-set top_module vga_example
-set top_sim_module draw_rect_ctl
+set project voltmeter
+set top_module voltmeter_top
 set target xc7a35tcpg236-1
-set bitstream_file build/${project}.runs/impl_1/${top_module}.bit
+# if generate_rtl 1 then during executing bitstream will be created rtl_schematic pdf
+set generate_rtl 1
+# set path where vivado has to put project and running output
+set build_path ../vivado/build
+# set simulation top module
+set top_sim_module draw_rect_ctl
+
+set bitstream_file ${build_path}/${project}.runs/impl_1/${top_module}.bit
+
 
 proc usage {} {
-        puts "usage: vivado -mode tcl -source [info script] -tclargs \[simulation/bitstream/program\]"
+        puts "usage: vivado -mode tcl -source [info script] -tclargs \[simulation/bitstream/program/run\]"
         exit 1
 }
 
-proc attach_files {} {
+# files for bitstream
+
+proc attach_rtl_files {} {
+
+        remove_files [get_files -quiet]
         read_xdc {
                 constraints/vga_example.xdc
         }
@@ -21,7 +32,7 @@ proc attach_files {} {
         }
 
         read_verilog {
-                rtl/vga_example.v
+                rtl/voltmeter_top.v
                 rtl/vga_timing.v
                 rtl/draw_background.v
                 rtl/draw_rect.v
@@ -39,28 +50,79 @@ proc attach_files {} {
                 rtl/draw_rect_ctl.v
                 rtl/top_MouseDisplay.v
         }
+        
+        read_mem {
+                rtl/image_rom.data
+        }
+}
 
-        # sim/draw_rect_ctl_test.v
-        # sim/draw_rect_ctl_tb.v
+# files for simulation
 
+proc attach_sim_files {} {
+
+        remove_files [get_files -quiet]
+
+        # if you run simulation for the same top module that bitstream then leave this section otherwise 
+        # comment attach_rtl_files and uncomment PUT YOUR CODE HERE where you need to add your own sim files 
+
+        #attach_rtl_files
+
+        #-------------------PUT YOUR CODE HERE-------------------
+        # read_xdc {
+        # }
+
+        # read_vhdl {
+        # }
+
+        read_verilog {
+                rtl/draw_rect_ctl.v
+        }
+
+        # read_mem {
+        # }
+        #--------------------------------------------------------
+
+                #  sim/testbench.v
+                #  sim/tiff_writer.v
         add_files -fileset sim_1 {
-                
-                sim/testbench.v
-                sim/tiff_writer.v
+                sim/draw_rect_ctl_test.v
+                sim/draw_rect_ctl_tb.v
+        }
+}
+
+proc check_project {} {
+        global project
+        global build_path
+
+        set pexist [file exist ${build_path}/${project}.xpr]
+        puts "project exists : $pexist"
+        if {$pexist == 0} {
+                make_project 
+        } else {
+                open_project_f
         }
 }
 
 proc make_project {} {
-        global top_module
+        global project
         global target
+        global build_path
 
-        file mkdir build
-        create_project ${top_module} build -part ${target} -force
-        attach_files
+        file mkdir ${build_path}
+        create_project ${project} ${build_path} -part ${target} -force
+}
+
+proc open_project_f {} {
+        global project
+        global build_path
+
+        open_project ${build_path}/${project}.xpr
 }
 
 proc make_bitstream {} {
         global top_module
+
+        attach_rtl_files
 
         set_property top ${top_module} [current_fileset]
         update_compile_order -fileset sources_1
@@ -73,18 +135,9 @@ proc make_bitstream {} {
         wait_on_run impl_1
 }
 
-if {($argc != 1) || ([lindex $argv 0] ni {"simulation" "bitstream" "program"})} {
-        usage
-}
+proc program_board {} {
+        global bitstream_file
 
-if {[lindex $argv 0] == "program"} {
-
-        set fexist [file exist ${bitstream_file}]
-        puts "bitstream exist : $fexist"
-        if { $fexist == 0 } {
-                make_project
-                make_bitstream 
-        }     
         open_hw
         connect_hw_server
         current_hw_target [get_hw_targets *]
@@ -98,53 +151,59 @@ if {[lindex $argv 0] == "program"} {
 
         program_hw_devices [lindex [get_hw_devices] 0]
         refresh_hw_device [lindex [get_hw_devices] 0]
-        
+}
+proc clean {} {
+        file delete -force .Xil
+}
+
+if {($argc != 1) || ([lindex $argv 0] ni {"simulation" "bitstream" "program" "run"})} {
+        usage
+}
+
+if {[lindex $argv 0] == "program"} {
+        program_board
+        clean
         exit
 } else {
-        make_project
+        check_project
 }
 
 if {[lindex $argv 0] == "simulation"} {
 
-        # remove_files -fileset sim_1 {
-        #         sim/testbench.v
-        #         sim/tiff_writer.v
-        # }      
+        attach_sim_files
 
-        # remove_files -fileset sources_1 {
-        #         rtl/vga_example.v
-        #         rtl/vga_timing.v
-        #         rtl/draw_background.v
-        #         rtl/draw_rect.v
-        #         rtl/clk_generator.v
-        #         rtl/internal_reset.v
-        #         rtl/position_memory.v
-        #         rtl/image_rom.v
-        #         rtl/signal_synchronizer.v 
-                
-        #         rtl/MouseCtl.vhd
-        #         rtl/Ps2Interface.vhd
-        #         rtl/MouseDisplay.vhd
-        # } 
-
-        set_property top ${top_module} [current_fileset]
+        set_property top ${top_sim_module} [current_fileset]
         update_compile_order -fileset sources_1
         update_compile_order -fileset sim_1
 
         launch_simulation
+        start_gui
         # add_wave {{/draw_rect_ctl_test/my_draw_rect_ctl/xpos}} {{/draw_rect_ctl_test/my_draw_rect_ctl/ypos}} 
-        start_gui
         # run all
-        
 } else { 
-        
-        make_bitstream
+        if {[lindex $argv 0] == "run"} {
+                set fexist [file exist ${bitstream_file}]
+                puts "bitstream exist : $fexist"
+                if {$fexist == 0} {
+                        make_bitstream 
+                }
+                program_board
+                clean
+                exit
+        } else {
+                #make_bitstream
 
-        # Sekwencja pokazujaca i zapisujaca schemat rtl
-        start_gui
-        synth_design -rtl -name rtl_1 
-        show_schematic [concat [get_cells] [get_ports]]
-        write_schematic -force -format pdf rtl_schematic.pdf -orientation landscape -scope visible
-
-        # exit
+                # Sekwencja pokazujaca i zapisujaca schemat rtl
+                if {${generate_rtl} == 0 } {
+                        clean
+                        exit
+                } else {
+                        start_gui
+                        synth_design -rtl -name rtl_1 
+                        show_schematic [concat [get_cells] [get_ports]]
+                        write_schematic -force -format pdf rtl_schematic.pdf -orientation landscape -scope visible
+                        clean
+                        exit
+                }
+        }
 }
