@@ -2,7 +2,7 @@ set project voltmeter
 set top_module voltmeter_top
 set target xc7a35tcpg236-1
 # if generate_rtl 1 then during executing bitstream will be created rtl_schematic pdf
-set generate_rtl 1
+set generate_rtl 0
 # set path where vivado has to put project and running output
 set build_path ../vivado/build
 # set simulation top module
@@ -131,9 +131,11 @@ proc make_bitstream {} {
         update_compile_order -fileset sources_1
         update_compile_order -fileset sim_1
 
+        reset_run   synth_1
         launch_runs synth_1 -jobs 8
         wait_on_run synth_1
 
+        reset_run   impl_1
         launch_runs impl_1 -to_step write_bitstream -jobs 8
         wait_on_run impl_1
 }
@@ -185,11 +187,7 @@ if {[lindex $argv 0] == "simulation"} {
         # run all
 } else { 
         if {[lindex $argv 0] == "run"} {
-                set fexist [file exist ${bitstream_file}]
-                puts "bitstream exist : $fexist"
-                if {$fexist == 0} {
-                        make_bitstream 
-                }
+                make_bitstream 
                 program_board
                 clean
                 exit
