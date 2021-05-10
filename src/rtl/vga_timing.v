@@ -31,8 +31,8 @@ module vga_timing (
         localparam HOR_SYNC_TIME = 136;
         localparam VER_SYNC_TIME = 3;
 
-        reg [11:0] horizontal_counter = 12'd1000;
-        reg [11:0] vertical_counter= 12'd500;
+        reg [11:0] horizontal_counter = 12'b0;
+        reg [11:0] vertical_counter= 12'b0;
         reg horizontal_sync = 1'b0;
         reg horizontal_blank = 1'b0;
         reg vertical_sync = 1'b0;
