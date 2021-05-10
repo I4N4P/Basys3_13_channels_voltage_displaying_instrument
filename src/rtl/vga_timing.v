@@ -22,17 +22,17 @@ module vga_timing (
         output wire hblnk  
         );
 
-        localparam HOR_TOTAL_TIME = 1055;
-        localparam VER_TOTAL_TIME = 627;
-        localparam HOR_BLANK_START = 799;
-        localparam VER_BLANK_START = 599;
-        localparam HOR_SYNC_START = 839;
-        localparam VER_SYNC_START = 600;
-        localparam HOR_SYNC_TIME = 128;
-        localparam VER_SYNC_TIME = 4;
+        localparam HOR_TOTAL_TIME = 1343;
+        localparam VER_TOTAL_TIME = 805;
+        localparam HOR_BLANK_START = 1023;
+        localparam VER_BLANK_START = 767;
+        localparam HOR_SYNC_START = 1047;
+        localparam VER_SYNC_START = 770;
+        localparam HOR_SYNC_TIME = 136;
+        localparam VER_SYNC_TIME = 3;
 
-        reg [11:0] horizontal_counter = 12'b0;
-        reg [11:0] vertical_counter= 12'b0;
+        reg [11:0] horizontal_counter = 12'd1000;
+        reg [11:0] vertical_counter= 12'd500;
         reg horizontal_sync = 1'b0;
         reg horizontal_blank = 1'b0;
         reg vertical_sync = 1'b0;

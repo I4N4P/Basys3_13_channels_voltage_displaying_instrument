@@ -1,5 +1,5 @@
 
-// file: clk_generator.v
+// file: clk_wiz_0.v
 // 
 // (c) Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
 // 
@@ -15,7 +15,6 @@
 // Xilinx, and to the maximum extent permitted by applicable
 // law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
 // WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
-
 // AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
 // BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
 // INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
@@ -57,8 +56,7 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// clk100MHz___100.000______0.000______50.0______130.958_____98.575
-// clk40MHz____40.000______0.000______50.0______159.371_____98.575
+// clk_65MHz____65.000______0.000______50.0______254.866____297.890
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -71,8 +69,7 @@ module clk_generator
 
  (// Clock in ports
   // Clock out ports
-  output        clk100MHz,
-  output        clk40MHz,
+  output        clk_65MHz,
   // Status and control signals
   input         reset,
   output        locked,
@@ -80,10 +77,10 @@ module clk_generator
  );
   // Input buffering
   //------------------------------------
-wire clk_clk_generator;
-wire clk_in2_clk_generator;
+wire clk_clk_wiz_0;
+wire clk_in2_clk_wiz_0;
   IBUF clkin1_ibufg
-   (.O (clk_clk_generator),
+   (.O (clk_clk_wiz_0),
     .I (clk));
 
 
@@ -96,22 +93,23 @@ wire clk_in2_clk_generator;
   //    * Unused inputs are tied off
   //    * Unused outputs are labeled unused
 
-  wire        clk100MHz_clk_generator;
-  wire        clk40MHz_clk_generator;
-  wire        clk_out3_clk_generator;
-  wire        clk_out4_clk_generator;
-  wire        clk_out5_clk_generator;
-  wire        clk_out6_clk_generator;
-  wire        clk_out7_clk_generator;
+  wire        clk_65MHz_clk_wiz_0;
+  wire        clk_out2_clk_wiz_0;
+  wire        clk_out3_clk_wiz_0;
+  wire        clk_out4_clk_wiz_0;
+  wire        clk_out5_clk_wiz_0;
+  wire        clk_out6_clk_wiz_0;
+  wire        clk_out7_clk_wiz_0;
 
   wire [15:0] do_unused;
   wire        drdy_unused;
   wire        psdone_unused;
   wire        locked_int;
-  wire        clkfbout_clk_generator;
-  wire        clkfbout_buf_clk_generator;
+  wire        clkfbout_clk_wiz_0;
+  wire        clkfbout_buf_clk_wiz_0;
   wire        clkfboutb_unused;
     wire clkout0b_unused;
+   wire clkout1_unused;
    wire clkout1b_unused;
    wire clkout2_unused;
    wire clkout2b_unused;
@@ -126,36 +124,29 @@ wire clk_in2_clk_generator;
   (* KEEP = "TRUE" *) 
   (* ASYNC_REG = "TRUE" *)
   reg  [7 :0] seq_reg1 = 0;
-  (* KEEP = "TRUE" *) 
-  (* ASYNC_REG = "TRUE" *)
-  reg  [7 :0] seq_reg2 = 0;
 
   MMCME2_ADV
   #(.BANDWIDTH            ("OPTIMIZED"),
     .CLKOUT4_CASCADE      ("FALSE"),
     .COMPENSATION         ("ZHOLD"),
     .STARTUP_WAIT         ("FALSE"),
-    .DIVCLK_DIVIDE        (1),
-    .CLKFBOUT_MULT_F      (10.000),
+    .DIVCLK_DIVIDE        (5),
+    .CLKFBOUT_MULT_F      (50.375),
     .CLKFBOUT_PHASE       (0.000),
     .CLKFBOUT_USE_FINE_PS ("FALSE"),
-    .CLKOUT0_DIVIDE_F     (10.000),
+    .CLKOUT0_DIVIDE_F     (15.500),
     .CLKOUT0_PHASE        (0.000),
     .CLKOUT0_DUTY_CYCLE   (0.500),
     .CLKOUT0_USE_FINE_PS  ("FALSE"),
-    .CLKOUT1_DIVIDE       (25),
-    .CLKOUT1_PHASE        (0.000),
-    .CLKOUT1_DUTY_CYCLE   (0.500),
-    .CLKOUT1_USE_FINE_PS  ("FALSE"),
     .CLKIN1_PERIOD        (10.000))
   mmcm_adv_inst
     // Output clocks
    (
-    .CLKFBOUT            (clkfbout_clk_generator),
+    .CLKFBOUT            (clkfbout_clk_wiz_0),
     .CLKFBOUTB           (clkfboutb_unused),
-    .CLKOUT0             (clk100MHz_clk_generator),
+    .CLKOUT0             (clk_65MHz_clk_wiz_0),
     .CLKOUT0B            (clkout0b_unused),
-    .CLKOUT1             (clk40MHz_clk_generator),
+    .CLKOUT1             (clkout1_unused),
     .CLKOUT1B            (clkout1b_unused),
     .CLKOUT2             (clkout2_unused),
     .CLKOUT2B            (clkout2b_unused),
@@ -165,8 +156,8 @@ wire clk_in2_clk_generator;
     .CLKOUT5             (clkout5_unused),
     .CLKOUT6             (clkout6_unused),
      // Input clock control
-    .CLKFBIN             (clkfbout_buf_clk_generator),
-    .CLKIN1              (clk_clk_generator),
+    .CLKFBIN             (clkfbout_buf_clk_wiz_0),
+    .CLKIN1              (clk_clk_wiz_0),
     .CLKIN2              (1'b0),
      // Tied to always select the primary input clock
     .CLKINSEL            (1'b1),
@@ -198,8 +189,8 @@ wire clk_in2_clk_generator;
   //-----------------------------------
 
   BUFG clkf_buf
-   (.O (clkfbout_buf_clk_generator),
-    .I (clkfbout_clk_generator));
+   (.O (clkfbout_buf_clk_wiz_0),
+    .I (clkfbout_clk_wiz_0));
 
 
 
@@ -208,14 +199,14 @@ wire clk_in2_clk_generator;
 
 
   BUFGCE clkout1_buf
-   (.O   (clk100MHz),
+   (.O   (clk_65MHz),
     .CE  (seq_reg1[7]),
-    .I   (clk100MHz_clk_generator));
+    .I   (clk_65MHz_clk_wiz_0));
 
   BUFH clkout1_buf_en
-   (.O   (clk100MHz_clk_generator_en_clk),
-    .I   (clk100MHz_clk_generator));
-  always @(posedge clk100MHz_clk_generator_en_clk or posedge reset_high) begin
+   (.O   (clk_65MHz_clk_wiz_0_en_clk),
+    .I   (clk_65MHz_clk_wiz_0));
+  always @(posedge clk_65MHz_clk_wiz_0_en_clk or posedge reset_high) begin
     if(reset_high == 1'b1) begin
 	    seq_reg1 <= 8'h00;
     end
@@ -226,28 +217,7 @@ wire clk_in2_clk_generator;
   end
 
 
-  BUFGCE clkout2_buf
-   (.O   (clk40MHz),
-    .CE  (seq_reg2[7]),
-    .I   (clk40MHz_clk_generator));
- 
-  BUFH clkout2_buf_en
-   (.O   (clk40MHz_clk_generator_en_clk),
-    .I   (clk40MHz_clk_generator));
- 
-  always @(posedge clk40MHz_clk_generator_en_clk or posedge reset_high) begin
-    if(reset_high == 1'b1) begin
-	  seq_reg2 <= 8'h00;
-    end
-    else begin
-        seq_reg2 <= {seq_reg2[6:0],locked_int};
-  
-    end
-  end
-
-
 
 
 
 endmodule
-

@@ -15,8 +15,8 @@ module voltmeter_top (
         input wire clk,
         input wire rst,
 
-        inout wire ps2_clk, 
-        inout wire ps2_data,
+        // inout wire ps2_clk, 
+        // inout wire ps2_data,
 
         output reg vs,
         output reg hs,
@@ -94,8 +94,8 @@ module voltmeter_top (
         clk_generator my_clk_generator
         (
                 .clk (clk),
-                .clk100MHz (clk100MHz),
-                .clk40MHz (pclk),
+                // .clk100MHz (clk100MHz),
+                .clk_65MHz (pclk),
                 .reset (rst),
                 .locked (locked)
         );
@@ -119,52 +119,52 @@ module voltmeter_top (
                 .locked (locked),
                 .reset_out (reset)
         );
-        MouseCtl my_MouseCtl
-        (
-                .clk (clk100MHz),
-                .rst (reset),
+        // MouseCtl my_MouseCtl
+        // (
+        //         .clk (clk100MHz),
+        //         .rst (reset),
                 
-                .value (12'b0),
-                .setx  (1'b0),
-                .sety  (1'b0),
-                .setmax_x (1'b0),
-                .setmax_y (1'b0),
-                .ps2_clk (ps2_clk), 
-                .ps2_data (ps2_data),
-                .xpos (xpos),
-                .ypos (ypos),
-                .left (mouse_left),
-                .zpos (),
-	        .middle (),
-	        .right (),
-	        .new_event ()
-        );
+        //         .value (12'b0),
+        //         .setx  (1'b0),
+        //         .sety  (1'b0),
+        //         .setmax_x (1'b0),
+        //         .setmax_y (1'b0),
+        //         .ps2_clk (ps2_clk), 
+        //         .ps2_data (ps2_data),
+        //         .xpos (xpos),
+        //         .ypos (ypos),
+        //         .left (mouse_left),
+        //         .zpos (),
+	//         .middle (),
+	//         .right (),
+	//         .new_event ()
+        // );
 
-        position_memory my_position_memory
-        (
-                .pclk (pclk),
-                .rst (reset),
+        // position_memory my_position_memory
+        // (
+        //         .pclk (pclk),
+        //         .rst (reset),
 
-                .xpos_in (xpos),
-                .ypos_in (ypos),
-                .mouse_left_in (mouse_left),
-                .xpos_out (xpos_mem),
-                .ypos_out (ypos_mem),
-                .mouse_left_out (mouse_left_mem)
+        //         .xpos_in (xpos),
+        //         .ypos_in (ypos),
+        //         .mouse_left_in (mouse_left),
+        //         .xpos_out (xpos_mem),
+        //         .ypos_out (ypos_mem),
+        //         .mouse_left_out (mouse_left_mem)
         
-        );
-        draw_rect_ctl my_draw_rect_ctl
-        (
-                .pclk (pclk),
-                .rst (reset),
+        // );
+        // draw_rect_ctl my_draw_rect_ctl
+        // (
+        //         .pclk (pclk),
+        //         .rst (reset),
 
-                .mouse_xpos (xpos_mem),
-                .mouse_ypos (ypos_mem),
-                .mouse_left (mouse_left_mem),
+        //         .mouse_xpos (xpos_mem),
+        //         .mouse_ypos (ypos_mem),
+        //         .mouse_left (mouse_left_mem),
 
-                .xpos (xpos_ctl),
-                .ypos (ypos_ctl)
-        );
+        //         .xpos (xpos_ctl),
+        //         .ypos (ypos_ctl)
+        // );
         // Instantiate the vga_timing module
 
         vga_timing my_timing (
@@ -179,107 +179,134 @@ module voltmeter_top (
                 .hblnk  (hblnk)
         );
 
-        draw_background my_draw_background 
-        (
-                .pclk(pclk),
-                .rst (reset),
+        // draw_background my_draw_background 
+        // (
+        //         .pclk(pclk),
+        //         .rst (reset),
 
-                .vcount_in (vcount),
-                .vsync_in  (vsync),
-                .vblnk_in  (vblnk),
-                .hcount_in (hcount),
-                .hsync_in  (hsync),
-                .hblnk_in  (hblnk),
+        //         .vcount_in (vcount),
+        //         .vsync_in  (vsync),
+        //         .vblnk_in  (vblnk),
+        //         .hcount_in (hcount),
+        //         .hsync_in  (hsync),
+        //         .hblnk_in  (hblnk),
 
-                .vcount_out (vcount_out_b),
-                .vsync_out  (vsync_out_b),
-                .vblnk_out  (vblnk_out_b),
-                .hcount_out (hcount_out_b),
-                .hsync_out  (hsync_out_b),
-                .hblnk_out  (hblnk_out_b),
-                .rgb_out    (rgb_out_b)
-        );
-        top_draw_rect my_top_draw_rect 
-        (
-                .pclk (pclk),
-                .rst  (reset),
+        //         .vcount_out (vcount_out_b),
+        //         .vsync_out  (vsync_out_b),
+        //         .vblnk_out  (vblnk_out_b),
+        //         .hcount_out (hcount_out_b),
+        //         .hsync_out  (hsync_out_b),
+        //         .hblnk_out  (hblnk_out_b),
+        //         .rgb_out    (rgb_out_b)
+        // );
+        // top_draw_rect my_top_draw_rect 
+        // (
+        //         .pclk (pclk),
+        //         .rst  (reset),
 
-                .xpos (xpos_ctl),
-                .ypos (ypos_ctl),
+        //         .xpos (xpos_ctl),
+        //         .ypos (ypos_ctl),
 
-                .vcount_in (vcount_out_b),
-                .vsync_in  (vsync_out_b),
-                .vblnk_in  (vblnk_out_b),
-                .hcount_in (hcount_out_b),
-                .hsync_in  (hsync_out_b),
-                .hblnk_in  (hblnk_out_b),
-                .rgb_in    (rgb_out_b),
+        //         .vcount_in (vcount_out_b),
+        //         .vsync_in  (vsync_out_b),
+        //         .vblnk_in  (vblnk_out_b),
+        //         .hcount_in (hcount_out_b),
+        //         .hsync_in  (hsync_out_b),
+        //         .hblnk_in  (hblnk_out_b),
+        //         .rgb_in    (rgb_out_b),
 
-                .vcount_out (vcount_out),
-                .vsync_out  (vsync_out),
-                .vblnk_out  (vblnk_out),
-                .hcount_out (hcount_out),
-                .hsync_out  (hsync_out),
-                .hblnk_out  (hblnk_out),
-                .rgb_out    (rgb_out)
-        );
+        //         .vcount_out (vcount_out),
+        //         .vsync_out  (vsync_out),
+        //         .vblnk_out  (vblnk_out),
+        //         .hcount_out (hcount_out),
+        //         .hsync_out  (hsync_out),
+        //         .hblnk_out  (hblnk_out),
+        //         .rgb_out    (rgb_out)
+        // );
 
-        top_draw_rect_char #(
-                .XPOS (128),
-                .YPOS (99)
-        ) my_top_draw_rect_char 
-        (
-                .pclk (pclk),
-                .rst  (reset),
+        // top_draw_rect_char #(
+        //         .XPOS (128),
+        //         .YPOS (99)
+        // ) my_top_draw_rect_char 
+        // (
+        //         .pclk (pclk),
+        //         .rst  (reset),
 
-                .vcount_in (vcount_out),
-                .vsync_in  (vsync_out),
-                .vblnk_in  (vblnk_out),
-                .hcount_in (hcount_out),
-                .hsync_in  (hsync_out),
-                .hblnk_in  (hblnk_out),
-                .rgb_in    (rgb_out),
+        //         .vcount_in (vcount_out),
+        //         .vsync_in  (vsync_out),
+        //         .vblnk_in  (vblnk_out),
+        //         .hcount_in (hcount_out),
+        //         .hsync_in  (hsync_out),
+        //         .hblnk_in  (hblnk_out),
+        //         .rgb_in    (rgb_out),
 
-                .vcount_out (vcount_out_d),
-                .vsync_out  (vsync_out_d),
-                .vblnk_out  (vblnk_out_d),
-                .hcount_out (hcount_out_d),
-                .hsync_out  (hsync_out_d),
-                .hblnk_out  (hblnk_out_d),
-                .rgb_out    (rgb_out_d)
-        );
+        //         .vcount_out (vcount_out_d),
+        //         .vsync_out  (vsync_out_d),
+        //         .vblnk_out  (vblnk_out_d),
+        //         .hcount_out (hcount_out_d),
+        //         .hsync_out  (hsync_out_d),
+        //         .hblnk_out  (hblnk_out_d),
+        //         .rgb_out    (rgb_out_d)
+        // );
 
-        top_MouseDisplay my_top_MouseDisplay
-        (
-                .pclk (pclk),
+        // top_MouseDisplay my_top_MouseDisplay
+        // (
+        //         .pclk (pclk),
                 
-                .xpos (xpos_mem),
-                .ypos (ypos_mem),
+        //         .xpos (xpos_mem),
+        //         .ypos (ypos_mem),
 
-                .vcount_in (vcount_out_d),
-                .vsync_in  (vsync_out_d),
-                .vblnk_in  (vblnk_out_d),
-                .hcount_in (hcount_out_d),
-                .hsync_in  (hsync_out_d),
-                .hblnk_in  (hblnk_out_d),
-                .rgb_in    (rgb_out_d),
+        //         .vcount_in (vcount_out_d),
+        //         .vsync_in  (vsync_out_d),
+        //         .vblnk_in  (vblnk_out_d),
+        //         .hcount_in (hcount_out_d),
+        //         .hsync_in  (hsync_out_d),
+        //         .hblnk_in  (hblnk_out_d),
+        //         .rgb_in    (rgb_out_d),
 
-                .hsync_out (hsync_out_M),
-                .vsync_out (vsync_out_M),
+        //         .hsync_out (hsync_out_M),
+        //         .vsync_out (vsync_out_M),
 
-                .red_out   (red_out),
-                .green_out (green_out),
-                .blue_out  (blue_out)
-        ); 
+        //         .red_out   (red_out),
+        //         .green_out (green_out),
+        //         .blue_out  (blue_out)
+        // ); 
 
         // Synchronical logic
         always @(posedge pclk) begin
                 // Just pass these through.
-                hs <= hsync_out_M;
-                vs <= vsync_out_M;
+                // hs <= hsync_out_M;
+                // vs <= vsync_out_M;
 
-                r  <= red_out;
-                g  <= green_out;
-                b  <= blue_out;
+                // r  <= red_out;
+                // g  <= green_out;
+                // b  <= blue_out;
+                
+                    // Just pass these through.
+    hs <= hsync;
+    vs <= vsync;
+
+    // During blanking, make it it black.
+    if (vblnk || hblnk) {r,g,b} <= 12'h0_0_0; 
+    else
+    begin
+      // Active display, top edge, make a yellow line.
+      if (vcount == 0) {r,g,b} <= 12'hf_f_0;
+      // Active display, bottom edge, make a red line.
+      else if (vcount == 767) {r,g,b} <= 12'hf_0_0;
+      // Active display, left edge, make a green line.
+      else if (hcount == 0) {r,g,b} <= 12'h0_f_0;
+      // Active display, right edge, make a blue line.
+      else if (hcount == 1023) {r,g,b} <= 12'h0_0_f;
+      // Active display, interior, fill with gray.
+      else if (hcount >= 100 && vcount >= 50 && hcount <= 150 && vcount <= 550 
+      || hcount >= 100+ vcount -50 && vcount >= 50&& vcount <= 200&& hcount  <= (100+ vcount)
+      || hcount >= 250 && vcount > 200&& vcount <= 400&& hcount  <= 300|| hcount >= 250- vcount +400 && vcount > 400&& vcount <= 550&& hcount  <= (300- vcount+400)
+      || hcount >= 400 && vcount >= 50 && hcount <= 600 && vcount <= 100|| hcount >= 400 && vcount >= 100 && hcount <= 450 && vcount <= 275 
+      || hcount >= 400 && vcount >=275 && hcount <= 600 && vcount <= 325 || hcount >= 550 && vcount >= 325 && hcount <= 600 && vcount <= 500
+      || hcount >= 400 && vcount >= 500 && hcount <= 600 && vcount <= 550) {r,g,b} <= 12'h4_4_f;
+      // You will replace this with your own test.
+      else {r,g,b} <= 12'h8_8_8;    
+    end
         end
 endmodule
