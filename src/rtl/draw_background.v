@@ -64,11 +64,11 @@ module draw_background (
                         // Active display, top edge, make a yellow line.
                         if (vcount_in == 0) rgb_out_nxt = 12'hf_f_0;
                         // Active display, bottom edge, make a red line.
-                        else if (vcount_in == 599) rgb_out_nxt = 12'hf_0_0;
+                        else if (vcount_in == 805) rgb_out_nxt = 12'hf_0_0;
                         // Active display, left edge, make a green line.
                         else if (hcount_in == 0) rgb_out_nxt = 12'h0_f_0;
                         // Active display, right edge, make a blue line.
-                        else if (hcount_in == 799) rgb_out_nxt = 12'h0_0_f;
+                        else if (hcount_in == 1343) rgb_out_nxt = 12'h0_0_f;
                         // Active display, interior, fill with gray.
                         else if (hcount_in >= 100 && vcount_in >= 50 && hcount_in <= 150 && vcount_in <= 550 
                         || hcount_in >= 100+ vcount_in -50 && vcount_in >= 50&& vcount_in <= 200&& hcount_in  <= (100+ vcount_in)
