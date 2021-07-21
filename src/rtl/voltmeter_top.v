@@ -24,6 +24,11 @@ module voltmeter_top (
         output reg [3:0] g,
         output reg [3:0] b,
         output wire pclk_mirror,
+        input wire btn,
+                input wire rx, 
+                input wire loopback_enable, 
+                
+                output reg tx, 
 
 
         input iadcp1,
@@ -77,6 +82,9 @@ module voltmeter_top (
     reg [15:0] b2d_din;
     wire [15:0] b2d_dout;
     wire b2d_done;
+
+
+
 
     //xadc instantiation connect the eoc_out .den_in to get continuous conversion
     xadc_wiz_0  XLXI_7 (
@@ -189,6 +197,129 @@ module voltmeter_top (
         .dp(dp),
         .seg(seg)
     );
+//################################################################################
+        wire clk_100MHz,clk_50MHz;
+
+        wire tx_full, rx_empty, btn_tick,tx_w;
+        wire [7:0] rec_data;
+
+        reg [15:0] data1,data1_nxt = 16'b0;
+        reg [7:0] data2;
+        reg tick,tick_nxt = 1'b0;
+        reg flag,flag_nxt;
+
+
+gen_clock my_gen_clock 
+        (
+                .clk (clk),
+                .reset (rst),
+
+                .clk_100MHz (),
+                .clk_50MHz (clk_50MHz),            
+                .locked ()
+        );
+
+        always @(posedge(clk100Mhz)) begin            
+            case (sseg_data[7:4])
+            0:  data2 <= 8'b0011_0000;
+            1:  data2 <= 8'b0011_0001;
+            2:  data2 <= 8'b0011_0010;
+            3:  data2 <= 8'b0011_0011;
+            4:  data2 <= 8'b0011_0100;
+            5:  data2 <= 8'b0011_0101;
+            6:  data2 <= 8'b0011_0110; 
+            7:  data2 <= 8'b0011_0111;
+            8:  data2 <= 8'b0011_1000;
+            9:  data2 <= 8'b0011_1001;   
+            default: data2 <= 8'b0011_0000; 
+            endcase
+    end
+
+        uart my_uart 
+        (
+                .clk (clk_50MHz),
+                .reset (rst),
+
+                .rd_uart (tick),
+                .wr_uart (btn_tick), 
+                .rx (rx), 
+                .w_data (data2),
+
+                .tx_full (tx_full), 
+                .rx_empty (rx_empty),
+                .r_data (rec_data), 
+                .tx (tx_w)
+        );
+
+        debounce my_btn_sig
+        (
+                .clk (clk_50MHz), 
+                .reset (rst), 
+              
+                .sw (btn),
+
+                .db_level (), 
+                .db_tick (btn_tick)
+        );
+
+        disp_hex_mux my_disp_hex_data
+        ( 
+                .clk (clk_50MHz), 
+                .reset (rst),
+
+                .hex3 (data1[15:12]), 
+                .hex2 (data1[11:8]), 
+                .hex1 (data1[7:4]), 
+                .hex0 (data1[3:0]),
+                .dp_in (4'b1011),
+
+                .an (), 
+                .sseg ()
+        );
+
+        // display and send ASCII synchronical logic
+
+        always @ (posedge clk_50MHz) begin
+                if (rst) begin 
+                        data1 <= 8'b0;
+                        tick <= 1'b0;
+                        flag <= 1'b0;
+                end else begin
+                        data1 <= data1_nxt;
+                        tick <=tick_nxt;
+                        flag <= flag_nxt;
+                end      
+        end
+
+        // display and send ASCII combinational logic
+
+        always @ * begin
+                tick_nxt = 1'b0;
+                if (rx_empty == 0) begin
+                        if (flag)
+                                data1_nxt = {data1[7:0],rec_data};
+                        else
+                                data1_nxt = data1;
+                        flag_nxt = 1'b0;
+                        tick_nxt = 1'b1;
+                end else begin
+                        flag_nxt = 1'b1;
+                        data1_nxt = data1;    
+                end 
+        end
+
+        // monitor synchronical logic
+
+        always @ (posedge clk100Mhz) begin
+                if (rst) begin 
+                        tx         <= 1'b0;
+                end else begin
+                        if (loopback_enable)
+                                tx <= rx;
+                        else
+                                tx <= tx_w;   
+                end      
+        end
 
  /*Converts 100 MHz clk into 40 MHz pclk.
   *his uses a vendor specific primitive

@@ -57,6 +57,16 @@ proc attach_rtl_files {} {
                 rtl/sevensegdecoder.v
                 rtl/xadc_wiz_0.v
                 rtl/bin2dec.v
+                rtl/debounce.v
+                rtl/disp_hex_mux.v
+                rtl/fifo.v
+                rtl/flag_buf.v
+                rtl/mod_m_counter.v
+                rtl/uart_rx.v
+                rtl/uart_tx.v
+                rtl/uart.v
+                rtl/disp_hex_mux.v  
+                rtl/gen_clock.v
         }
         
         read_mem {
