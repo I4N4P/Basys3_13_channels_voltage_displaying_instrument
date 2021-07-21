@@ -49,6 +49,14 @@ proc attach_rtl_files {} {
                 rtl/delay.v 
                 rtl/draw_rect_ctl.v
                 rtl/top_MouseDisplay.v
+                rtl/counter3bit.v
+                rtl/decoder3_8.v
+                rtl/DigitToSeg.v
+                rtl/mux4_4bus.v
+                rtl/segClkDevider.v
+                rtl/sevensegdecoder.v
+                rtl/xadc_wiz_0.v
+                rtl/bin2dec.v
         }
         
         read_mem {
