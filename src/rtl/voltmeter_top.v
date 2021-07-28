@@ -18,24 +18,23 @@ module voltmeter_top (
         // inout wire ps2_clk, 
         // inout wire ps2_data,
 
-        output reg vs,
-        output reg hs,
-        output reg [3:0] r,
-        output reg [3:0] g,
-        output reg [3:0] b,
-        output wire pclk_mirror,
-        input wire btn,
-                input wire rx, 
-                input wire loopback_enable, 
+        // output reg vs,
+        // output reg hs,
+        // output reg [3:0] r,
+        // output reg [3:0] g,
+        // output reg [3:0] b,
+        // output wire pclk_mirror,
+        // input wire btn,
+        //         input wire rx, 
+        //         input wire loopback_enable, 
                 
-                output reg tx, 
+        //         output reg tx, 
 
 
         input iadcp1,
     input iadcn1,
     input vp_in,
     input vn_in,
-    output reg [15:0] led,
     output [3:0] an,
     output dp,
     output [6:0] seg
@@ -60,266 +59,117 @@ module voltmeter_top (
   
         wire vsync_out_M, hsync_out_M;
 
-
-
-
-
-         wire enable;  
-    wire ready;
-    wire [15:0] data;   
-    reg [6:0] Address_in;
 	
 	//secen segment controller signals
-    reg [32:0] count;
-    localparam S_IDLE = 0;
-    localparam S_FRAME_WAIT = 1;
-    localparam S_CONVERSION = 2;
-    reg [1:0] state = S_IDLE;
-    reg [15:0] sseg_data;
+    wire [15:0] sseg_data;
 	
 	//binary to decimal converter signals
-    reg b2d_start;
-    reg [15:0] b2d_din;
-    wire [15:0] b2d_dout;
-    wire b2d_done;
+ integrated_adc my_integrated_adc (
+    .clk(clk100Mhz),
+    .iadcp1(iadcp1),
+    .iadcn1(iadcn1),
+    .vp_in(vp_in),
+    .vn_in(vn_in),
+    .dout(sseg_data)
+);
 
-
-
-
-    //xadc instantiation connect the eoc_out .den_in to get continuous conversion
-    xadc_wiz_0  XLXI_7 (
-        .daddr_in(8'h16), //addresses can be found in the artix 7 XADC user guide DRP register space
-        .dclk_in(clk100Mhz), 
-        .den_in(enable), 
-        .di_in(0), 
-        .dwe_in(0), 
-        .busy_out(),                    
-        .vauxp6(iadcp1),
-        .vauxn6(iadcn1),
-        .vauxp7(),
-        .vauxn7(),
-        .vauxp14(),
-        .vauxn14(),
-        .vauxp15(),
-        .vauxn15(),
-        .vn_in(vn_in), 
-        .vp_in(vp_in), 
-        .alarm_out(), 
-        .do_out(data), 
-        //.reset_in(),
-        .eoc_out(enable),
-        .channel_out(),
-        .drdy_out(ready)
-    );
-    
-    //led visual dmm              
-    always @(posedge(clk100Mhz)) begin            
-        if(ready == 1'b1) begin
-            case (data[15:12])
-            1:  led <= 16'b11;
-            2:  led <= 16'b111;
-            3:  led <= 16'b1111;
-            4:  led <= 16'b11111;
-            5:  led <= 16'b111111;
-            6:  led <= 16'b1111111; 
-            7:  led <= 16'b11111111;
-            8:  led <= 16'b111111111;
-            9:  led <= 16'b1111111111;
-            10: led <= 16'b11111111111;
-            11: led <= 16'b111111111111;
-            12: led <= 16'b1111111111111;
-            13: led <= 16'b11111111111111;
-            14: led <= 16'b111111111111111;
-            15: led <= 16'b1111111111111111;                        
-            default: led <= 16'b1; 
-            endcase
-        end
-    end
-    
-    //binary to decimal conversion
-    always @ (posedge(clk100Mhz)) begin
-        case (state)
-        S_IDLE: begin
-            state <= S_FRAME_WAIT;
-            count <= 'b0;
-        end
-        S_FRAME_WAIT: begin
-            if (count >= 10000000) begin
-                if (data > 16'hFFD0) begin
-                    sseg_data <= 16'h1000;
-                    state <= S_IDLE;
-                end else begin
-                    b2d_start <= 1'b1;
-                    b2d_din <= data;
-                    state <= S_CONVERSION;
-                end
-            end else
-                count <= count + 1'b1;
-        end
-        S_CONVERSION: begin
-            b2d_start <= 1'b0;
-            if (b2d_done == 1'b1) begin
-                sseg_data <= b2d_dout;
-                state <= S_IDLE;
-            end
-        end
-        endcase
-    end
-    
-    bin2dec m_b2d (
-        .clk(clk100Mhz),
-        .start(b2d_start),
-        .din(b2d_din),
-        .done(b2d_done),
-        .dout(b2d_dout)
-    );
-      
-    //always @(posedge(clk)) begin
-    //    case(sw)
-    //    0: Address_in <= 8'h16;
-    //    1: Address_in <= 8'h17;
-    //    2: Address_in <= 8'h1e;
-    //    3: Address_in <= 8'h1f;
-    //    endcase
-    //end
-    
     DigitToSeg segment1(
+        .rst(rst),
         .in1(sseg_data[3:0]),
         .in2(sseg_data[7:4]),
         .in3(sseg_data[11:8]),
         .in4(sseg_data[15:12]),
-        .in5(),
-        .in6(),
-        .in7(),
-        .in8(),
+        .in5(4'b0),
+        .in6(4'b0),
+        .in7(4'b0),
+        .in8(4'b0),
         .mclk(clk100Mhz),
         .an(an),
         .dp(dp),
         .seg(seg)
     );
 //################################################################################
-        wire clk_100MHz,clk_50MHz;
+        // wire clk_100MHz,clk_50MHz;
 
-        wire tx_full, rx_empty, btn_tick,tx_w;
-        wire [7:0] rec_data;
+        // wire tx_full, rx_empty, btn_tick,tx_w;
+        // wire [7:0] rec_data;
 
-        reg [15:0] data1,data1_nxt = 16'b0;
-        reg [7:0] data2;
-        reg tick,tick_nxt = 1'b0;
-        reg flag,flag_nxt;
+        // reg [15:0] data1,data1_nxt = 16'b0;
+        // reg [7:0] data2;
+        // reg tick,tick_nxt = 1'b0;
+        // reg flag,flag_nxt;
 
 
-gen_clock my_gen_clock 
-        (
-                .clk (clk),
-                .reset (rst),
+// gen_clock my_gen_clock 
+//         (
+//                 .clk (clk),
+//                 .reset (rst),
 
-                .clk_100MHz (),
-                .clk_50MHz (clk_50MHz),            
-                .locked ()
-        );
+//                 .clk_100MHz (),
+//                 .clk_50MHz (clk_50MHz),            
+//                 .locked ()
+//         );
 
-        always @(posedge(clk100Mhz)) begin            
-            case (sseg_data[7:4])
-            0:  data2 <= 8'b0011_0000;
-            1:  data2 <= 8'b0011_0001;
-            2:  data2 <= 8'b0011_0010;
-            3:  data2 <= 8'b0011_0011;
-            4:  data2 <= 8'b0011_0100;
-            5:  data2 <= 8'b0011_0101;
-            6:  data2 <= 8'b0011_0110; 
-            7:  data2 <= 8'b0011_0111;
-            8:  data2 <= 8'b0011_1000;
-            9:  data2 <= 8'b0011_1001;   
-            default: data2 <= 8'b0011_0000; 
-            endcase
-    end
+//         always @(posedge(clk100Mhz)) begin            
+//             case (sseg_data[7:4])
+//             0:  data2 <= 8'b0011_0000;
+//             1:  data2 <= 8'b0011_0001;
+//             2:  data2 <= 8'b0011_0010;
+//             3:  data2 <= 8'b0011_0011;
+//             4:  data2 <= 8'b0011_0100;
+//             5:  data2 <= 8'b0011_0101;
+//             6:  data2 <= 8'b0011_0110; 
+//             7:  data2 <= 8'b0011_0111;
+//             8:  data2 <= 8'b0011_1000;
+//             9:  data2 <= 8'b0011_1001;   
+//             default: data2 <= 8'b0011_0000; 
+//             endcase
+//     end
 
-        uart my_uart 
-        (
-                .clk (clk_50MHz),
-                .reset (rst),
+        // uart my_uart 
+        // (
+        //         .clk (clk_50MHz),
+        //         .reset (rst),
 
-                .rd_uart (tick),
-                .wr_uart (btn_tick), 
-                .rx (rx), 
-                .w_data (data2),
+        //         .rd_uart (tick),
+        //         .wr_uart (btn_tick), 
+        //         .rx (rx), 
+        //         .w_data (data2),
 
-                .tx_full (tx_full), 
-                .rx_empty (rx_empty),
-                .r_data (rec_data), 
-                .tx (tx_w)
-        );
+        //         .tx_full (tx_full), 
+        //         .rx_empty (rx_empty),
+        //         .r_data (rec_data), 
+        //         .tx (tx_w)
+        // );
 
-        debounce my_btn_sig
-        (
-                .clk (clk_50MHz), 
-                .reset (rst), 
+        // debounce my_btn_sig
+        // (
+        //         .clk (clk_50MHz), 
+        //         .reset (rst), 
               
-                .sw (btn),
+        //         .sw (btn),
 
-                .db_level (), 
-                .db_tick (btn_tick)
-        );
+        //         .db_level (), 
+        //         .db_tick (btn_tick)
+        // );
 
-        disp_hex_mux my_disp_hex_data
-        ( 
-                .clk (clk_50MHz), 
-                .reset (rst),
-
-                .hex3 (data1[15:12]), 
-                .hex2 (data1[11:8]), 
-                .hex1 (data1[7:4]), 
-                .hex0 (data1[3:0]),
-                .dp_in (4'b1011),
-
-                .an (), 
-                .sseg ()
-        );
-
+    
         // display and send ASCII synchronical logic
 
-        always @ (posedge clk_50MHz) begin
-                if (rst) begin 
-                        data1 <= 8'b0;
-                        tick <= 1'b0;
-                        flag <= 1'b0;
-                end else begin
-                        data1 <= data1_nxt;
-                        tick <=tick_nxt;
-                        flag <= flag_nxt;
-                end      
-        end
+        // always @ (posedge clk_50MHz) begin
+        //         if (rst) begin 
+        //                 data1 <= 8'b0;
+        //                 tick <= 1'b0;
+        //                 flag <= 1'b0;
+        //         end else begin
+        //                 data1 <= data1_nxt;
+        //                 tick <=tick_nxt;
+        //                 flag <= flag_nxt;
+        //         end      
+        // end
 
         // display and send ASCII combinational logic
 
-        always @ * begin
-                tick_nxt = 1'b0;
-                if (rx_empty == 0) begin
-                        if (flag)
-                                data1_nxt = {data1[7:0],rec_data};
-                        else
-                                data1_nxt = data1;
-                        flag_nxt = 1'b0;
-                        tick_nxt = 1'b1;
-                end else begin
-                        flag_nxt = 1'b1;
-                        data1_nxt = data1;    
-                end 
-        end
-
-        // monitor synchronical logic
-
-        always @ (posedge clk100Mhz) begin
-                if (rst) begin 
-                        tx         <= 1'b0;
-                end else begin
-                        if (loopback_enable)
-                                tx <= rx;
-                        else
-                                tx <= tx_w;   
-                end      
-        end
 
  /*Converts 100 MHz clk into 40 MHz pclk.
   *his uses a vendor specific primitive
@@ -378,16 +228,16 @@ gen_clock my_gen_clock
   // Mirrors pclk on a pin for use by the testbench;
   // not functionally required for this design to work.
 
-        ODDR pclk_oddr 
-        (
-                .Q  (pclk_mirror),
-                .C  (pclk),
-                .CE (1'b1),
-                .D1 (1'b1),
-                .D2 (1'b0),
-                .R  (1'b0),
-                .S  (1'b0)
-        );
+        // ODDR pclk_oddr 
+        // (
+        //         .Q  (pclk_mirror),
+        //         .C  (pclk),
+        //         .CE (1'b1),
+        //         .D1 (1'b1),
+        //         .D2 (1'b0),
+        //         .R  (1'b0),
+        //         .S  (1'b0)
+        // );
 
         internal_reset my_internal_reset
         (
@@ -443,38 +293,38 @@ gen_clock my_gen_clock
         // );
         // Instantiate the vga_timing module
 
-        vga_timing my_timing (
-                .pclk (pclk),
-                .rst (reset),
+        // vga_timing my_timing (
+        //         .pclk (pclk),
+        //         .rst (reset),
                 
-                .vcount (vcount),
-                .vsync  (vsync),
-                .vblnk  (vblnk),
-                .hcount (hcount),
-                .hsync  (hsync),
-                .hblnk  (hblnk)
-        );
+        //         .vcount (vcount),
+        //         .vsync  (vsync),
+        //         .vblnk  (vblnk),
+        //         .hcount (hcount),
+        //         .hsync  (hsync),
+        //         .hblnk  (hblnk)
+        // );
 
-        draw_background my_draw_background 
-        (
-                .pclk(pclk),
-                .rst (reset),
+        // draw_background my_draw_background 
+        // (
+        //         .pclk(pclk),
+        //         .rst (reset),
 
-                .vcount_in (vcount),
-                .vsync_in  (vsync),
-                .vblnk_in  (vblnk),
-                .hcount_in (hcount),
-                .hsync_in  (hsync),
-                .hblnk_in  (hblnk),
+        //         .vcount_in (vcount),
+        //         .vsync_in  (vsync),
+        //         .vblnk_in  (vblnk),
+        //         .hcount_in (hcount),
+        //         .hsync_in  (hsync),
+        //         .hblnk_in  (hblnk),
 
-                .vcount_out (vcount_out_b),
-                .vsync_out  (vsync_out_b),
-                .vblnk_out  (vblnk_out_b),
-                .hcount_out (hcount_out_b),
-                .hsync_out  (hsync_out_b),
-                .hblnk_out  (hblnk_out_b),
-                .rgb_out    (rgb_out_b)
-        );
+        //         .vcount_out (vcount_out_b),
+        //         .vsync_out  (vsync_out_b),
+        //         .vblnk_out  (vblnk_out_b),
+        //         .hcount_out (hcount_out_b),
+        //         .hsync_out  (hsync_out_b),
+        //         .hblnk_out  (hblnk_out_b),
+        //         .rgb_out    (rgb_out_b)
+        // );
         // top_draw_rect my_top_draw_rect 
         // (
         //         .pclk (pclk),
@@ -549,13 +399,13 @@ gen_clock my_gen_clock
         // ); 
 
         // Synchronical logic
-        always @(posedge pclk) begin
-                // Just pass these through.
-                hs <= hsync_out_b;
-                vs <= vsync_out_b;
+        // always @(posedge pclk) begin
+        //         // Just pass these through.
+        //         hs <= hsync_out_b;
+        //         vs <= vsync_out_b;
 
-                r  <= rgb_out_b[11:8];
-                g  <= rgb_out_b[7:4];
-                b  <= rgb_out_b[3:0];
-        end
+        //         r  <= rgb_out_b[11:8];
+        //         g  <= rgb_out_b[7:4];
+        //         b  <= rgb_out_b[3:0];
+        // end
 endmodule
