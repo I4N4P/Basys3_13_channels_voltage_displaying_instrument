@@ -18,29 +18,16 @@ module draw_rect_ctl_test;
   // Then, instantiate the design to be tested.
   reg rst;
   reg clk;
-  wire mouse_left;
-  wire [11:0] mouse_xpos, mouse_ypos;
-  // Instantiate the vga_example module.
-  
-  draw_rect_ctl_tb my_draw_rect_ctl_tb (
-    .pclk(clk),
-    .rst(rst),
+  wire data2,my_tick;
+uart_control my_uart_control(
+                .clk (clk),
+                .rst (rst),
+                .in(16'd0089),
 
-    .mouse_left(mouse_left),
-    .mouse_xpos(mouse_xpos),
-    .mouse_ypos(mouse_ypos)
-
-  );
-
-  draw_rect_ctl my_draw_rect_ctl (
-    .pclk(clk),
-    .rst(rst),
-
-    .mouse_left(mouse_left),
-    .mouse_xpos(mouse_xpos),
-    .mouse_ypos(mouse_ypos)
-
-  );
+                .sign(data2),
+                .tick(my_tick)
+                
+        );
 
   // Describe a process that generates a clock
   // signal. The clock is 100 MHz.
@@ -48,9 +35,9 @@ module draw_rect_ctl_test;
   always
   begin
     clk = 1'b0;
-    #12;
+    #5;
     clk = 1'b1;
-    #13;
+    #5;
   end
 
   // Assign values to the input signals and
@@ -63,19 +50,18 @@ module draw_rect_ctl_test;
 
   initial  
   begin
+        rst = 1'b1;
+        #10;
         rst = 1'b0;
     $display("If simulation ends before the testbench");
     $display("completes, use the menu option to run all.");
     $display("Prepare to wait a long time...");
     
     
-    wait (mouse_ypos > 99);
-        #100;
-        rst = 1'b1;
-        #100;
-        rst = 1'b0;
-    @(negedge mouse_left) ;
-    @(negedge mouse_left) ;
+    @(negedge my_tick) ;
+    @(negedge my_tick) ;
+    @(negedge my_tick) ;
+    @(negedge my_tick) ;
     //@(negedge vs) $display("Info: negedge VS at %t",$time);
     //@(negedge vs) $display("Info: negedge VS at %t",$time);
     // End the simulation.
