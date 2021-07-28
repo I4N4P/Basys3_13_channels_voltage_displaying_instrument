@@ -22,8 +22,9 @@ module uart_control (
         );
 
 localparam IDLE = 4'b0001,
-           PREPARE_SIGN = 4'b0010,
-           SEND_SIGN = 4'b0100;
+           PREPARE_WORD = 4'b0010,
+           PREPARE_SIGN = 4'b0100,
+           SEND_SIGN = 4'b1000;
 
            reg [3:0] state,state_nxt;
            reg [31:0] counter,counter_nxt;
@@ -31,6 +32,11 @@ localparam IDLE = 4'b0001,
 
            reg [7:0] sign_number,sign_number_nxt;
            reg [7:0] sign_2_send,sign_2_send_nxt;
+
+           reg [7:0] word_number,word_number_nxt;
+           reg [15:0] word_2_send,word_2_send_nxt;
+
+           reg [15:0] word_info,word_info_nxt;
 
            reg [7:0] sign_nxt;
            reg [7:0] sign_ascii;
@@ -45,14 +51,20 @@ localparam IDLE = 4'b0001,
                            tick <= 1'b0;
                            sign <= 0;
                            sign_number <=0;
+                           word_number <=0;
+                           word_2_send <= 16'd10;
+                           word_info   <= 16'd0;
                    end else begin
                            state <= state_nxt;
                            counter <= counter_nxt;
                            counter2 <= counter2_nxt;
                            sign_2_send <= sign_2_send_nxt;
+                           word_2_send <= word_2_send_nxt;
                            tick <= tick_nxt;
                            sign <= sign_nxt;
                            sign_number <= sign_number_nxt;
+                           word_number <= word_number_nxt;
+                           word_info   <= word_info_nxt;
                    end
            end
 
@@ -63,19 +75,29 @@ localparam IDLE = 4'b0001,
                    tick_nxt = tick;
                    state_nxt = state;
                    counter2_nxt = counter2;
+                   word_number_nxt = word_number;
                    case(state)
                    IDLE: begin
                            if(counter >= 100_000_000) begin
-                                state_nxt = PREPARE_SIGN;
+                                state_nxt = PREPARE_WORD;
                                 counter_nxt = 0;
                            end else begin
                                 state_nxt = IDLE;
                                 counter_nxt = counter + 1;   
                            end
                    end
+                   PREPARE_WORD: begin
+                           if(word_number >= 14) begin
+                                state_nxt = IDLE;
+                                word_number_nxt = 0;
+                           end else begin
+                                state_nxt = PREPARE_SIGN;
+                                word_number_nxt = word_number + 1;   
+                           end
+                   end
                    PREPARE_SIGN: begin
                            if(sign_number >= 14) begin
-                                state_nxt = IDLE;
+                                state_nxt = PREPARE_WORD;
                                 sign_number_nxt = 0;
                            end else begin
                                 state_nxt = SEND_SIGN;
@@ -83,38 +105,121 @@ localparam IDLE = 4'b0001,
                            end
                    end
                    SEND_SIGN: begin
-                           if(counter2 < 1) begin
+                           if(tick == 1'b0) begin
                                 state_nxt = SEND_SIGN;
                                 sign_nxt = sign_ascii;
                                 tick_nxt = 1'b1;
-                                counter2_nxt = counter2 + 1;
                            end else begin
                                 state_nxt = PREPARE_SIGN;
                                 sign_nxt = sign_ascii;
                                 tick_nxt = 1'b0;   
-                                counter2_nxt = 0;
                            end
                    end
                    default: state_nxt = IDLE;
                    endcase
            end
 
+
+        always @* begin            
+            case (word_number)
+            1: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd1; 
+            end 
+            2: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd2; 
+            end 
+            3: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd3; 
+            end 
+            4: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd4; 
+            end 
+            5: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd5; 
+            end 
+            6: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd6; 
+            end 
+            7: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd7; 
+            end 
+            8: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd8; 
+            end 
+            9: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd9; 
+            end 
+            10: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd1; 
+                    word_info_nxt[7:0] = 8'd0; 
+            end 
+            11: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd1; 
+                    word_info_nxt[7:0] = 8'd1; 
+            end 
+            12: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd1; 
+                    word_info_nxt[7:0] = 8'd2; 
+            end 
+            13: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd1; 
+                    word_info_nxt[7:0] = 8'd3; 
+            end 
+            14: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd1; 
+                    word_info_nxt[7:0] = 8'd4; 
+            end
+            
+            default: begin
+                    word_2_send_nxt = in;
+                    word_info_nxt[15:8] = 8'd0; 
+                    word_info_nxt[7:0] = 8'd0; 
+            end  
+            endcase
+            end
+
+
+
+
            always @* begin            
             case (sign_number)
-            0:  sign_2_send_nxt = 8'd86; //V
-            1:  sign_2_send_nxt = 8'd48; //0
-            2:  sign_2_send_nxt = 8'd49; //1
-            3:  sign_2_send_nxt = 8'd32; // 
-            4:  sign_2_send_nxt = 8'd45; // -
-            5:  sign_2_send_nxt = 8'd32; // 
-            6:  sign_2_send_nxt = {4'b0,in[15:12]};
-            7:  sign_2_send_nxt = {4'b0,in[11:8]};
-            8:  sign_2_send_nxt = {4'b0,in[7:4]};
-            9:  sign_2_send_nxt = {4'b0,in[3:0]};
-            10:  sign_2_send_nxt = 8'd10;
-            11:  sign_2_send_nxt = 8'd13;
-            12:  sign_2_send_nxt = 8'd32; // 
-            13:  sign_2_send_nxt = 8'd86; //V
+            0:   sign_2_send_nxt = 8'd86; //V
+            1:   sign_2_send_nxt = word_info[15:8]; //0
+            2:   sign_2_send_nxt = word_info[7:0]; //1
+            3:   sign_2_send_nxt = 8'd32; // 
+            4:   sign_2_send_nxt = 8'd45; // -
+            5:   sign_2_send_nxt = 8'd32; // 
+            6:   sign_2_send_nxt = {4'b0,word_2_send[15:12]};
+            7:   sign_2_send_nxt = {4'b0,word_2_send[11:8]};
+            8:   sign_2_send_nxt = {4'b0,word_2_send[7:4]};
+            9:   sign_2_send_nxt = {4'b0,word_2_send[3:0]};
+            10:  sign_2_send_nxt = 8'd32; // 
+            11:  sign_2_send_nxt = 8'd86; //V
+            12:  sign_2_send_nxt = 8'd10;
+            13:  sign_2_send_nxt = 8'd13;
 
             default: sign_2_send_nxt = in[3:0]; 
             endcase

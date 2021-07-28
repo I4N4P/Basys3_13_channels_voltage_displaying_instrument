@@ -195,7 +195,6 @@ module voltmeter_top (
         wire clk_100MHz;
 
         wire tx_w;
-wire [15:0] data1;
         wire [7:0] data2;
         reg tick,tick_nxt = 1'b0;
         wire my_tick2;
@@ -218,7 +217,7 @@ wire my_tick;
                 .SB_TICK(16),                   
                 .DVSR(326),   
                 .DVSR_BIT(9), 
-                .FIFO_W(4)    
+                .FIFO_W(8)    
         )
         my_uart 
         (
@@ -243,22 +242,6 @@ wire my_tick;
                 .db_tick (my_tick2)
         );
 
-        disp_hex_mux my_disp_hex_data
-        ( 
-                .clk (clk100Mhz), 
-                .reset (rst),
-
-                .hex3 (data1[15:12]), 
-                .hex2 (data1[11:8]), 
-                .hex1 (data1[7:4]), 
-                .hex0 (data1[3:0]),
-                .dp_in (4'b1011),
-
-                .an (), 
-                .sseg ()
-        );
-
-       
         always @ (posedge clk100Mhz) begin
                 if (rst) begin 
                         tx <= 1'b0;
