@@ -134,17 +134,14 @@ module voltmeter_top (
 /*******************VGA_CONTROL*********************************/
         
         
-        wire [11:0]xpos,ypos,xpos_mem,ypos_mem,xpos_ctl,ypos_ctl;
-        wire mouse_left,mouse_left_mem;
+        //wire [3:0] red_out,green_out,blue_out;
+        //wire vsync_out_M, hsync_out_M;
 
-        wire [3:0] red_out,green_out,blue_out;
-
-        wire [11:0] vcount, hcount,vcount_out_b, hcount_out_b,vcount_out, hcount_out,vcount_out_d, hcount_out_d;  // here is the change of the size of variable in order to mould with MouseDisplay
-        wire vsync, hsync,vsync_out_b, hsync_out_b, vsync_out, hsync_out, vsync_out_d, hsync_out_d;
-        wire vblnk, hblnk,vblnk_out_b, hblnk_out_b,vblnk_out, hblnk_out,vblnk_out_d, hblnk_out_d;
-        wire [11:0] rgb_out_b,rgb_out,rgb_out_d; 
+        wire vsync, hsync,vsync_out_b, hsync_out_b, vsync_out_c, hsync_out_c;
+        wire vblnk, hblnk,vblnk_out_b, hblnk_out_b, vblnk_out_c, hblnk_out_c;
+        wire [11:0] vcount, hcount,vcount_out_b, hcount_out_b,vcount_out_c, hcount_out_c;
+        wire [11:0] rgb_out_b, rgb_out_c; 
   
-        wire vsync_out_M, hsync_out_M;
 
         vga_timing my_timing 
         (
@@ -180,80 +177,40 @@ module voltmeter_top (
                 .rgb_out    (rgb_out_b)
         );
 
-        // );
-        // draw_rect_ctl my_draw_rect_ctl
-        // (
-        //         .pclk (pclk),
-        //         .rst (reset),
+        top_draw_rect_char #(
+                .XPOS (128),
+                .YPOS (99)
+        ) my_top_draw_rect_char 
+        (
+                .pclk (pclk),
+                .rst  (reset),
 
-        //         .mouse_xpos (xpos_mem),
-        //         .mouse_ypos (ypos_mem),
-        //         .mouse_left (mouse_left_mem),
+                .vcount_in (vcount_out_b),
+                .vsync_in  (vsync_out_b),
+                .vblnk_in  (vblnk_out_b),
+                .hcount_in (hcount_out_b),
+                .hsync_in  (hsync_out_b),
+                .hblnk_in  (hblnk_out_b),
+                .rgb_in    (rgb_out_b),
 
-        //         .xpos (xpos_ctl),
-        //         .ypos (ypos_ctl)
-        // );
-        // Instantiate the vga_timing module
-
-        // top_draw_rect my_top_draw_rect 
-        // (
-        //         .pclk (pclk),
-        //         .rst  (reset),
-
-        //         .xpos (xpos_ctl),
-        //         .ypos (ypos_ctl),
-
-        //         .vcount_in (vcount_out_b),
-        //         .vsync_in  (vsync_out_b),
-        //         .vblnk_in  (vblnk_out_b),
-        //         .hcount_in (hcount_out_b),
-        //         .hsync_in  (hsync_out_b),
-        //         .hblnk_in  (hblnk_out_b),
-        //         .rgb_in    (rgb_out_b),
-
-        //         .vcount_out (vcount_out),
-        //         .vsync_out  (vsync_out),
-        //         .vblnk_out  (vblnk_out),
-        //         .hcount_out (hcount_out),
-        //         .hsync_out  (hsync_out),
-        //         .hblnk_out  (hblnk_out),
-        //         .rgb_out    (rgb_out)
-        // );
-
-        // top_draw_rect_char #(
-        //         .XPOS (128),
-        //         .YPOS (99)
-        // ) my_top_draw_rect_char 
-        // (
-        //         .pclk (pclk),
-        //         .rst  (reset),
-
-        //         .vcount_in (vcount_out),
-        //         .vsync_in  (vsync_out),
-        //         .vblnk_in  (vblnk_out),
-        //         .hcount_in (hcount_out),
-        //         .hsync_in  (hsync_out),
-        //         .hblnk_in  (hblnk_out),
-        //         .rgb_in    (rgb_out),
-
-        //         .vcount_out (vcount_out_d),
-        //         .vsync_out  (vsync_out_d),
-        //         .vblnk_out  (vblnk_out_d),
-        //         .hcount_out (hcount_out_d),
-        //         .hsync_out  (hsync_out_d),
-        //         .hblnk_out  (hblnk_out_d),
-        //         .rgb_out    (rgb_out_d)
-        // );
+                .vcount_out (vcount_out_c),
+                .vsync_out  (vsync_out_c),
+                .vblnk_out  (vblnk_out_c),
+                .hcount_out (hcount_out_c),
+                .hsync_out  (hsync_out_c),
+                .hblnk_out  (hblnk_out_c),
+                .rgb_out    (rgb_out_c)
+        );
 
 
         //Synchronical logic
         always @(posedge pclk) begin
                 // Just pass these through.
-                hs <= hsync_out_b;
-                vs <= vsync_out_b;
+                hs <= hsync_out_c;
+                vs <= vsync_out_c;
 
-                r  <= rgb_out_b[11:8];
-                g  <= rgb_out_b[7:4];
-                b  <= rgb_out_b[3:0];
+                r  <= rgb_out_c[11:8];
+                g  <= rgb_out_c[7:4];
+                b  <= rgb_out_c[3:0];
         end
 endmodule
