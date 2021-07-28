@@ -14,31 +14,126 @@
 module voltmeter_top (
         input wire clk,
         input wire rst,
-        // output reg vs,
-        // output reg hs,
-        // output reg [3:0] r,
-        // output reg [3:0] g,
-        // output reg [3:0] b,
-        // output wire pclk_mirror,
-        output reg tx, 
-
-
         input iadcp1,
-    input iadcn1,
-    input vp_in,
-    input vn_in,
-    output [3:0] an,
-    output dp,
-    output [6:0] seg
-
+        input iadcn1,
+        input vp_in,
+        input vn_in,
+        output reg vs,
+        output reg hs,
+        output reg [3:0] r,
+        output reg [3:0] g,
+        output reg [3:0] b,
+        output reg tx, 
+        output [3:0] an,
+        output dp,
+        output [6:0] seg
         );
+
+
+/*******************CLOCK_GENERATION*********************************/
 
 
         wire clk100Mhz;
         wire pclk;
         wire locked;
+
+        clk_generator my_clk_generator
+        (
+                .clk (clk),
+                .clk_100Mhz (clk100Mhz),
+                .clk_65Mhz (pclk),
+                .reset (rst),
+                .locked (locked)
+        );
+
+
+/*******************RESET_GENERATION*********************************/
+
+
         wire reset;
 
+        internal_reset my_internal_reset
+        (
+                .pclk   (pclk),
+                .locked (locked),
+                .reset_out (reset)
+        );
+
+
+/*******************INTERNAL_ADC*********************************/	
+	
+
+        wire [15:0] sseg_data;
+
+        integrated_adc my_integrated_adc 
+        (
+                .clk (clk100Mhz),
+                .iadcp1 (iadcp1),
+                .iadcn1 (iadcn1),
+                .vp_in (vp_in),
+                .vn_in (vn_in),
+                .dout (sseg_data)
+        );
+
+        DigitToSeg segment1
+        (
+                .mclk (clk100Mhz),
+                .rst (reset),
+                .in1 (sseg_data[3:0]),
+                .in2 (sseg_data[7:4]),
+                .in3 (sseg_data[11:8]),
+                .in4 (sseg_data[15:12]),
+                .in5 (4'b0),
+                .in6 (4'b0),
+                .in7 (4'b0),
+                .in8 (4'b0),
+                .an (an),
+                .dp (dp),
+                .seg (seg)
+        );
+
+
+/*******************UART_MODULE*********************************/
+        
+        
+        wire tx_w;
+        wire  tick;
+        wire [7:0] uart_data;
+
+        uart_control my_uart_control
+        (
+                .clk (clk100Mhz),
+                .rst (rst),
+                .in (sseg_data),
+                .sign (uart_data),
+                .tick (tick)        
+        );
+
+        uart 
+        #(
+                .DBIT (8),     
+                .SB_TICK (16),                   
+                .DVSR (326),   
+                .DVSR_BIT (9), 
+                .FIFO_W (8)    
+        )
+        my_uart 
+        (
+                .clk (clk100Mhz),
+                .reset (rst),
+                .wr_uart (tick), 
+                .w_data (uart_data),
+                .tx_full (), 
+                .tx (tx_w)
+        );
+
+        always @(posedge clk100Mhz) begin
+                tx <= tx_w;
+        end
+
+/*******************VGA_CONTROL*********************************/
+        
+        
         wire [11:0]xpos,ypos,xpos_mem,ypos_mem,xpos_ctl,ypos_ctl;
         wire mouse_left,mouse_left_mem;
 
@@ -51,212 +146,40 @@ module voltmeter_top (
   
         wire vsync_out_M, hsync_out_M;
 
-	
-	//secen segment controller signals
-    wire [15:0] sseg_data;
-	
-	//binary to decimal converter signals
-
- integrated_adc my_integrated_adc (
-    .clk(clk100Mhz),
-    .iadcp1(iadcp1),
-    .iadcn1(iadcn1),
-    .vp_in(vp_in),
-    .vn_in(vn_in),
-    .dout(sseg_data)
-);
-
-    DigitToSeg segment1(
-        .rst(rst),
-        .in1(sseg_data[3:0]),
-        .in2(sseg_data[7:4]),
-        .in3(sseg_data[11:8]),
-        .in4(sseg_data[15:12]),
-        .in5(4'b0),
-        .in6(4'b0),
-        .in7(4'b0),
-        .in8(4'b0),
-        .mclk(clk100Mhz),
-        .an(an),
-        .dp(dp),
-        .seg(seg)
-    );
-//################################################################################
-        wire clk_100MHz;
-
-        wire tx_w;
-        wire [7:0] data2;
-        reg tick,tick_nxt = 1'b0;
-        wire my_tick2;
-
-wire my_tick;
-
-        uart_control my_uart_control(
-                .clk (clk100Mhz),
-                .rst (rst),
-                .in(sseg_data),
-
-                .sign(data2),
-                .tick(my_tick)
-                
-        );
-
-        uart 
-        #(
-                .DBIT(8),     
-                .SB_TICK(16),                   
-                .DVSR(326),   
-                .DVSR_BIT(9), 
-                .FIFO_W(8)    
-        )
-        my_uart 
+        vga_timing my_timing 
         (
-                .clk (clk100Mhz),
-                .reset (rst),
-
-                .wr_uart (my_tick), 
-                .w_data (data2),
-
-                .tx_full (tx_full), 
-                .tx (tx_w)
-        );
-
-        //  debounce my_btn_sig
-        // (
-        //         .clk (clk100Mhz), 
-        //         .reset (rst), 
-              
-        //         .sw (btn),
-
-        //         .db_level (), 
-        //         .db_tick (btn_tick)
-        // );
-
-    
-        // display and send ASCII synchronical logic
-
-        // always @ (posedge clk_50MHz) begin
-        //         if (rst) begin 
-        //                 data1 <= 8'b0;
-        //                 tick <= 1'b0;
-        //                 flag <= 1'b0;
-        //         end else begin
-        //                 data1 <= data1_nxt;
-        //                 tick <=tick_nxt;
-        //                 flag <= flag_nxt;
-        //         end      
-        // end
-
-        // display and send ASCII combinational logic
-
-
- /*Converts 100 MHz clk into 40 MHz pclk.
-  *his uses a vendor specific primitive
-  *called MMCME2, for frequency synthesis.
-  *wire clk_in;
-  *wire locked;
-  *wire clk_fb;
-  *wire clk_ss;
-  *wire clk_out;
-  *
-  *(* KEEP = "TRUE" *) 
-  *(* ASYNC_REG = "TRUE" *)
-  *reg [7:0] safe_start = 0;
-  *
-  *IBUF clk_ibuf (.I(clk),.O(clk_in));
-  *
-  *MMCME2_BASE #(
-  *  .CLKIN1_PERIOD(10.000),
-  *  .CLKFBOUT_MULT_F(10.000),
-  *  .CLKOUT0_DIVIDE_F(25.000))
-  *clk_in_mmcme2 (
-  *  .CLKIN1(clk_in),
-  *  .CLKOUT0(clk_out),
-  *  .CLKOUT0B(),
-  *  .CLKOUT1(),
-  *  .CLKOUT1B(),
-  *  .CLKOUT2(),
-  *  .CLKOUT2B(),
-  *  .CLKOUT3(),
-  *  .CLKOUT3B(),
-  *  .CLKOUT4(),
-  *  .CLKOUT5(),
-  *  .CLKOUT6(),
-  *  .CLKFBOUT(clkfb),
-  *  .CLKFBOUTB(),
-  *  .CLKFBIN(clkfb),
-  *  .LOCKED(locked),
-  *  .PWRDWN(1'b0),
-  *  .RST(1'b0)
-  *);
-  *
-  *BUFH clk_out_bufh (.I(clk_out),.O(clk_ss));
-  *always @(posedge clk_ss) safe_start<= {safe_start[6:0],locked}; 
-  *
-  *BUFGCE clk_out_bufgce (.I(clk_out),.CE(safe_start[7]),.O(pclk));
-  */ 
-    
-        clk_generator my_clk_generator
-        (
-                .clk (clk),
-                .clk_100Mhz (clk100Mhz),
-                .clk_65Mhz (pclk),
-                .reset (rst),
-                .locked (locked)
-        );
-  // Mirrors pclk on a pin for use by the testbench;
-  // not functionally required for this design to work.
-
-        // ODDR pclk_oddr 
-        // (
-        //         .Q  (pclk_mirror),
-        //         .C  (pclk),
-        //         .CE (1'b1),
-        //         .D1 (1'b1),
-        //         .D2 (1'b0),
-        //         .R  (1'b0),
-        //         .S  (1'b0)
-        // );
-
-        // internal_reset my_internal_reset
-        // (
-        //         .pclk   (pclk),
-        //         .locked (locked),
-        //         .reset_out (reset)
-        // );
-        // MouseCtl my_MouseCtl
-        // (
-        //         .clk (clk100MHz),
-        //         .rst (reset),
+                .pclk (pclk),
+                .rst (reset),
                 
-        //         .value (12'b0),
-        //         .setx  (1'b0),
-        //         .sety  (1'b0),
-        //         .setmax_x (1'b0),
-        //         .setmax_y (1'b0),
-        //         .ps2_clk (ps2_clk), 
-        //         .ps2_data (ps2_data),
-        //         .xpos (xpos),
-        //         .ypos (ypos),
-        //         .left (mouse_left),
-        //         .zpos (),
-	//         .middle (),
-	//         .right (),
-	//         .new_event ()
-        // );
+                .vcount (vcount),
+                .vsync  (vsync),
+                .vblnk  (vblnk),
+                .hcount (hcount),
+                .hsync  (hsync),
+                .hblnk  (hblnk)
+        );
 
-        // position_memory my_position_memory
-        // (
-        //         .pclk (pclk),
-        //         .rst (reset),
+        draw_background my_draw_background 
+        (
+                .pclk(pclk),
+                .rst (reset),
 
-        //         .xpos_in (xpos),
-        //         .ypos_in (ypos),
-        //         .mouse_left_in (mouse_left),
-        //         .xpos_out (xpos_mem),
-        //         .ypos_out (ypos_mem),
-        //         .mouse_left_out (mouse_left_mem)
-        
+                .vcount_in (vcount),
+                .vsync_in  (vsync),
+                .vblnk_in  (vblnk),
+                .hcount_in (hcount),
+                .hsync_in  (hsync),
+                .hblnk_in  (hblnk),
+
+                .vcount_out (vcount_out_b),
+                .vsync_out  (vsync_out_b),
+                .vblnk_out  (vblnk_out_b),
+                .hcount_out (hcount_out_b),
+                .hsync_out  (hsync_out_b),
+                .hblnk_out  (hblnk_out_b),
+                .rgb_out    (rgb_out_b)
+        );
+
         // );
         // draw_rect_ctl my_draw_rect_ctl
         // (
@@ -272,38 +195,6 @@ wire my_tick;
         // );
         // Instantiate the vga_timing module
 
-        // vga_timing my_timing (
-        //         .pclk (pclk),
-        //         .rst (reset),
-                
-        //         .vcount (vcount),
-        //         .vsync  (vsync),
-        //         .vblnk  (vblnk),
-        //         .hcount (hcount),
-        //         .hsync  (hsync),
-        //         .hblnk  (hblnk)
-        // );
-
-        // draw_background my_draw_background 
-        // (
-        //         .pclk(pclk),
-        //         .rst (reset),
-
-        //         .vcount_in (vcount),
-        //         .vsync_in  (vsync),
-        //         .vblnk_in  (vblnk),
-        //         .hcount_in (hcount),
-        //         .hsync_in  (hsync),
-        //         .hblnk_in  (hblnk),
-
-        //         .vcount_out (vcount_out_b),
-        //         .vsync_out  (vsync_out_b),
-        //         .vblnk_out  (vblnk_out_b),
-        //         .hcount_out (hcount_out_b),
-        //         .hsync_out  (hsync_out_b),
-        //         .hblnk_out  (hblnk_out_b),
-        //         .rgb_out    (rgb_out_b)
-        // );
         // top_draw_rect my_top_draw_rect 
         // (
         //         .pclk (pclk),
@@ -354,37 +245,15 @@ wire my_tick;
         //         .rgb_out    (rgb_out_d)
         // );
 
-        // top_MouseDisplay my_top_MouseDisplay
-        // (
-        //         .pclk (pclk),
-                
-        //         .xpos (xpos_mem),
-        //         .ypos (ypos_mem),
 
-        //         .vcount_in (vcount_out_d),
-        //         .vsync_in  (vsync_out_d),
-        //         .vblnk_in  (vblnk_out_d),
-        //         .hcount_in (hcount_out_d),
-        //         .hsync_in  (hsync_out_d),
-        //         .hblnk_in  (hblnk_out_d),
-        //         .rgb_in    (rgb_out_d),
+        //Synchronical logic
+        always @(posedge pclk) begin
+                // Just pass these through.
+                hs <= hsync_out_b;
+                vs <= vsync_out_b;
 
-        //         .hsync_out (hsync_out_M),
-        //         .vsync_out (vsync_out_M),
-
-        //         .red_out   (red_out),
-        //         .green_out (green_out),
-        //         .blue_out  (blue_out)
-        // ); 
-
-        // Synchronical logic
-        // always @(posedge pclk) begin
-        //         // Just pass these through.
-        //         hs <= hsync_out_b;
-        //         vs <= vsync_out_b;
-
-        //         r  <= rgb_out_b[11:8];
-        //         g  <= rgb_out_b[7:4];
-        //         b  <= rgb_out_b[3:0];
-        // end
+                r  <= rgb_out_b[11:8];
+                g  <= rgb_out_b[7:4];
+                b  <= rgb_out_b[3:0];
+        end
 endmodule

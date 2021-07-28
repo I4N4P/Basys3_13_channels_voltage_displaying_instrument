@@ -30,15 +30,24 @@ proc attach_rtl_files {} {
 
         read_verilog {
                 rtl/voltmeter_top.v
+                rtl/clk_generator.v
+                rtl/internal_reset.v
+                rtl/integrated_adc.v
+                rtl/xadc_wiz_0.v
+                rtl/bin2dec_ctl.v
+                rtl/bin2dec.v
+                rtl/uart_control.v
+                rtl/uart.v
+                rtl/mod_m_counter.v
+                rtl/fifo.v
+                rtl/uart_tx.v
+                rtl/flag_buf.v
                 rtl/vga_timing.v
                 rtl/draw_background.v
                 rtl/draw_rect.v
                 rtl/top_draw_rect.v
                 rtl/draw_rect_char.v
                 rtl/top_draw_rect_char.v
-                rtl/clk_generator.v
-                rtl/internal_reset.v
-                rtl/position_memory.v
                 rtl/image_rom.v
                 rtl/font_rom.v
                 rtl/text_rom_16x16.v
@@ -51,19 +60,9 @@ proc attach_rtl_files {} {
                 rtl/mux4_4bus.v
                 rtl/segClkDevider.v
                 rtl/sevensegdecoder.v
-                rtl/xadc_wiz_0.v
-                rtl/bin2dec.v
-                rtl/bin2dec_ctl.v
                 rtl/debounce.v
                 rtl/disp_hex_mux.v
-                rtl/fifo.v
-                rtl/flag_buf.v
-                rtl/mod_m_counter.v
-                rtl/uart_control.v
-                rtl/uart_tx.v
-                rtl/uart.v
                 rtl/disp_hex_mux.v  
-                rtl/integrated_adc.v
         }
         
         read_mem {
