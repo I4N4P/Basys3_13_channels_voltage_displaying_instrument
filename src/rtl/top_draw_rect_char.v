@@ -27,12 +27,9 @@ module top_draw_rect_char
         input   wire hblnk_in, 
         input   wire [11:0] rgb_in,
 
-        output  wire [11:0] vcount_out,
+
         output  wire vsync_out, 
-        output  wire vblnk_out, 
-        output  wire [11:0] hcount_out,
         output  wire hsync_out, 
-        output  wire hblnk_out, 
         output  wire [11:0] rgb_out
         );
 
@@ -59,13 +56,9 @@ module top_draw_rect_char
                 .hblnk_in(hblnk_in),
                 .rgb_in(rgb_in),
                 .char_pixel(char_pixel),
-
-                .vcount_out(vcount_out),
+                
                 .vsync_out(vsync_out),
-                .vblnk_out(vblnk_out),
-                .hcount_out(hcount_out),
                 .hsync_out(hsync_out),
-                .hblnk_out(hblnk_out),
                 .rgb_out(rgb_out),
                 .text_xy(text_xy),
                 .text_line(text_line)

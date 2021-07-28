@@ -28,12 +28,8 @@ module draw_rect_char
         input   wire [11:0] rgb_in,
         input   wire [7:0] char_pixel,
 
-        output  reg [11:0] vcount_out,
-        output  reg vsync_out, 
-        output  reg vblnk_out, 
-        output  reg [11:0] hcount_out,
-        output  reg hsync_out, 
-        output  reg hblnk_out, 
+        output  reg vsync_out,  
+        output  reg hsync_out,  
         output  reg [11:0] rgb_out,
         output  reg [7:0] text_xy,
         output  reg [3:0] text_line
@@ -86,26 +82,17 @@ module draw_rect_char
         always @(posedge pclk) begin
                 // pass these through if rst not activ then put 0 on the output.
                 if (rst) begin
-                        vcount_out <= 12'b0;
-                        hcount_out <= 12'b0;
-                        vsync_out  <= 1'b0;
-                        vblnk_out  <= 1'b0; 
+                        vsync_out  <= 1'b0; 
                         hsync_out  <= 1'b0;
-                        hblnk_out  <= 1'b0; 
                         rgb_out    <= 12'h0_0_0;
                         text_xy    <= 8'b0;
                         text_line  <= 3'b0;
 
                 end else begin
-                        vcount_out <= vcount_out_d;
-                        hcount_out <= hcount_out_d;
 
                         vsync_out  <= vsync_out_d;
                         hsync_out  <= hsync_out_d;
                         
-                        vblnk_out  <= vblnk_out_d; 
-                        hblnk_out  <= hblnk_out_d;
-
                         rgb_out    <= rgb_nxt;
                         
                         text_line  <= vcount_pic_nxt[3:0];

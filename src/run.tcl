@@ -25,30 +25,21 @@ proc attach_rtl_files {} {
                 constraints/vga_example.xdc
         }
 
-        read_vhdl {
-                rtl/MouseCtl.vhd
-                rtl/Ps2Interface.vhd
-                rtl/MouseDisplay.vhd
-        }
+        # read_vhdl {
+        # }
 
         read_verilog {
                 rtl/voltmeter_top.v
-                rtl/vga_timing.v
-                rtl/draw_background.v
-                rtl/draw_rect.v
-                rtl/top_draw_rect.v
-                rtl/draw_rect_char.v
-                rtl/top_draw_rect_char.v
                 rtl/clk_generator.v
                 rtl/internal_reset.v
-                rtl/position_memory.v
+                rtl/vga_timing.v
+                rtl/draw_background.v
+                rtl/top_draw_rect_char.v
+                rtl/draw_rect_char.v
                 rtl/image_rom.v
                 rtl/font_rom.v
                 rtl/text_rom_16x16.v
-                rtl/signal_synchronizer.v
-                rtl/delay.v 
-                rtl/draw_rect_ctl.v
-                rtl/top_MouseDisplay.v
+                rtl/delay.v
         }
         
         read_mem {

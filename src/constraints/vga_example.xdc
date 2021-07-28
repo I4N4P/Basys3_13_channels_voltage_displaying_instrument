@@ -7,6 +7,10 @@ set_input_jitter [get_clocks -of_objects [get_ports clk]] 0.1
 set_false_path -to [get_cells  -hier {*seq_reg*[0]} -filter {is_sequential}]
 set_property PHASESHIFT_MODE WAVEFORM [get_cells -hierarchical *adv*]
 
+##Buttons
+set_property PACKAGE_PIN U18 [get_ports {rst}]
+set_property IOSTANDARD LVCMOS33 [get_ports {rst}]
+
 # Constraints for VS and HS
 set_property PACKAGE_PIN R19 [get_ports {vs}]
 set_property IOSTANDARD LVCMOS33 [get_ports {vs}]
@@ -43,21 +47,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {b[2]}]
 set_property PACKAGE_PIN J18 [get_ports {b[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {b[3]}]
 
-# Constraints for PCLK_MIRROR
-set_property PACKAGE_PIN J1 [get_ports {pclk_mirror}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pclk_mirror}]
-
-##Buttons
-set_property PACKAGE_PIN U18 [get_ports {rst}]
-set_property IOSTANDARD LVCMOS33 [get_ports {rst}]
-
-##Mouse
-set_property PACKAGE_PIN C17 [get_ports {ps2_clk}]
-set_property IOSTANDARD LVCMOS33 [get_ports {ps2_clk}]
-set_property PULLUP true [get_ports {ps2_clk}]
-set_property PACKAGE_PIN B17 [get_ports {ps2_data}]
-set_property IOSTANDARD LVCMOS33 [get_ports {ps2_data}]
-set_property PULLUP true [get_ports {ps2_data}]
 
 # Constraints for CFGBVS
 set_property CFGBVS VCCO [current_design]
