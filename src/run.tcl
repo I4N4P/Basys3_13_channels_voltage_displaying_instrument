@@ -25,11 +25,8 @@ proc attach_rtl_files {} {
                 constraints/vga_example.xdc
         }
 
-        read_vhdl {
-                rtl/MouseCtl.vhd
-                rtl/Ps2Interface.vhd
-                rtl/MouseDisplay.vhd
-        }
+        # read_vhdl {
+        # }
 
         read_verilog {
                 rtl/voltmeter_top.v
@@ -48,7 +45,6 @@ proc attach_rtl_files {} {
                 rtl/signal_synchronizer.v
                 rtl/delay.v 
                 rtl/draw_rect_ctl.v
-                rtl/top_MouseDisplay.v
                 rtl/counter3bit.v
                 rtl/decoder3_8.v
                 rtl/DigitToSeg.v
@@ -62,7 +58,6 @@ proc attach_rtl_files {} {
                 rtl/fifo.v
                 rtl/flag_buf.v
                 rtl/mod_m_counter.v
-                rtl/uart_rx.v
                 rtl/uart_control.v
                 rtl/uart_tx.v
                 rtl/uart.v
