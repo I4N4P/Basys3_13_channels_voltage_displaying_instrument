@@ -14,14 +14,12 @@
 module voltmeter_top (
         input wire clk,
         input wire rst,
-
         // output reg vs,
         // output reg hs,
         // output reg [3:0] r,
         // output reg [3:0] g,
         // output reg [3:0] b,
         // output wire pclk_mirror,
-        input wire btn,
         output reg tx, 
 
 
@@ -29,7 +27,6 @@ module voltmeter_top (
     input iadcn1,
     input vp_in,
     input vn_in,
-    output reg [15:0] led,
     output [3:0] an,
     output dp,
     output [6:0] seg
@@ -54,138 +51,31 @@ module voltmeter_top (
   
         wire vsync_out_M, hsync_out_M;
 
-
-
-
-
-         wire enable;  
-    wire ready;
-    wire [15:0] data;   
-    reg [6:0] Address_in;
 	
 	//secen segment controller signals
-    reg [32:0] count;
-    localparam S_IDLE = 0;
-    localparam S_FRAME_WAIT = 1;
-    localparam S_CONVERSION = 2;
-    reg [1:0] state = S_IDLE;
-    reg [15:0] sseg_data;
+    wire [15:0] sseg_data;
 	
 	//binary to decimal converter signals
-    reg b2d_start;
-    reg [15:0] b2d_din;
-    wire [15:0] b2d_dout;
-    wire b2d_done;
 
+ integrated_adc my_integrated_adc (
+    .clk(clk100Mhz),
+    .iadcp1(iadcp1),
+    .iadcn1(iadcn1),
+    .vp_in(vp_in),
+    .vn_in(vn_in),
+    .dout(sseg_data)
+);
 
-
-
-    //xadc instantiation connect the eoc_out .den_in to get continuous conversion
-    xadc_wiz_0  XLXI_7 (
-        .daddr_in(8'h16), //addresses can be found in the artix 7 XADC user guide DRP register space
-        .dclk_in(clk100Mhz), 
-        .den_in(enable), 
-        .di_in(0), 
-        .dwe_in(0), 
-        .busy_out(),                    
-        .vauxp6(iadcp1),
-        .vauxn6(iadcn1),
-        .vauxp7(),
-        .vauxn7(),
-        .vauxp14(),
-        .vauxn14(),
-        .vauxp15(),
-        .vauxn15(),
-        .vn_in(vn_in), 
-        .vp_in(vp_in), 
-        .alarm_out(), 
-        .do_out(data), 
-        //.reset_in(),
-        .eoc_out(enable),
-        .channel_out(),
-        .drdy_out(ready)
-    );
-    
-    //led visual dmm              
-    always @(posedge(clk100Mhz)) begin            
-        if(ready == 1'b1) begin
-            case (data[15:12])
-            1:  led <= 16'b11;
-            2:  led <= 16'b111;
-            3:  led <= 16'b1111;
-            4:  led <= 16'b11111;
-            5:  led <= 16'b111111;
-            6:  led <= 16'b1111111; 
-            7:  led <= 16'b11111111;
-            8:  led <= 16'b111111111;
-            9:  led <= 16'b1111111111;
-            10: led <= 16'b11111111111;
-            11: led <= 16'b111111111111;
-            12: led <= 16'b1111111111111;
-            13: led <= 16'b11111111111111;
-            14: led <= 16'b111111111111111;
-            15: led <= 16'b1111111111111111;                        
-            default: led <= 16'b1; 
-            endcase
-        end
-    end
-    
-    //binary to decimal conversion
-    always @ (posedge(clk100Mhz)) begin
-        case (state)
-        S_IDLE: begin
-            state <= S_FRAME_WAIT;
-            count <= 'b0;
-        end
-        S_FRAME_WAIT: begin
-            if (count >= 10_000_000) begin
-                if (data > 16'hFFD0) begin
-                    sseg_data <= 16'h1000;
-                    state <= S_IDLE;
-                end else begin
-                    b2d_start <= 1'b1;
-                    b2d_din <= data;
-                    state <= S_CONVERSION;
-                end
-            end else
-                count <= count + 1'b1;
-        end
-        S_CONVERSION: begin
-            b2d_start <= 1'b0;
-            if (b2d_done == 1'b1) begin
-                sseg_data <= b2d_dout;
-                state <= S_IDLE;
-            end
-        end
-        endcase
-    end
-    
-    bin2dec m_b2d (
-        .clk(clk100Mhz),
-        .start(b2d_start),
-        .din(b2d_din),
-        .done(b2d_done),
-        .dout(b2d_dout)
-    );
-      
-    //always @(posedge(clk)) begin
-    //    case(sw)
-    //    0: Address_in <= 8'h16;
-    //    1: Address_in <= 8'h17;
-    //    2: Address_in <= 8'h1e;
-    //    3: Address_in <= 8'h1f;
-    //    endcase
-    //end
-    
     DigitToSeg segment1(
+        .rst(rst),
         .in1(sseg_data[3:0]),
         .in2(sseg_data[7:4]),
         .in3(sseg_data[11:8]),
         .in4(sseg_data[15:12]),
-        .in5(),
-        .in6(),
-        .in7(),
-        .in8(),
+        .in5(4'b0),
+        .in6(4'b0),
+        .in7(4'b0),
+        .in8(4'b0),
         .mclk(clk100Mhz),
         .an(an),
         .dp(dp),
@@ -231,24 +121,34 @@ wire my_tick;
                 .tx (tx_w)
         );
 
-         debounce my_btn_sig
-        (
-                .clk (clk100Mhz), 
-                .reset (rst), 
+        //  debounce my_btn_sig
+        // (
+        //         .clk (clk100Mhz), 
+        //         .reset (rst), 
               
-                .sw (btn),
+        //         .sw (btn),
 
-                .db_level (), 
-                .db_tick (my_tick2)
-        );
+        //         .db_level (), 
+        //         .db_tick (btn_tick)
+        // );
 
-        always @ (posedge clk100Mhz) begin
-                if (rst) begin 
-                        tx <= 1'b0;
-                end else begin
-                        tx <= tx_w;   
-                end      
-        end
+    
+        // display and send ASCII synchronical logic
+
+        // always @ (posedge clk_50MHz) begin
+        //         if (rst) begin 
+        //                 data1 <= 8'b0;
+        //                 tick <= 1'b0;
+        //                 flag <= 1'b0;
+        //         end else begin
+        //                 data1 <= data1_nxt;
+        //                 tick <=tick_nxt;
+        //                 flag <= flag_nxt;
+        //         end      
+        // end
+
+        // display and send ASCII combinational logic
+
 
  /*Converts 100 MHz clk into 40 MHz pclk.
   *his uses a vendor specific primitive

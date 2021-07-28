@@ -53,6 +53,7 @@ proc attach_rtl_files {} {
                 rtl/sevensegdecoder.v
                 rtl/xadc_wiz_0.v
                 rtl/bin2dec.v
+                rtl/bin2dec_ctl.v
                 rtl/debounce.v
                 rtl/disp_hex_mux.v
                 rtl/fifo.v
@@ -62,6 +63,7 @@ proc attach_rtl_files {} {
                 rtl/uart_tx.v
                 rtl/uart.v
                 rtl/disp_hex_mux.v  
+                rtl/integrated_adc.v
         }
         
         read_mem {

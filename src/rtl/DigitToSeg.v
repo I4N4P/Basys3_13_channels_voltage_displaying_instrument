@@ -20,7 +20,7 @@
 //
 `timescale 1ns / 1ps
 
-module DigitToSeg(in1, 
+module DigitToSeg(rst,in1, 
            in2, 
            in3, 
            in4,
@@ -32,7 +32,7 @@ module DigitToSeg(in1,
            an, 
            dp,
            seg);
-
+    input rst;
     input [3:0] in1;
     input [3:0] in2;
     input [3:0] in3;
@@ -65,12 +65,12 @@ module DigitToSeg(in1,
                       .Y(XLXN_102[3:0]));
                       
    segClkDevider  XLXI_47 (.clk(mclk), 
-                          .rst(), 
+                          .rst(rst), 
                           .clk_div(XLXN_94));
                           
    //GND  XLXI_48 (.G(swt7));
    counter3bit  XLXI_49 (.clk(XLXN_94), 
-                        .rst(), 
+                        .rst(rst), 
                         .Q(XLXN_109[2:0]));
    decoder_3_8  XLXI_50 (.I(XLXN_109[2:0]),
                         .dp(dp), 
