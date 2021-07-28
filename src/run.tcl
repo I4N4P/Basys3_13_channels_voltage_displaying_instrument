@@ -63,10 +63,10 @@ proc attach_rtl_files {} {
                 rtl/flag_buf.v
                 rtl/mod_m_counter.v
                 rtl/uart_rx.v
+                rtl/uart_control.v
                 rtl/uart_tx.v
                 rtl/uart.v
                 rtl/disp_hex_mux.v  
-                rtl/gen_clock.v
         }
         
         read_mem {
@@ -83,32 +83,33 @@ proc attach_sim_files {} {
         # if you run simulation for the same top module that bitstream then leave this section otherwise 
         # comment attach_rtl_files and uncomment PUT YOUR CODE HERE where you need to add your own sim files 
 
-        attach_rtl_files
+        # attach_rtl_files
 
         #-------------------PUT YOUR CODE HERE-------------------
-        # read_xdc {
-        # }
+        read_xdc {
+                constraints/vga_example.xdc
+        }
 
         # read_vhdl {
         # }
 
-        # read_verilog {
-        #         rtl/draw_rect_ctl.v
-        # }
+        read_verilog {
+                rtl/uart_control.v
+        }
 
         # read_mem {
         # }
         
-        # add_files -fileset sim_1 {
-        #         sim/draw_rect_ctl_test.v
-        #         sim/draw_rect_ctl_tb.v
-        # }
+        add_files -fileset sim_1 {
+                sim/draw_rect_ctl_test.v
+               
+        }
         #--------------------------------------------------------
 
-        add_files -fileset sim_1 {
-                sim/testbench.v
-                sim/tiff_writer.v
-        }
+        # add_files -fileset sim_1 {
+        #         sim/testbench.v
+        #         sim/tiff_writer.v
+        # }
 }
 
 proc check_project {} {

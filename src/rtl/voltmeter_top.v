@@ -15,20 +15,14 @@ module voltmeter_top (
         input wire clk,
         input wire rst,
 
-        // inout wire ps2_clk, 
-        // inout wire ps2_data,
-
-        output reg vs,
-        output reg hs,
-        output reg [3:0] r,
-        output reg [3:0] g,
-        output reg [3:0] b,
-        output wire pclk_mirror,
+        // output reg vs,
+        // output reg hs,
+        // output reg [3:0] r,
+        // output reg [3:0] g,
+        // output reg [3:0] b,
+        // output wire pclk_mirror,
         input wire btn,
-                input wire rx, 
-                input wire loopback_enable, 
-                
-                output reg tx, 
+        output reg tx, 
 
 
         input iadcp1,
@@ -144,7 +138,7 @@ module voltmeter_top (
             count <= 'b0;
         end
         S_FRAME_WAIT: begin
-            if (count >= 10000000) begin
+            if (count >= 10_000_000) begin
                 if (data > 16'hFFD0) begin
                     sseg_data <= 16'h1000;
                     state <= S_IDLE;
@@ -198,73 +192,60 @@ module voltmeter_top (
         .seg(seg)
     );
 //################################################################################
-        wire clk_100MHz,clk_50MHz;
+        wire clk_100MHz;
 
-        wire tx_full, rx_empty, btn_tick,tx_w;
-        wire [7:0] rec_data;
-
-        reg [15:0] data1,data1_nxt = 16'b0;
-        reg [7:0] data2;
+        wire tx_w;
+wire [15:0] data1;
+        wire [7:0] data2;
         reg tick,tick_nxt = 1'b0;
-        reg flag,flag_nxt;
+        wire my_tick2;
 
+wire my_tick;
 
-gen_clock my_gen_clock 
-        (
-                .clk (clk),
-                .reset (rst),
+        uart_control my_uart_control(
+                .clk (clk100Mhz),
+                .rst (rst),
+                .in(sseg_data),
 
-                .clk_100MHz (),
-                .clk_50MHz (clk_50MHz),            
-                .locked ()
+                .sign(data2),
+                .tick(my_tick)
+                
         );
 
-        always @(posedge(clk100Mhz)) begin            
-            case (sseg_data[7:4])
-            0:  data2 <= 8'b0011_0000;
-            1:  data2 <= 8'b0011_0001;
-            2:  data2 <= 8'b0011_0010;
-            3:  data2 <= 8'b0011_0011;
-            4:  data2 <= 8'b0011_0100;
-            5:  data2 <= 8'b0011_0101;
-            6:  data2 <= 8'b0011_0110; 
-            7:  data2 <= 8'b0011_0111;
-            8:  data2 <= 8'b0011_1000;
-            9:  data2 <= 8'b0011_1001;   
-            default: data2 <= 8'b0011_0000; 
-            endcase
-    end
-
-        uart my_uart 
+        uart 
+        #(
+                .DBIT(8),     
+                .SB_TICK(16),                   
+                .DVSR(326),   
+                .DVSR_BIT(9), 
+                .FIFO_W(4)    
+        )
+        my_uart 
         (
-                .clk (clk_50MHz),
+                .clk (clk100Mhz),
                 .reset (rst),
 
-                .rd_uart (tick),
-                .wr_uart (btn_tick), 
-                .rx (rx), 
+                .wr_uart (my_tick), 
                 .w_data (data2),
 
                 .tx_full (tx_full), 
-                .rx_empty (rx_empty),
-                .r_data (rec_data), 
                 .tx (tx_w)
         );
 
-        debounce my_btn_sig
+         debounce my_btn_sig
         (
-                .clk (clk_50MHz), 
+                .clk (clk100Mhz), 
                 .reset (rst), 
               
                 .sw (btn),
 
                 .db_level (), 
-                .db_tick (btn_tick)
+                .db_tick (my_tick2)
         );
 
         disp_hex_mux my_disp_hex_data
         ( 
-                .clk (clk_50MHz), 
+                .clk (clk100Mhz), 
                 .reset (rst),
 
                 .hex3 (data1[15:12]), 
@@ -277,47 +258,12 @@ gen_clock my_gen_clock
                 .sseg ()
         );
 
-        // display and send ASCII synchronical logic
-
-        always @ (posedge clk_50MHz) begin
-                if (rst) begin 
-                        data1 <= 8'b0;
-                        tick <= 1'b0;
-                        flag <= 1'b0;
-                end else begin
-                        data1 <= data1_nxt;
-                        tick <=tick_nxt;
-                        flag <= flag_nxt;
-                end      
-        end
-
-        // display and send ASCII combinational logic
-
-        always @ * begin
-                tick_nxt = 1'b0;
-                if (rx_empty == 0) begin
-                        if (flag)
-                                data1_nxt = {data1[7:0],rec_data};
-                        else
-                                data1_nxt = data1;
-                        flag_nxt = 1'b0;
-                        tick_nxt = 1'b1;
-                end else begin
-                        flag_nxt = 1'b1;
-                        data1_nxt = data1;    
-                end 
-        end
-
-        // monitor synchronical logic
-
+       
         always @ (posedge clk100Mhz) begin
                 if (rst) begin 
-                        tx         <= 1'b0;
+                        tx <= 1'b0;
                 end else begin
-                        if (loopback_enable)
-                                tx <= rx;
-                        else
-                                tx <= tx_w;   
+                        tx <= tx_w;   
                 end      
         end
 
@@ -378,23 +324,23 @@ gen_clock my_gen_clock
   // Mirrors pclk on a pin for use by the testbench;
   // not functionally required for this design to work.
 
-        ODDR pclk_oddr 
-        (
-                .Q  (pclk_mirror),
-                .C  (pclk),
-                .CE (1'b1),
-                .D1 (1'b1),
-                .D2 (1'b0),
-                .R  (1'b0),
-                .S  (1'b0)
-        );
+        // ODDR pclk_oddr 
+        // (
+        //         .Q  (pclk_mirror),
+        //         .C  (pclk),
+        //         .CE (1'b1),
+        //         .D1 (1'b1),
+        //         .D2 (1'b0),
+        //         .R  (1'b0),
+        //         .S  (1'b0)
+        // );
 
-        internal_reset my_internal_reset
-        (
-                .pclk   (pclk),
-                .locked (locked),
-                .reset_out (reset)
-        );
+        // internal_reset my_internal_reset
+        // (
+        //         .pclk   (pclk),
+        //         .locked (locked),
+        //         .reset_out (reset)
+        // );
         // MouseCtl my_MouseCtl
         // (
         //         .clk (clk100MHz),
@@ -443,38 +389,38 @@ gen_clock my_gen_clock
         // );
         // Instantiate the vga_timing module
 
-        vga_timing my_timing (
-                .pclk (pclk),
-                .rst (reset),
+        // vga_timing my_timing (
+        //         .pclk (pclk),
+        //         .rst (reset),
                 
-                .vcount (vcount),
-                .vsync  (vsync),
-                .vblnk  (vblnk),
-                .hcount (hcount),
-                .hsync  (hsync),
-                .hblnk  (hblnk)
-        );
+        //         .vcount (vcount),
+        //         .vsync  (vsync),
+        //         .vblnk  (vblnk),
+        //         .hcount (hcount),
+        //         .hsync  (hsync),
+        //         .hblnk  (hblnk)
+        // );
 
-        draw_background my_draw_background 
-        (
-                .pclk(pclk),
-                .rst (reset),
+        // draw_background my_draw_background 
+        // (
+        //         .pclk(pclk),
+        //         .rst (reset),
 
-                .vcount_in (vcount),
-                .vsync_in  (vsync),
-                .vblnk_in  (vblnk),
-                .hcount_in (hcount),
-                .hsync_in  (hsync),
-                .hblnk_in  (hblnk),
+        //         .vcount_in (vcount),
+        //         .vsync_in  (vsync),
+        //         .vblnk_in  (vblnk),
+        //         .hcount_in (hcount),
+        //         .hsync_in  (hsync),
+        //         .hblnk_in  (hblnk),
 
-                .vcount_out (vcount_out_b),
-                .vsync_out  (vsync_out_b),
-                .vblnk_out  (vblnk_out_b),
-                .hcount_out (hcount_out_b),
-                .hsync_out  (hsync_out_b),
-                .hblnk_out  (hblnk_out_b),
-                .rgb_out    (rgb_out_b)
-        );
+        //         .vcount_out (vcount_out_b),
+        //         .vsync_out  (vsync_out_b),
+        //         .vblnk_out  (vblnk_out_b),
+        //         .hcount_out (hcount_out_b),
+        //         .hsync_out  (hsync_out_b),
+        //         .hblnk_out  (hblnk_out_b),
+        //         .rgb_out    (rgb_out_b)
+        // );
         // top_draw_rect my_top_draw_rect 
         // (
         //         .pclk (pclk),
@@ -549,13 +495,13 @@ gen_clock my_gen_clock
         // ); 
 
         // Synchronical logic
-        always @(posedge pclk) begin
-                // Just pass these through.
-                hs <= hsync_out_b;
-                vs <= vsync_out_b;
+        // always @(posedge pclk) begin
+        //         // Just pass these through.
+        //         hs <= hsync_out_b;
+        //         vs <= vsync_out_b;
 
-                r  <= rgb_out_b[11:8];
-                g  <= rgb_out_b[7:4];
-                b  <= rgb_out_b[3:0];
-        end
+        //         r  <= rgb_out_b[11:8];
+        //         g  <= rgb_out_b[7:4];
+        //         b  <= rgb_out_b[3:0];
+        // end
 endmodule

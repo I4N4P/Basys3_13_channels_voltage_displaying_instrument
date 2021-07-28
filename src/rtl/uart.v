@@ -13,10 +13,9 @@ module uart #( // Default setting:
         )
         (
                 input wire clk, reset,
-                input wire rd_uart, wr_uart, rx,
+                input wire wr_uart,
                 input wire [7:0] w_data,
-                output wire tx_full, rx_empty, tx,
-                output wire [7:0] r_data
+                output wire tx_full, tx
         );
 
         // signal declaration
@@ -34,34 +33,6 @@ module uart #( // Default setting:
                 .reset (reset), 
                 .q (), 
                 .max_tick (tick)
-        );
-
-        uart_rx #(
-                .DBIT (DBIT), 
-                .SB_TICK (SB_TICK)
-        ) uart_rx_unit 
-        (
-                .clk (clk),
-                .reset (reset), 
-                .rx (rx), 
-                .s_tick (tick),
-                .rx_done_tick (rx_done_tick), 
-                .dout (rx_data_out)
-        );
-
-        fifo #(
-                .B (DBIT), 
-                .W (FIFO_W)
-        ) fifo_rx_unit 
-        (
-                .clk (clk), 
-                .reset (reset), 
-                .rd (rd_uart),
-                .wr (rx_done_tick), 
-                .w_data (rx_data_out),
-                .empty (rx_empty), 
-                .full (), 
-                .r_data (r_data)
         );
 
         fifo #(
