@@ -40,6 +40,14 @@ proc attach_rtl_files {} {
                 rtl/font_rom.v
                 rtl/text_rom_16x16.v
                 rtl/delay.v
+                rtl/xadc_wiz_0.v
+                rtl/bin2dec.v
+                rtl/counter3bit.v
+                rtl/decoder3_8.v
+                rtl/DigitToSeg.v
+                rtl/mux4_4bus.v
+                rtl/sevensegdecoder.v
+                rtl/segClkDevider.v
         }
         
         read_mem {

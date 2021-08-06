@@ -38,22 +38,24 @@ module draw_rect_char
         // This are the parameters of the rectangle.
 
         localparam RECT_HEIGHT = 256;
-        localparam RECT_WIDTH  = 128;
+        localparam RECT_WIDTH  = 104;
+
+        localparam xpos = 165;
+        localparam ypos  = 60;
 
         localparam BLACK = 12'h0_0_0;
-        localparam WHITE = 12'hf_f_f;
+         localparam WHITE = 12'hf_f_f;
         
         reg [11:0] rgb_nxt = 12'b0;
-
-        reg [7:0] offset,offset_nxt = 0;
-        reg [11:0] hcount_pic,vcount_pic_nxt = 0,hcount_pic_nxt = 0;
+        reg [7:0] offset,offset_nxt;
+        reg [11:0] hcount_pic,vcount_pic_nxt,hcount_pic_nxt;
         reg [3:0] vcount_pic;
 
 
         wire vsync_out_d, hsync_out_d;
         wire vblnk_out_d, hblnk_out_d;
 
-        wire [11:0] vcount_out_d, hcount_out_d; 
+        wire [11:0] vcount_out_d, hcount_out_d,hcount_out_d2; 
         wire [11:0] rgb_out_d;
 
         delay #(
@@ -76,6 +78,15 @@ module draw_rect_char
                 .dout (rgb_out_d)
         );
 
+        delay #(
+                .WIDTH (12),
+                .CLK_DEL(2)
+        ) rgb_delay2 (
+                .clk  (pclk),
+                .rst  (rst),
+                .din  ((hcount_in - xpos)),
+                .dout (hcount_out_d2)
+        );
 
         // Synchronical logic
         
@@ -87,6 +98,11 @@ module draw_rect_char
                         rgb_out    <= 12'h0_0_0;
                         text_xy    <= 8'b0;
                         text_line  <= 3'b0;
+                        offset     <= 8'b0;
+                        text_line  <= 3'b0;
+                        text_line  <= 3'b0;
+                        vcount_pic <= 4'b0;
+                        hcount_pic <= 12'b0;
 
                 end else begin
 
@@ -98,7 +114,7 @@ module draw_rect_char
                         text_line  <= vcount_pic_nxt[3:0];
                         text_xy    <= (hcount_pic_nxt[9:3] + offset_nxt);
                         
-                        offset <= offset_nxt;
+                        offset     <= offset_nxt;
 
                         hcount_pic <= hcount_pic_nxt;
                         vcount_pic <= vcount_pic_nxt[3:0];
@@ -107,22 +123,25 @@ module draw_rect_char
         end
         // Combinational logic
         always @* begin
-
-                hcount_pic_nxt = hcount_in - (XPOS - 1);
-                vcount_pic_nxt = vcount_in - (YPOS - 1);
+                hcount_pic_nxt = hcount_in - xpos;
+                vcount_pic_nxt = vcount_in - ypos;
                 // addr generator
-                if ((hcount_in >= XPOS) && (hcount_in < XPOS + RECT_WIDTH) && (vcount_in >= YPOS) && (vcount_in < YPOS + RECT_HEIGHT)
-                 && (hcount_pic == 127) && (vcount_pic == 15))
-                        offset_nxt = offset + 16;
+                if ((hcount_in >= xpos) && (hcount_in <=xpos + RECT_WIDTH) && (vcount_in >= ypos) && (vcount_in <= ypos + RECT_HEIGHT)
+                 && (hcount_pic == (RECT_WIDTH - 1)) && (vcount_pic == 15))
+                        if((hcount_pic == (RECT_WIDTH - 1)) && (vcount_in == ((RECT_HEIGHT - 1) + ypos)))
+                                offset_nxt = 0;
+                        else 
+                                offset_nxt = offset + (RECT_WIDTH / 8);
                 else
                         offset_nxt = offset;
+
                 // text generator
                 if (hblnk_out_d || vblnk_out_d) begin
                         rgb_nxt = rgb_out_d;
                 end else begin
-                        if (hcount_out_d >= XPOS && hcount_out_d < XPOS + RECT_WIDTH 
-                         && vcount_out_d >= YPOS && vcount_out_d < YPOS + RECT_HEIGHT) begin
-                                if (char_pixel[(8 - hcount_out_d[2:0])] == 1)
+                        if (hcount_out_d >= xpos && hcount_out_d <= xpos + RECT_WIDTH 
+                         && vcount_out_d >= ypos && vcount_out_d <= ypos + RECT_HEIGHT) begin
+                                if (char_pixel[(8 - (hcount_out_d2[2:0]))] == 1)
                                         rgb_nxt = WHITE; 
                                 else 
                                         rgb_nxt = BLACK;  

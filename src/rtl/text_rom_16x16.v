@@ -26,22 +26,22 @@ module text_rom_16x16
         always @*
                 case (text_xy)
 
-                8'h00: char_code1 = 7'h61; //a
-                8'h01: char_code1 = 7'h6c; //l
-                8'h02: char_code1 = 7'h65; //e
-                8'h03: char_code1 = 7'h20; // 
-                8'h04: char_code1 = 7'h70; //p
-                8'h05: char_code1 = 7'h6f; //o
-                8'h06: char_code1 = 7'h77; //w
-                8'h07: char_code1 = 7'h69; //i
-                8'h08: char_code1 = 7'h65; //e
-                8'h09: char_code1 = 7'h6d; //m
-                8'h0a: char_code1 = 7'h20; // 
-                8'h0b: char_code1 = 7'h63; //c
-                8'h0c: char_code1 = 7'h69; //i
-                8'h0d: char_code1 = 7'h2c; //,
+                8'h03: char_code1 = 7'h20; //
+                8'h00: char_code1 = 7'h56; //V
+                8'h02: char_code1 = 7'h31; //1
+                8'h01: char_code1 = 7'h30; //0
+                8'h04: char_code1 = 7'h20; // 
+                8'h05: char_code1 = 7'h2D; //-
+                8'h06: char_code1 = 7'h20; //
+                8'h07: char_code1 = 7'h30; //0
+                8'h08: char_code1 = 7'h30; //0
+                8'h09: char_code1 = 7'h38; //8
+                8'h0a: char_code1 = 7'h39; //9
+                8'h0b: char_code1 = 7'h20; // 
+                8'h0c: char_code1 = 7'h56; //V
+                8'h0d: char_code1 = 7'h20; //
                 8'h0e: char_code1 = 7'h20; // 
-                8'h0f: char_code1 = 7'h63; //c
+                8'h0f: char_code1 = 7'h20; //
                 8'h10: char_code1 = 7'h6f; //o
                 8'h11: char_code1 = 7'h20; // 
                 8'h12: char_code1 = 7'h6d; //m
