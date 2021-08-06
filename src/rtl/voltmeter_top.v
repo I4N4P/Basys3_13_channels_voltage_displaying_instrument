@@ -231,7 +231,7 @@ module voltmeter_top (
        
         top_draw_rect_char 
         #(
-                .XPOS (128),
+                .XPOS (125),
                 .YPOS (99)
         ) 
         my_top_draw_rect_char 
