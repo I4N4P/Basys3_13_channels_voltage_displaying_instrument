@@ -141,7 +141,6 @@ module voltmeter_top (
         wire vblnk, hblnk,vblnk_out_b, hblnk_out_b, vblnk_out_c, hblnk_out_c;
         wire [11:0] vcount, hcount,vcount_out_b, hcount_out_b,vcount_out_c, hcount_out_c;
         wire [11:0] rgb_out_b, rgb_out_c; 
-  
 
         vga_timing my_timing 
         (
@@ -176,14 +175,18 @@ module voltmeter_top (
                 .hblnk_out  (hblnk_out_b),
                 .rgb_out    (rgb_out_b)
         );
-
-        top_draw_rect_char #(
-                .XPOS (128),
+       
+        top_draw_rect_char 
+        #(
+                .XPOS (125),
                 .YPOS (99)
-        ) my_top_draw_rect_char 
+        ) 
+        my_top_draw_rect_char 
         (
                 .pclk (pclk),
                 .rst  (reset),
+
+                .in(sseg1_data),
 
                 .vcount_in (vcount_out_b),
                 .vsync_in  (vsync_out_b),
@@ -193,17 +196,12 @@ module voltmeter_top (
                 .hblnk_in  (hblnk_out_b),
                 .rgb_in    (rgb_out_b),
 
-                .vcount_out (vcount_out_c),
                 .vsync_out  (vsync_out_c),
-                .vblnk_out  (vblnk_out_c),
-                .hcount_out (hcount_out_c),
                 .hsync_out  (hsync_out_c),
-                .hblnk_out  (hblnk_out_c),
                 .rgb_out    (rgb_out_c)
         );
 
-
-        //Synchronical logic
+        // Synchronical logic
         always @(posedge pclk) begin
                 // Just pass these through.
                 hs <= hsync_out_c;

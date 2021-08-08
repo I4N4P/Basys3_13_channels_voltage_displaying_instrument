@@ -21,6 +21,7 @@
 `timescale 1ns / 1ps
 
 module DigitToSeg(rst,in1, 
+
            in2, 
            in3, 
            in4,

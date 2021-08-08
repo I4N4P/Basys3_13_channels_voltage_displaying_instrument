@@ -19,6 +19,7 @@ module top_draw_rect_char
         input   wire pclk,
         input   wire rst,
 
+        input   wire [15:0] in,
         input   wire [11:0] vcount_in,
         input   wire vsync_in, 
         input   wire vblnk_in, 
@@ -27,12 +28,9 @@ module top_draw_rect_char
         input   wire hblnk_in, 
         input   wire [11:0] rgb_in,
 
-        output  wire [11:0] vcount_out,
+
         output  wire vsync_out, 
-        output  wire vblnk_out, 
-        output  wire [11:0] hcount_out,
         output  wire hsync_out, 
-        output  wire hblnk_out, 
         output  wire [11:0] rgb_out
         );
 
@@ -41,6 +39,7 @@ module top_draw_rect_char
         wire [7:0]  text_xy;
         wire [6:0]  char_code;
         wire [7:0]  char_pixel;
+        wire [31:0] ascii;
 
 
         draw_rect_char #(
@@ -59,13 +58,9 @@ module top_draw_rect_char
                 .hblnk_in(hblnk_in),
                 .rgb_in(rgb_in),
                 .char_pixel(char_pixel),
-
-                .vcount_out(vcount_out),
+                
                 .vsync_out(vsync_out),
-                .vblnk_out(vblnk_out),
-                .hcount_out(hcount_out),
                 .hsync_out(hsync_out),
-                .hblnk_out(hblnk_out),
                 .rgb_out(rgb_out),
                 .text_xy(text_xy),
                 .text_line(text_line)
@@ -78,10 +73,23 @@ module top_draw_rect_char
                 .addr({char_code,text_line_r}),
                 .char_line_pixels(char_pixel)
         );
+
+
+        bcdword2ascii1_16 bcdword2ascii1_16_1
+            (
+            .clk(pclk),
+            .rst(rst),
+
+            .bcd_word(in),
+            .ascii_word(ascii)
+            );
+
+
         text_rom_16x16 my_text_rom_16x16
         (
                 .clk(pclk),
-        
+
+                .in(ascii),
                 .text_xy(text_xy),
                 .char_code(char_code)
         );

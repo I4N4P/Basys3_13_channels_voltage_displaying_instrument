@@ -7,6 +7,7 @@ set_input_jitter [get_clocks -of_objects [get_ports clk]] 0.1
 set_false_path -to [get_cells  -hier {*seq_reg*[0]} -filter {is_sequential}]
 set_property PHASESHIFT_MODE WAVEFORM [get_cells -hierarchical *adv*]
 
+<<<<<<< HEAD
 # leds
 # set_property PACKAGE_PIN U16 [get_ports {led[0]}]					
 # 	set_property IOSTANDARD LVCMOS33 [get_ports {led[0]}]
@@ -42,6 +43,9 @@ set_property PHASESHIFT_MODE WAVEFORM [get_cells -hierarchical *adv*]
 # 	set_property IOSTANDARD LVCMOS33 [get_ports {led[15]}]
 	
 	
+=======
+
+>>>>>>> resolution_refactoring
 #7 segment display
 set_property PACKAGE_PIN W7 [get_ports {seg[0]}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {seg[0]}]
@@ -151,7 +155,6 @@ set_property PACKAGE_PIN K18 [get_ports {b[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {b[2]}]
 set_property PACKAGE_PIN J18 [get_ports {b[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {b[3]}]
-
 
 # Constraints for CFGBVS
 set_property CFGBVS VCCO [current_design]
