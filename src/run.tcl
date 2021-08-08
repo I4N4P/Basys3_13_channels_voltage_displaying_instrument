@@ -48,6 +48,8 @@ proc attach_rtl_files {} {
                 rtl/mux4_4bus.v
                 rtl/sevensegdecoder.v
                 rtl/segClkDevider.v
+                rtl/bcd2ascii1_4.v
+                rtl/bcdword2ascii1_16.v
         }
         
         read_mem {

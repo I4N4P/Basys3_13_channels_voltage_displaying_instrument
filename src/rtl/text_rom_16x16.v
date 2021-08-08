@@ -12,18 +12,35 @@
 module text_rom_16x16
         (
         input  wire        clk,
+
+        input   wire [31:0] in,
         input  wire [7:0]  text_xy,            
         output reg  [6:0]  char_code 
         );
 
         // signal declaration
         reg [6:0] char_code1;
+        reg [31:0] counter,counter_nxt= 32'b0;
+        reg [31:0] out;
+        reg [31:0] nxt;
+
 
         // body
-        always @(posedge clk)
+        always @(posedge clk) begin
                 char_code <= char_code1;
+                if(counter == 65_000_000) begin
+                                out <= nxt;
+                                counter <= 32'b0;
+                end else begin
+                        counter <= counter_nxt;
+                        out <= out;
+                        
+                end
+        end
 
-        always @*
+        always @* begin 
+                counter_nxt = counter + 1;
+                nxt = in ;
                 case (text_xy)
 
                 8'h00: char_code1 = 7'h56; //V
@@ -32,10 +49,10 @@ module text_rom_16x16
                 8'h03: char_code1 = 7'h20; // 
                 8'h04: char_code1 = 7'h2D; //-
                 8'h05: char_code1 = 7'h20; //
-                8'h06: char_code1 = 7'h30; //0
-                8'h07: char_code1 = 7'h30; //0
-                8'h08: char_code1 = 7'h38; //8
-                8'h09: char_code1 = 7'h39; //9
+                8'h06: char_code1 = out[31:24]; //0
+                8'h07: char_code1 = out[23:16]; //0
+                8'h08: char_code1 = out[15:8]; //8
+                8'h09: char_code1 = out[7:0]; //9
                 8'h0a: char_code1 = 7'h20; // 
                 8'h0b: char_code1 = 7'h56; //V
                 8'h0c: char_code1 = 7'h56; //V
@@ -196,4 +213,5 @@ module text_rom_16x16
                 8'ha7: char_code1 = 7'h56; //V
                 default : char_code1 = 7'h20; //
         endcase
+        end
 endmodule

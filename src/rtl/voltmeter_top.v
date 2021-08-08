@@ -73,127 +73,103 @@ module voltmeter_top (
 
 
 
-//  wire enable;  
-//     wire ready;
-//     wire [15:0] data;   
-//     reg [6:0] Address_in;
+ wire enable;  
+    wire ready;
+    wire [15:0] data;   
+    reg [6:0] Address_in;
 	
-// 	//secen seg1ment controller signals
-//     reg [32:0] count;
-//     localparam S_IDLE = 0;
-//     localparam S_FRAME_WAIT = 1;
-//     localparam S_CONVERSION = 2;
-//     reg [1:0] state = S_IDLE;
-//     reg [15:0] sseg1_data;
+	//secen seg1ment controller signals
+    reg [32:0] count;
+    localparam S_IDLE = 0;
+    localparam S_FRAME_WAIT = 1;
+    localparam S_CONVERSION = 2;
+    reg [1:0] state = S_IDLE;
+    reg [15:0] sseg1_data;
 	
-// 	//binary to decimal converter signals
-//     reg b2d_start;
-//     reg [15:0] b2d_din;
-//     wire [15:0] b2d_dout;
-//     wire b2d_done;
+	//binary to decimal converter signals
+    reg b2d_start;
+    reg [15:0] b2d_din;
+    wire [15:0] b2d_dout;
+    wire b2d_done;
 
-//     //xadc instan1tiation connect the eoc_out .den_in to get continuous conversion
-//     xadc_wiz_0  XLXI_7 (
-//         .daddr_in(8'h16), //addresses can1 be found in the artix 7 XADC user guide DRP register space
-//         .dclk_in(dclk), 
-//         .den_in(enable), 
-//         .di_in(0), 
-//         .dwe_in(0), 
-//         .busy_out(),                    
-//         .vauxp6(in1),
-//         .vauxn6(in2),
-//         .vauxp7(),
-//         .vauxn7(),
-//         .vauxp14(),
-//         .vauxn14(),
-//         .vauxp15(),
-//         .vauxn15(),
-//         .vn_i(vn_i), 
-//         .vp_i(vp_i), 
-//         .alarm_out(), 
-//         .do_out(data), 
-//         //.reset_in(),
-//         .eoc_out(enable),
-//         .chan1nel_out(),
-//         .drdy_out(ready)
-//     );
-//  xadc_wiz_0  XLXI_7 (
-//         .daddr_in(8'h16), //addresses can be found in the artix 7 XADC user guide DRP register space
-//         .dclk_in(clk100Mhz), 
-//         .den_in(enable), 
-//         .di_in(0), 
-//         .dwe_in(0), 
-//         .busy_out(),                    
-//         .vauxp6(vauxp6),
-//         .vauxn6(vauxn6),
-//         .vauxp7(vauxp7),
-//         .vauxn7(vauxn7),
-//         .vauxp14(vauxp14),
-//         .vauxn14(vauxn14),
-//         .vauxp15(vauxp15),
-//         .vauxn15(vauxn15),
-//         .vn_in(vn_in), 
-//         .vp_in(vp_in), 
-//         .alarm_out(), 
-//         .do_out(data), 
-//         //.reset_in(),
-//         .eoc_out(enable),
-//         .channel_out(),
-//         .drdy_out(ready)
-//     );
-//     //binary to decimal conversion
-//     always @ (posedge(clk100Mhz)) begin
-//         case (state)
-//         S_IDLE: begin
-//             state <= S_FRAME_WAIT;
-//             count <= 'b0;
-//         end
-//         S_FRAME_WAIT: begin
-//             if (count >= 10000000) begin
-//                 if (data > 16'hFFD0) begin
-//                     sseg1_data <= 16'h1000;
-//                     state <= S_IDLE;
-//                 end else begin
-//                     b2d_start <= 1'b1;
-//                     b2d_din <= data;
-//                     state <= S_CONVERSION;
-//                 end
-//             end else
-//                 count <= count + 1'b1;
-//         end
-//         S_CONVERSION: begin
-//             b2d_start <= 1'b0;
-//             if (b2d_done == 1'b1) begin
-//                 sseg1_data <= b2d_dout;
-//                 state <= S_IDLE;
-//             end
-//         end
-//         endcase
-//     end
     
-//     bin2dec m_b2d (
-//         .clk(clk100Mhz),
-//         .start(b2d_start),
-//         .din(b2d_din),
-//         .done(b2d_done),
-//         .dout(b2d_dout)
-//     );
+ xadc_wiz_0  XLXI_7 (
+        .daddr_in(8'h16), //addresses can be found in the artix 7 XADC user guide DRP register space
+        .dclk_in(clk100Mhz), 
+        .den_in(enable), 
+        .di_in(0), 
+        .dwe_in(0), 
+        .busy_out(),                    
+        .vauxp6(vauxp6),
+        .vauxn6(vauxn6),
+        .vauxp7(vauxp7),
+        .vauxn7(vauxn7),
+        .vauxp14(vauxp14),
+        .vauxn14(vauxn14),
+        .vauxp15(vauxp15),
+        .vauxn15(vauxn15),
+        .vn_in(vn_in), 
+        .vp_in(vp_in), 
+        .alarm_out(), 
+        .do_out(data), 
+        //.reset_in(),
+        .eoc_out(enable),
+        .channel_out(),
+        .drdy_out(ready)
+    );
+    //binary to decimal conversion
+    always @ (posedge(clk100Mhz)) begin
+        case (state)
+        S_IDLE: begin
+            state <= S_FRAME_WAIT;
+            count <= 'b0;
+        end
+        S_FRAME_WAIT: begin
+            if (count >= 10000000) begin
+                if (data > 16'hFFD0) begin
+                    sseg1_data <= 16'h1000;
+                    state <= S_IDLE;
+                end else begin
+                    b2d_start <= 1'b1;
+                    b2d_din <= data;
+                    state <= S_CONVERSION;
+                end
+            end else
+                count <= count + 1'b1;
+        end
+        S_CONVERSION: begin
+            b2d_start <= 1'b0;
+            if (b2d_done == 1'b1) begin
+                sseg1_data <= b2d_dout;
+                state <= S_IDLE;
+            end
+        end
+        endcase
+    end
+    
+    bin2dec m_b2d (
+        .clk(clk100Mhz),
+        .start(b2d_start),
+        .din(b2d_din),
+        .done(b2d_done),
+        .dout(b2d_dout)
+    );
       
      
-//     DigitToSeg seg1ment1(
-//         .in1(sseg1_data[3:0]),
-//         .in2(sseg1_data[7:4]),
-//         .in3(sseg1_data[11:8]),
-//         .in4(sseg1_data[15:12]),
-//         .in5(4'b0),
-//         .in6(4'b0),
-//         .in7(4'b0),
-//         .in8(4'b0),
-//         .mclk(clk100Mhz),
-//         .an(an),
-//         .dp(dp),
-//         .seg(seg)
-//     );
+    DigitToSeg seg1ment1(
+        .in1(sseg1_data[3:0]),
+        .in2(sseg1_data[7:4]),
+        .in3(sseg1_data[11:8]),
+        .in4(sseg1_data[15:12]),
+        .in5(4'b0),
+        .in6(4'b0),
+        .in7(4'b0),
+        .in8(4'b0),
+        .mclk(clk100Mhz),
+        .an(an),
+        .dp(dp),
+        .seg(seg)
+    );
 
         vga_timing my_timing 
         (
@@ -238,6 +214,8 @@ module voltmeter_top (
         (
                 .pclk (pclk),
                 .rst  (reset),
+
+                .in(sseg1_data),
 
                 .vcount_in (vcount_out_b),
                 .vsync_in  (vsync_out_b),
