@@ -15,7 +15,7 @@ module bcd2ascii1_4
         input  wire        rst,
 
         input   wire [3:0] bcd,
-        output   reg [7:0] ascii
+        output   reg [6:0] ascii
         );
 
         // signal declaration
@@ -25,24 +25,24 @@ module bcd2ascii1_4
         // body
         always @(posedge clk) begin
                 if(rst) 
-                        ascii   <= 8'b0;
+                        ascii   <= 7'h00;
                 else 
                         ascii   <= ascii_nxt;             
         end
 
         always @(*) begin
                 case (bcd)
-                0: ascii_nxt = 8'b0011_0000;
-                1: ascii_nxt = 8'b0011_0001;
-                2: ascii_nxt = 8'b0011_0010;
-                3: ascii_nxt = 8'b0011_0011;
-                4: ascii_nxt = 8'b0011_0100;
-                5: ascii_nxt = 8'b0011_0101;
-                6: ascii_nxt = 8'b0011_0110; 
-                7: ascii_nxt = 8'b0011_0111;
-                8: ascii_nxt = 8'b0011_1000;
-                9: ascii_nxt = 8'b0011_1001;   
-                default:ascii_nxt = 8'b0100_0001;
+                0: ascii_nxt = 7'h30;
+                1: ascii_nxt = 7'h31;
+                2: ascii_nxt = 7'h32;
+                3: ascii_nxt = 7'h33;
+                4: ascii_nxt = 7'h34;
+                5: ascii_nxt = 7'h35;
+                6: ascii_nxt = 7'h36; 
+                7: ascii_nxt = 7'h37;
+                8: ascii_nxt = 7'h38;
+                9: ascii_nxt = 7'h39;   
+                default:ascii_nxt = 7'h41;
                 endcase
         end
 endmodule

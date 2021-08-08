@@ -32,7 +32,6 @@ proc attach_rtl_files {} {
                 rtl/voltmeter_top.v
                 rtl/clk_generator.v
                 rtl/internal_reset.v
-<<<<<<< HEAD
                 rtl/integrated_adc.v
                 rtl/xadc_wiz_0.v
                 rtl/bin2dec_ctl.v
@@ -43,19 +42,15 @@ proc attach_rtl_files {} {
                 rtl/fifo.v
                 rtl/uart_tx.v
                 rtl/flag_buf.v
-=======
->>>>>>> resolution_refactoring
                 rtl/vga_timing.v
                 rtl/draw_background.v
                 rtl/top_draw_rect_char.v
-<<<<<<< HEAD
                 rtl/image_rom.v
                 rtl/font_rom.v
                 rtl/text_rom_16x16.v
                 rtl/signal_synchronizer.v
                 rtl/delay.v 
                 rtl/draw_rect_ctl.v
-=======
                 rtl/draw_rect_char.v
                 rtl/image_rom.v
                 rtl/font_rom.v
@@ -63,23 +58,14 @@ proc attach_rtl_files {} {
                 rtl/delay.v
                 rtl/xadc_wiz_0.v
                 rtl/bin2dec.v
->>>>>>> resolution_refactoring
                 rtl/counter3bit.v
                 rtl/decoder3_8.v
                 rtl/DigitToSeg.v
                 rtl/mux4_4bus.v
-<<<<<<< HEAD
-                rtl/segClkDevider.v
-                rtl/sevensegdecoder.v
-                rtl/debounce.v
-                rtl/disp_hex_mux.v
-                rtl/disp_hex_mux.v  
-=======
                 rtl/sevensegdecoder.v
                 rtl/segClkDevider.v
                 rtl/bcd2ascii1_4.v
                 rtl/bcdword2ascii1_16.v
->>>>>>> resolution_refactoring
         }
         
         read_mem {

@@ -186,7 +186,7 @@ module voltmeter_top (
                 .pclk (pclk),
                 .rst  (reset),
 
-                .in(sseg1_data),
+                .in(sseg_data),
 
                 .vcount_in (vcount_out_b),
                 .vsync_in  (vsync_out_b),

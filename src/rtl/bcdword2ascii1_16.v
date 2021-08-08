@@ -15,7 +15,7 @@ module bcdword2ascii1_16
         input  wire        rst,
 
         input   wire [15:0] bcd_word,
-        output  wire [31:0] ascii_word
+        output  wire [27:0] ascii_word
         );
 
         bcd2ascii1_4 bcd2ascii1_4_1
@@ -24,7 +24,7 @@ module bcdword2ascii1_16
             .rst(rst),
 
             .bcd(bcd_word[3:0]),
-            .ascii(ascii_word[7:0])
+            .ascii(ascii_word[6:0])
             );
 
         bcd2ascii1_4 bcd2ascii1_4_2
@@ -33,7 +33,7 @@ module bcdword2ascii1_16
             .rst(rst),
 
             .bcd(bcd_word[7:4]),
-            .ascii(ascii_word[15:8])
+            .ascii(ascii_word[13:7])
             );
             
         bcd2ascii1_4 bcd2ascii1_4_3
@@ -42,7 +42,7 @@ module bcdword2ascii1_16
             .rst(rst),
 
             .bcd(bcd_word[11:8]),
-            .ascii(ascii_word[23:16])
+            .ascii(ascii_word[20:14])
             );
         bcd2ascii1_4 bcd2ascii1_4_4
             (
@@ -50,7 +50,7 @@ module bcdword2ascii1_16
             .rst(rst),
 
             .bcd(bcd_word[15:12]),
-            .ascii(ascii_word[31:24])
+            .ascii(ascii_word[27:21])
             );
     
         

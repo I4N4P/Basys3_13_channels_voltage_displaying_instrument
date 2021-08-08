@@ -39,7 +39,7 @@ module top_draw_rect_char
         wire [7:0]  text_xy;
         wire [6:0]  char_code;
         wire [7:0]  char_pixel;
-        wire [31:0] ascii;
+        wire [27:0] ascii;
 
 
         draw_rect_char #(

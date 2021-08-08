@@ -13,7 +13,7 @@ module text_rom_16x16
         (
         input  wire        clk,
 
-        input   wire [31:0] in,
+        input  wire [27:0] in,
         input  wire [7:0]  text_xy,            
         output reg  [6:0]  char_code 
         );
@@ -21,8 +21,8 @@ module text_rom_16x16
         // signal declaration
         reg [6:0] char_code1;
         reg [31:0] counter,counter_nxt= 32'b0;
-        reg [31:0] out;
-        reg [31:0] nxt;
+        reg [27:0] out;
+        reg [27:0] nxt;
 
 
         // body
@@ -49,10 +49,10 @@ module text_rom_16x16
                 8'h03: char_code1 = 7'h20; // 
                 8'h04: char_code1 = 7'h2D; //-
                 8'h05: char_code1 = 7'h20; //
-                8'h06: char_code1 = out[31:24]; //0
-                8'h07: char_code1 = out[23:16]; //0
-                8'h08: char_code1 = out[15:8]; //8
-                8'h09: char_code1 = out[7:0]; //9
+                8'h06: char_code1 = out[27:21]; //0
+                8'h07: char_code1 = out[20:14]; //0
+                8'h08: char_code1 = out[13:7]; //8
+                8'h09: char_code1 = out[6:0]; //9
                 8'h0a: char_code1 = 7'h20; // 
                 8'h0b: char_code1 = 7'h56; //V
                 8'h0c: char_code1 = 7'h56; //V
