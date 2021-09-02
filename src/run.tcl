@@ -71,6 +71,7 @@ proc attach_rtl_files {} {
                 rtl/uart.v
                 rtl/disp_hex_mux.v  
                 rtl/integrated_adc.v
+                rtl/pmod_control.v
         }
         
         read_mem {

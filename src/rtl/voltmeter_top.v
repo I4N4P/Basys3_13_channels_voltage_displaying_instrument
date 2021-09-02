@@ -84,7 +84,6 @@ wire btn_tick;
     wire [15:0] b2d_din;
     wire [15:0] b2d_dout;
     wire [15:0] dout;
-    wire [11:0] raw_data;
 
  debounce my_btn_sig
         (
@@ -96,8 +95,10 @@ wire btn_tick;
                 .db_level (), 
                 .db_tick (btn_tick)
         );
-reg [7:0] adress,adress_nxt;
-reg flag,flag_nxt;
+wire [7:0] adress;
+wire flag;
+wire [15:0] raw_data;
+wire [11:0] bcd0,bcd1,bcd2,bcd3;
 pmodAD2_ctrl my_pmodAD2_ctrl (
 
 			.mainClk(clk100Mhz),
@@ -109,10 +110,18 @@ pmodAD2_ctrl my_pmodAD2_ctrl (
                         
                         );
 
-reg [15:0] bcd0,bcd0_nxt;
-reg [15:0] bcd1,bcd1_nxt;
-reg [15:0] bcd2,bcd2_nxt;
-reg [15:0] bcd3,bcd3_nxt;
+                        pmod_control my_pmod_contol (
+                                .clk (clk100Mhz),
+                                .rst (rst),
+                                .in (raw_data[11:0]),
+                                .adress (adress),
+                                .tick (flag),
+                                .channel0 (bcd0),
+                                .channel1 (bcd1),
+                                .channel2 (bcd2),
+                                .channel3 (bcd3)
+                        );
+
 bin2bcd my (
         .bin(sseg_data),  // input binary number
         .bcd0(dout[3:0]), // LSB
@@ -123,9 +132,7 @@ bin2bcd my (
 // always @(posedge clk100Mhz) begin
 //         sseg_data <= (bcd0*805664)/1_000_000;
 // end
-reg [3:0] counter,counter_nxt;
 reg [1:0] counter2,counter2_nxt;
-reg [31:0] timer,timer_nxt;
 
 
 always @(posedge btn_tick) begin
@@ -134,59 +141,14 @@ end
 
 always @* begin
         case (counter2)
-        0 : sseg_data = (bcd0*805664)/1_000_000;
-        1 : sseg_data = (bcd1*805664)/1_000_000;
-        2 : sseg_data = (bcd2*805664)/1_000_000;
-        3 : sseg_data = (bcd3*805664)/1_000_000;
-        default : sseg_data = (bcd3*805664)/1_000_000;
+        0 : sseg_data = bcd1;
+        1 : sseg_data = bcd0;
+        2 : sseg_data = bcd3;
+        3 : sseg_data = bcd2;
+        default : sseg_data = bcd3;
         endcase
 end
 
-always @(posedge clk100Mhz) begin
-        counter <= counter_nxt;
-        adress  <= adress_nxt;
-        bcd0 <= bcd0_nxt;
-        bcd1 <= bcd1_nxt;
-        bcd2 <= bcd2_nxt;
-        bcd3 <= bcd3_nxt;
-        flag <= flag_nxt;
-        timer <= timer_nxt;
-end
-
-always @* begin
-        bcd0_nxt = bcd0;
-        bcd1_nxt = bcd1;
-        bcd2_nxt = bcd2;
-        bcd3_nxt = bcd3;
-        if(timer < 10_000_000) begin
-                timer_nxt = timer + 1;
-                counter_nxt = counter ;
-                flag_nxt =1'b0;
-        end else begin 
-                 timer_nxt = 16'b0;
-                 case (counter)
-                0: bcd0_nxt = raw_data;
-                1: bcd1_nxt = raw_data;
-                2: bcd2_nxt = raw_data;
-                3: bcd3_nxt = raw_data;
-                default: bcd0_nxt = raw_data;
-                endcase
-                if(counter == 3)
-                        counter_nxt = 0;
-                else 
-                        counter_nxt = counter + 1;
-                flag_nxt =1'b1;
-        end
-        case (counter)
-        0: adress_nxt = 8'b00010000;
-        1: adress_nxt = 8'b00100000;
-        2: adress_nxt = 8'b01000000;
-        3: adress_nxt = 8'b10000000;
-        default: adress_nxt = 8'b00100000;
-        endcase
-
-        
-end
 // bin2dec_ctl m2bin2dec_ctl(
 //         .clk(clk100Mhz),
 //         .din(sseg_data),
