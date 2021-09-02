@@ -14,7 +14,19 @@
 module uart_control (
                 input wire clk,
                 input wire rst,
-                input wire [15:0] in,
+                input wire [15:0] in0,
+                input wire [15:0] in1,
+                input wire [15:0] in2,
+                input wire [15:0] in3,
+                input wire [15:0] in4,
+                input wire [15:0] in5,
+                input wire [15:0] in6,
+                input wire [15:0] in7,
+                input wire [15:0] in8,
+                input wire [15:0] in9,
+                input wire [15:0] in10,
+                input wire [15:0] in11,
+                input wire [15:0] in12,
 
                 output reg [7:0] sign,
                 output reg tick
@@ -27,7 +39,7 @@ module uart_control (
                         SEND_SIGN = 4'b1000;
 
         localparam TIME2WAIT = 100_000_000;
-        localparam WORD_SIZE = 14;
+        localparam WORD_SIZE = 13;
         localparam SIGN_SIZE = 14;
 
         reg [3:0] state,state_nxt;
@@ -103,77 +115,72 @@ module uart_control (
         always @* begin            
                 case (word_number)
                 1: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt = in0;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd1; 
                 end 
                 2: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt = in1;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd2; 
                 end 
                 3: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt = in2;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd3; 
                 end 
                 4: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt = in3;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd4; 
                 end 
                 5: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt = in4;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd5; 
                 end 
                 6: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in5;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd6; 
                 end 
                 7: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in6;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd7; 
                 end 
                 8: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in7;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd8; 
                 end 
                 9: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in8;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd9; 
                 end 
                 10: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in9;
                         word_info_nxt[15:8] = 8'd1; 
                         word_info_nxt[7:0] = 8'd0; 
                 end 
                 11: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in10;
                         word_info_nxt[15:8] = 8'd1; 
                         word_info_nxt[7:0] = 8'd1; 
                 end 
                 12: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in11;
                         word_info_nxt[15:8] = 8'd1; 
                         word_info_nxt[7:0] = 8'd2; 
                 end 
                 13: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in12;
                         word_info_nxt[15:8] = 8'd1; 
                         word_info_nxt[7:0] = 8'd3; 
                 end 
-                14: begin
-                        word_2_send_nxt = in;
-                        word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0] = 8'd4; 
-                end     
                 default: begin
-                        word_2_send_nxt = in;
+                        word_2_send_nxt =in0;
                         word_info_nxt[15:8] = 8'd0; 
                         word_info_nxt[7:0] = 8'd0; 
                 end  
@@ -196,7 +203,7 @@ module uart_control (
                 11:  sign_2_send_nxt = 8'd86; //V
                 12:  sign_2_send_nxt = 8'd10;
                 13:  sign_2_send_nxt = 8'd13;       
-                default: sign_2_send_nxt = in[3:0]; 
+                default: sign_2_send_nxt = 8'd45; 
                 endcase
         end
 

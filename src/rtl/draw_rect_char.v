@@ -37,7 +37,7 @@ module draw_rect_char
 
         // This are the parameters of the rectangle.
 
-        localparam RECT_HEIGHT = 224;
+        localparam RECT_HEIGHT = 208;
         localparam RECT_WIDTH  = 96;
 
         localparam BLACK = 12'h0_0_0;

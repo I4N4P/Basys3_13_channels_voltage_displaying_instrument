@@ -14,21 +14,27 @@
 module voltmeter_top (
         input wire clk,
         input wire rst,
-        input iadcp1,
-        input iadcn1,
+
+        input uart_enable,
+        
+        input iadcp,
+        input iadcn,
         input vp_in,
         input vn_in,
-        inout wire AD2_SCL, 
-        inout wire AD2_SDA,
+
+        inout wire AD2_SCL_JA, 
+        inout wire AD2_SDA_JA,
+        inout wire AD2_SCL_JB, 
+        inout wire AD2_SDA_JB,
+        inout wire AD2_SCL_JC, 
+        inout wire AD2_SDA_JC,
+
         output reg vs,
         output reg hs,
         output reg [3:0] r,
         output reg [3:0] g,
         output reg [3:0] b,
-        output reg tx, 
-        output [3:0] an,
-        output dp,
-        output [6:0] seg
+        output reg tx
         );
 
 
@@ -66,64 +72,92 @@ module voltmeter_top (
 /*******************INTERNAL_ADC*********************************/	
 	
 
-        wire [15:0] sseg_data;
+        wire [15:0] bcd0;
 
         integrated_adc my_integrated_adc 
         (
                 .clk (clk100Mhz),
-                .iadcp1 (iadcp1),
-                .iadcn1 (iadcn1),
+                .iadcp1 (iadcp),
+                .iadcn1 (iadcn),
                 .vp_in (vp_in),
                 .vn_in (vn_in),
-                .dout (sseg_data)
+                .dout (bcd0)
         );
 
-        // DigitToSeg segment1
-        // (
-        //         .mclk (clk100Mhz),
-        //         .rst (reset),
-        //         .in1 (sseg_data[3:0]),
-        //         .in2 (sseg_data[7:4]),
-        //         .in3 (sseg_data[11:8]),
-        //         .in4 (sseg_data[15:12]),
-        //         .in5 (4'b0),
-        //         .in6 (4'b0),
-        //         .in7 (4'b0),
-        //         .in8 (4'b0),
-        //         .an (an),
-        //         .dp (dp),
-        //         .seg (seg)
-        // );
 
 /*******************EXTERNAL_ADC*********************************/
         
-        wire [15:0] bcd0,bcd1,bcd2,bcd3;
+
+        wire [15:0] bcd1,bcd2,bcd3,bcd4,
+                    bcd5,bcd6,bcd7,bcd8,
+                    bcd9,bcd10,bcd11,bcd12;
         
         external_adc external_adc_JA(
                 .clk(clk100Mhz),
                 .rst(rst),
 
-                .AD2_SCL (AD2_SCL), 
-                .AD2_SDA (AD2_SDA),
+                .AD2_SCL (AD2_SCL_JA), 
+                .AD2_SDA (AD2_SDA_JA),
                 
-                .channel0(bcd0),
-                .channel1(bcd1),
-                .channel2(bcd2),
-                .channel3(bcd3)
+                .channel0(bcd1),
+                .channel1(bcd2),
+                .channel2(bcd3),
+                .channel3(bcd4)
                 
         );
+        external_adc external_adc_JB(
+                .clk(clk100Mhz),
+                .rst(rst),
+
+                .AD2_SCL (AD2_SCL_JB), 
+                .AD2_SDA (AD2_SDA_JB),
+                
+                .channel0(bcd5),
+                .channel1(bcd6),
+                .channel2(bcd7),
+                .channel3(bcd8)
+                
+        );
+        external_adc external_adc_JC(
+                .clk(clk100Mhz),
+                .rst(rst),
+
+                .AD2_SCL (AD2_SCL_JC), 
+                .AD2_SDA (AD2_SDA_JC),
+                
+                .channel0(bcd9),
+                .channel1(bcd10),
+                .channel2(bcd11),
+                .channel3(bcd12)
+                
+        );
+        
+
 /*******************UART_MODULE*********************************/
         
         
         wire tx_w;
-        wire  tick;
+        wire tick;
         wire [7:0] uart_data;
 
         uart_control my_uart_control
         (
                 .clk (clk100Mhz),
                 .rst (rst),
-                .in (sseg_data),
+
+                .in0 (bcd0),
+                .in1 (bcd1),
+                .in2 (bcd2),
+                .in3 (bcd3),
+                .in4 (bcd4),
+                .in5 (bcd5),
+                .in6 (bcd6),
+                .in7 (bcd7),
+                .in8 (bcd8),
+                .in9 (bcd9),
+                .in10 (bcd10),
+                .in11 (bcd11),
+                .in12 (bcd12),
                 .sign (uart_data),
                 .tick (tick)        
         );
@@ -147,7 +181,8 @@ module voltmeter_top (
         );
 
         always @(posedge clk100Mhz) begin
-                tx <= tx_w;
+                if(uart_enable)
+                        tx <= tx_w;
         end
 
 /*******************VGA_CONTROL*********************************/
@@ -205,7 +240,19 @@ module voltmeter_top (
                 .pclk (pclk),
                 .rst  (reset),
 
-                .in(sseg_data),
+                .in0 (bcd0),
+                .in1 (bcd1),
+                .in2 (bcd2),
+                .in3 (bcd3),
+                .in4 (bcd4),
+                .in5 (bcd5),
+                .in6 (bcd6),
+                .in7 (bcd7),
+                .in8 (bcd8),
+                .in9 (bcd9),
+                .in10 (bcd10),
+                .in11 (bcd11),
+                .in12 (bcd12),
 
                 .vcount_in (vcount_out_b),
                 .vsync_in  (vsync_out_b),

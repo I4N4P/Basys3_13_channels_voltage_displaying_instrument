@@ -31,12 +31,8 @@ module bin2bcd (
         bcd1 = 0;
         bcd2 = 0;
         bcd3 = 0;
-
-<<<<<<< HEAD
-        for ( i = 15; i >= 0; i = i - 1 )
-=======
+        
         for ( i = 11; i >= 0; i = i - 1 )
->>>>>>> adc
         begin
             if( bcd0 > 4 ) bcd0 = bcd0 + 3;
             if( bcd1 > 4 ) bcd1 = bcd1 + 3;

@@ -25,18 +25,11 @@ proc attach_rtl_files {} {
                 constraints/vga_example.xdc
         }
 
-<<<<<<< HEAD
-        # read_vhdl {
-        # }
-=======
+
         read_vhdl {
-                rtl/MouseCtl.vhd
-                rtl/Ps2Interface.vhd
-                rtl/MouseDisplay.vhd
                 rtl/pmodAD2_ctrl.vhd
                 rtl/TWICtl.vhd
         }
->>>>>>> adc
 
         read_verilog {
                 rtl/voltmeter_top.v
@@ -67,7 +60,7 @@ proc attach_rtl_files {} {
                 rtl/text_rom_16x16.v
                 rtl/delay.v
                 rtl/xadc_wiz_0.v
-                rtl/bin2dec.v
+                rtl/bin2bcd.v
                 rtl/counter3bit.v
                 rtl/decoder3_8.v
                 rtl/DigitToSeg.v
