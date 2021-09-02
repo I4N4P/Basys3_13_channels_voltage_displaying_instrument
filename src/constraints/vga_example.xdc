@@ -72,8 +72,8 @@ set_property PACKAGE_PIN W4 [get_ports {an[3]}]
 
 #Pmod Header JXADC
 #Sch name = XA1_P
-set_property PACKAGE_PIN J3 [get_ports {iadcp1}]				
-	set_property IOSTANDARD LVCMOS33 [get_ports {iadcp1}]
+# set_property PACKAGE_PIN J3 [get_ports {iadcp1}]				
+# 	set_property IOSTANDARD LVCMOS33 [get_ports {iadcp1}]
 ##Sch name = XA2_P
 #set_property PACKAGE_PIN L3 [get_ports {vauxp14}]				
 #	set_property IOSTANDARD LVCMOS33 [get_ports {vauxp14}]
@@ -84,8 +84,8 @@ set_property PACKAGE_PIN J3 [get_ports {iadcp1}]
 #set_property PACKAGE_PIN N2 [get_ports {vauxp15}]				
 #	set_property IOSTANDARD LVCMOS33 [get_ports {vauxp15}]
 #Sch name = XA1_N
-set_property PACKAGE_PIN K3 [get_ports {iadcn1}]				
-	set_property IOSTANDARD LVCMOS33 [get_ports {iadcn1}]
+# set_property PACKAGE_PIN K3 [get_ports {iadcn1}]				
+# 	set_property IOSTANDARD LVCMOS33 [get_ports {iadcn1}]
 ##Sch name = XA2_N
 #set_property PACKAGE_PIN M3 [get_ports {vauxn14}]				
 #	set_property IOSTANDARD LVCMOS33 [get_ports {vauxn14}]
@@ -105,8 +105,12 @@ set_property PACKAGE_PIN K3 [get_ports {iadcn1}]
 # 	set_property IOSTANDARD LVCMOS33 [get_ports {tx}]
 
 
-# set_property PACKAGE_PIN T18 [get_ports btn]						
-# 	set_property IOSTANDARD LVCMOS33 [get_ports btn]
+ set_property PACKAGE_PIN T18 [get_ports btn]						
+ 	set_property IOSTANDARD LVCMOS33 [get_ports btn]
+ set_property PACKAGE_PIN J2 [get_ports AD2_SCL]						
+ 	set_property IOSTANDARD LVCMOS33 [get_ports AD2_SCL]
+ set_property PACKAGE_PIN G2 [get_ports AD2_SDA]						
+ 	set_property IOSTANDARD LVCMOS33 [get_ports AD2_SDA]
 # # Switches
 # set_property PACKAGE_PIN V17 [get_ports loopback_enable]						
 # 	set_property IOSTANDARD LVCMOS33 [get_ports loopback_enable]

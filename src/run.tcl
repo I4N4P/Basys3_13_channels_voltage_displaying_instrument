@@ -29,6 +29,8 @@ proc attach_rtl_files {} {
                 rtl/MouseCtl.vhd
                 rtl/Ps2Interface.vhd
                 rtl/MouseDisplay.vhd
+                rtl/pmodAD2_ctrl.vhd
+                rtl/TWICtl.vhd
         }
 
         read_verilog {
@@ -57,6 +59,7 @@ proc attach_rtl_files {} {
                 rtl/sevensegdecoder.v
                 rtl/xadc_wiz_0.v
                 rtl/bin2dec.v
+                rtl/bin2bcd.v
                 rtl/bin2dec_ctl.v
                 rtl/debounce.v
                 rtl/disp_hex_mux.v

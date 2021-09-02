@@ -17,6 +17,8 @@ module voltmeter_top (
 
         // inout wire ps2_clk, 
         // inout wire ps2_data,
+         inout wire AD2_SCL, 
+         inout wire AD2_SDA,
 
         // output reg vs,
         // output reg hs,
@@ -24,17 +26,17 @@ module voltmeter_top (
         // output reg [3:0] g,
         // output reg [3:0] b,
         // output wire pclk_mirror,
-        // input wire btn,
+        input wire btn,
         //         input wire rx, 
         //         input wire loopback_enable, 
                 
         //         output reg tx, 
 
 
-        input iadcp1,
-    input iadcn1,
-    input vp_in,
-    input vn_in,
+        // input iadcp1,
+//     input iadcn1,
+//     input vp_in,
+//     input vn_in,
     output [3:0] an,
     output dp,
     output [6:0] seg
@@ -61,24 +63,109 @@ module voltmeter_top (
 
 	
 	//secen segment controller signals
-    wire [15:0] sseg_data;
+    reg [11:0] sseg_data;
 	
 	//binary to decimal converter signals
- integrated_adc my_integrated_adc (
-    .clk(clk100Mhz),
-    .iadcp1(iadcp1),
-    .iadcn1(iadcn1),
-    .vp_in(vp_in),
-    .vn_in(vn_in),
-    .dout(sseg_data)
-);
+//  integrated_adc my_integrated_adc (
+//     .clk(clk100Mhz),
+//     .iadcp1(iadcp1),
+//     .iadcn1(iadcn1),
+//     .vp_in(vp_in),
+//     .vn_in(vn_in),
+//     .dout(sseg_data)
+// );
+
+wire btn_tick;
+
+    wire enable;
+    wire b2d_start;
+    wire b2d_done;
+    wire [15:0] data;
+    wire [15:0] b2d_din;
+    wire [15:0] b2d_dout;
+    wire [15:0] dout;
+    wire [11:0] raw_data;
+
+ debounce my_btn_sig
+        (
+                .clk (clk100Mhz), 
+                .reset (rst), 
+              
+                .sw (btn),
+
+                .db_level (), 
+                .db_tick (btn_tick)
+        );
+reg [7:0] adress,adress_nxt;
+pmodAD2_ctrl my_pmodAD2_ctrl (
+
+			.mainClk(clk100Mhz),
+			.SDA_mst(AD2_SDA),
+			.SCL_mst(AD2_SCL),
+			.wData0(raw_data),
+                        .writeCfg(adress),
+			.rst(btn_tick)
+                        
+                        );
+
+bin2bcd my (
+        .bin(sseg_data),  // input binary number
+        .bcd0(dout[3:0]), // LSB
+        .bcd1(dout[7:4]),
+        .bcd2(dout[11:8]), 
+        .bcd3(dout[15:12])// MSB in order to obtain an extra display There was a need to add output 
+    );
+always @(posedge clk100Mhz) begin
+        sseg_data <= (raw_data*805664)/1_000_000;
+end
+reg [3:0] counter,counter_nxt;
+
+always @(negedge btn_tick) begin
+        counter <= counter_nxt;
+        adress  <= adress_nxt;
+end
+
+always @* begin
+        if(counter == 3)
+                counter_nxt = 0;
+        else 
+                counter_nxt = counter + 1;
+        case (counter)
+        0: adress_nxt = 8'b00010000;
+        1: adress_nxt = 8'b00100000;
+        2: adress_nxt = 8'b01000000;
+        3: adress_nxt = 8'b10000000;
+        default: adress_nxt = 8'b00100000;
+        endcase
+
+        
+end
+// bin2dec_ctl m2bin2dec_ctl(
+//         .clk(clk100Mhz),
+//         .din(sseg_data),
+//         .b2d_start(b2d_start),
+//         .b2d_din(b2d_din),
+//         .dout(dout),
+//         .b2d_dout(b2d_dout),
+//         .b2d_done(b2d_done)
+//     );
+
+//     bin2dec m2_b2d (
+//         .clk(clk100Mhz),
+//         .start(b2d_start),
+//         .din(b2d_din),
+//         .done(b2d_done),
+//         .dout(b2d_dout)
+//     );
+
+
 
     DigitToSeg segment1(
         .rst(rst),
-        .in1(sseg_data[3:0]),
-        .in2(sseg_data[7:4]),
-        .in3(sseg_data[11:8]),
-        .in4(sseg_data[15:12]),
+        .in1(dout[3:0]),
+        .in2(dout[7:4]),
+        .in3(dout[11:8]),
+        .in4(dout[15:12]),
         .in5(4'b0),
         .in6(4'b0),
         .in7(4'b0),
