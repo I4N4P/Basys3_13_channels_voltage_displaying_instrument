@@ -85,7 +85,9 @@ wire btn_tick;
     wire [15:0] b2d_dout;
     wire [15:0] dout;
 
+ wire [15:0] bcd0,bcd1,bcd2,bcd3;
  debounce my_btn_sig
+
         (
                 .clk (clk100Mhz), 
                 .reset (rst), 
@@ -95,40 +97,21 @@ wire btn_tick;
                 .db_level (), 
                 .db_tick (btn_tick)
         );
-wire [7:0] adress;
-wire flag;
-wire [15:0] raw_data;
-wire [11:0] bcd0,bcd1,bcd2,bcd3;
-pmodAD2_ctrl my_pmodAD2_ctrl (
 
-			.mainClk(clk100Mhz),
-			.SDA_mst(AD2_SDA),
-			.SCL_mst(AD2_SCL),
-			.wData0(raw_data),
-                        .writeCfg(adress),
-			.rst(flag)
-                        
-                        );
+external_adc external_adc_JA(
+                .clk(clk100Mhz),
+                .rst(rst),
 
-                        pmod_control my_pmod_contol (
-                                .clk (clk100Mhz),
-                                .rst (rst),
-                                .in (raw_data[11:0]),
-                                .adress (adress),
-                                .tick (flag),
-                                .channel0 (bcd0),
-                                .channel1 (bcd1),
-                                .channel2 (bcd2),
-                                .channel3 (bcd3)
-                        );
+                .AD2_SCL (AD2_SCL), 
+                .AD2_SDA (AD2_SDA),
+                
+                .channel0(bcd0),
+                .channel1(bcd1),
+                .channel2(bcd2),
+                .channel3(bcd3)
+                
+        );
 
-bin2bcd my (
-        .bin(sseg_data),  // input binary number
-        .bcd0(dout[3:0]), // LSB
-        .bcd1(dout[7:4]),
-        .bcd2(dout[11:8]), 
-        .bcd3(dout[15:12])// MSB in order to obtain an extra display There was a need to add output 
-    );
 // always @(posedge clk100Mhz) begin
 //         sseg_data <= (bcd0*805664)/1_000_000;
 // end
@@ -141,10 +124,10 @@ end
 
 always @* begin
         case (counter2)
-        0 : sseg_data = bcd1;
-        1 : sseg_data = bcd0;
-        2 : sseg_data = bcd3;
-        3 : sseg_data = bcd2;
+        0 : sseg_data = bcd0;
+        1 : sseg_data = bcd1;
+        2 : sseg_data = bcd2;
+        3 : sseg_data = bcd3;
         default : sseg_data = bcd3;
         endcase
 end
@@ -171,10 +154,10 @@ end
 
     DigitToSeg segment1(
         .rst(rst),
-        .in1(dout[3:0]),
-        .in2(dout[7:4]),
-        .in3(dout[11:8]),
-        .in4(dout[15:12]),
+        .in1(sseg_data[3:0]),
+        .in2(sseg_data[7:4]),
+        .in3(sseg_data[11:8]),
+        .in4(sseg_data[15:12]),
         .in5(4'b0),
         .in6(4'b0),
         .in7(4'b0),

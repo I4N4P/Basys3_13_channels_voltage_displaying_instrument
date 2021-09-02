@@ -1,6 +1,5 @@
-// File: uart_control.v
-// This is the top level design for Lab #3 that contains
-// all modules which are responsible for displaying data on screen  .
+// File: pmod_control.v
+// This is the FSM for pmodAD2 that reads data from all channels
 
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
