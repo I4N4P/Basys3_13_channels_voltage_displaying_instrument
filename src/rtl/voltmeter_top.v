@@ -63,7 +63,7 @@ module voltmeter_top (
 
 	
 	//secen segment controller signals
-    reg [11:0] sseg_data;
+    reg [15:0] sseg_data;
 	
 	//binary to decimal converter signals
 //  integrated_adc my_integrated_adc (
@@ -97,6 +97,7 @@ wire btn_tick;
                 .db_tick (btn_tick)
         );
 reg [7:0] adress,adress_nxt;
+reg flag,flag_nxt;
 pmodAD2_ctrl my_pmodAD2_ctrl (
 
 			.mainClk(clk100Mhz),
@@ -104,10 +105,14 @@ pmodAD2_ctrl my_pmodAD2_ctrl (
 			.SCL_mst(AD2_SCL),
 			.wData0(raw_data),
                         .writeCfg(adress),
-			.rst(btn_tick)
+			.rst(flag)
                         
                         );
 
+reg [15:0] bcd0,bcd0_nxt;
+reg [15:0] bcd1,bcd1_nxt;
+reg [15:0] bcd2,bcd2_nxt;
+reg [15:0] bcd3,bcd3_nxt;
 bin2bcd my (
         .bin(sseg_data),  // input binary number
         .bcd0(dout[3:0]), // LSB
@@ -115,21 +120,63 @@ bin2bcd my (
         .bcd2(dout[11:8]), 
         .bcd3(dout[15:12])// MSB in order to obtain an extra display There was a need to add output 
     );
-always @(posedge clk100Mhz) begin
-        sseg_data <= (raw_data*805664)/1_000_000;
-end
+// always @(posedge clk100Mhz) begin
+//         sseg_data <= (bcd0*805664)/1_000_000;
+// end
 reg [3:0] counter,counter_nxt;
+reg [1:0] counter2,counter2_nxt;
+reg [31:0] timer,timer_nxt;
 
-always @(negedge btn_tick) begin
-        counter <= counter_nxt;
-        adress  <= adress_nxt;
+
+always @(posedge btn_tick) begin
+        counter2 <= counter2 +1;
 end
 
 always @* begin
-        if(counter == 3)
-                counter_nxt = 0;
-        else 
-                counter_nxt = counter + 1;
+        case (counter2)
+        0 : sseg_data = (bcd0*805664)/1_000_000;
+        1 : sseg_data = (bcd1*805664)/1_000_000;
+        2 : sseg_data = (bcd2*805664)/1_000_000;
+        3 : sseg_data = (bcd3*805664)/1_000_000;
+        default : sseg_data = (bcd3*805664)/1_000_000;
+        endcase
+end
+
+always @(posedge clk100Mhz) begin
+        counter <= counter_nxt;
+        adress  <= adress_nxt;
+        bcd0 <= bcd0_nxt;
+        bcd1 <= bcd1_nxt;
+        bcd2 <= bcd2_nxt;
+        bcd3 <= bcd3_nxt;
+        flag <= flag_nxt;
+        timer <= timer_nxt;
+end
+
+always @* begin
+        bcd0_nxt = bcd0;
+        bcd1_nxt = bcd1;
+        bcd2_nxt = bcd2;
+        bcd3_nxt = bcd3;
+        if(timer < 10_000_000) begin
+                timer_nxt = timer + 1;
+                counter_nxt = counter ;
+                flag_nxt =1'b0;
+        end else begin 
+                 timer_nxt = 16'b0;
+                 case (counter)
+                0: bcd0_nxt = raw_data;
+                1: bcd1_nxt = raw_data;
+                2: bcd2_nxt = raw_data;
+                3: bcd3_nxt = raw_data;
+                default: bcd0_nxt = raw_data;
+                endcase
+                if(counter == 3)
+                        counter_nxt = 0;
+                else 
+                        counter_nxt = counter + 1;
+                flag_nxt =1'b1;
+        end
         case (counter)
         0: adress_nxt = 8'b00010000;
         1: adress_nxt = 8'b00100000;

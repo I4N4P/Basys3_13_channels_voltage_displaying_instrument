@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 module bin2bcd (
-        input  wire [11:0] bin,  // input binary number
+        input  wire [15:0] bin,  // input binary number
         output reg  [3:0]  bcd0, // LSB
         output reg  [3:0]  bcd1,
         output reg  [3:0]  bcd2, 
