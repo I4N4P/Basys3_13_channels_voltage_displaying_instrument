@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 module bin2bcd (
-        input  wire [15:0] bin,  // input binary number
+        input  wire [11:0] bin,  // input binary number
         output reg  [3:0]  bcd0, // LSB
         output reg  [3:0]  bcd1,
         output reg  [3:0]  bcd2, 
@@ -32,7 +32,11 @@ module bin2bcd (
         bcd2 = 0;
         bcd3 = 0;
 
+<<<<<<< HEAD
         for ( i = 15; i >= 0; i = i - 1 )
+=======
+        for ( i = 11; i >= 0; i = i - 1 )
+>>>>>>> adc
         begin
             if( bcd0 > 4 ) bcd0 = bcd0 + 3;
             if( bcd1 > 4 ) bcd1 = bcd1 + 3;

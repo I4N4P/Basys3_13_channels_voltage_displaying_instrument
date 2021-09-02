@@ -18,6 +18,8 @@ module voltmeter_top (
         input iadcn1,
         input vp_in,
         input vn_in,
+        inout wire AD2_SCL, 
+        inout wire AD2_SDA,
         output reg vs,
         output reg hs,
         output reg [3:0] r,
@@ -36,6 +38,7 @@ module voltmeter_top (
         wire clk100Mhz;
         wire pclk;
         wire locked;
+
 
         clk_generator my_clk_generator
         (
@@ -75,24 +78,40 @@ module voltmeter_top (
                 .dout (sseg_data)
         );
 
-        DigitToSeg segment1
-        (
-                .mclk (clk100Mhz),
-                .rst (reset),
-                .in1 (sseg_data[3:0]),
-                .in2 (sseg_data[7:4]),
-                .in3 (sseg_data[11:8]),
-                .in4 (sseg_data[15:12]),
-                .in5 (4'b0),
-                .in6 (4'b0),
-                .in7 (4'b0),
-                .in8 (4'b0),
-                .an (an),
-                .dp (dp),
-                .seg (seg)
+        // DigitToSeg segment1
+        // (
+        //         .mclk (clk100Mhz),
+        //         .rst (reset),
+        //         .in1 (sseg_data[3:0]),
+        //         .in2 (sseg_data[7:4]),
+        //         .in3 (sseg_data[11:8]),
+        //         .in4 (sseg_data[15:12]),
+        //         .in5 (4'b0),
+        //         .in6 (4'b0),
+        //         .in7 (4'b0),
+        //         .in8 (4'b0),
+        //         .an (an),
+        //         .dp (dp),
+        //         .seg (seg)
+        // );
+
+/*******************EXTERNAL_ADC*********************************/
+        
+        wire [15:0] bcd0,bcd1,bcd2,bcd3;
+        
+        external_adc external_adc_JA(
+                .clk(clk100Mhz),
+                .rst(rst),
+
+                .AD2_SCL (AD2_SCL), 
+                .AD2_SDA (AD2_SDA),
+                
+                .channel0(bcd0),
+                .channel1(bcd1),
+                .channel2(bcd2),
+                .channel3(bcd3)
+                
         );
-
-
 /*******************UART_MODULE*********************************/
         
         
