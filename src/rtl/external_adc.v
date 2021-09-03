@@ -18,10 +18,10 @@ module external_adc (
                 inout wire AD2_SCL, 
                 inout wire AD2_SDA,
                 
-                output wire [15:0] channel0,
-                output wire [15:0] channel1,
-                output wire [15:0] channel2,
-                output wire [15:0] channel3
+                output reg [15:0] channel0,
+                output reg [15:0] channel1,
+                output reg [15:0] channel2,
+                output reg [15:0] channel3
                 
         );
 
@@ -29,6 +29,8 @@ module external_adc (
         wire flag;
         wire [15:0] raw_data;
         wire [11:0] value0,value1,value2,value3;
+
+        wire [15:0] channel0_nxt,channel1_nxt,channel2_nxt,channel3_nxt;
         
         pmodAD2_ctrl my_pmodAD2_ctrl (
                 .mainClk(clk),
@@ -53,30 +55,38 @@ module external_adc (
 
         bin2bcd my_bin2bcd_0 (
                 .bin(value0),  
-                .bcd0(channel0[3:0]), 
-                .bcd1(channel0[7:4]),
-                .bcd2(channel0[11:8]), 
-                .bcd3(channel0[15:12])
+                .bcd0(channel0_nxt[3:0]), 
+                .bcd1(channel0_nxt[7:4]),
+                .bcd2(channel0_nxt[11:8]), 
+                .bcd3(channel0_nxt[15:12])
         );
         bin2bcd my_bin2bcd_1 (
                 .bin(value1),  
-                .bcd0(channel1[3:0]), 
-                .bcd1(channel1[7:4]),
-                .bcd2(channel1[11:8]), 
-                .bcd3(channel1[15:12])
+                .bcd0(channel1_nxt[3:0]), 
+                .bcd1(channel1_nxt[7:4]),
+                .bcd2(channel1_nxt[11:8]), 
+                .bcd3(channel1_nxt[15:12])
         );
         bin2bcd my_bin2bcd_2 (
                 .bin(value2),  
-                .bcd0(channel2[3:0]), 
-                .bcd1(channel2[7:4]),
-                .bcd2(channel2[11:8]), 
-                .bcd3(channel2[15:12])
+                .bcd0(channel2_nxt[3:0]), 
+                .bcd1(channel2_nxt[7:4]),
+                .bcd2(channel2_nxt[11:8]), 
+                .bcd3(channel2_nxt[15:12])
         );
         bin2bcd my_bin2bcd_3 (
                 .bin(value3),  
-                .bcd0(channel3[3:0]), 
-                .bcd1(channel3[7:4]),
-                .bcd2(channel3[11:8]), 
-                .bcd3(channel3[15:12])
+                .bcd0(channel3_nxt[3:0]), 
+                .bcd1(channel3_nxt[7:4]),
+                .bcd2(channel3_nxt[11:8]), 
+                .bcd3(channel3_nxt[15:12])
         );
+
+        always @(posedge clk) begin
+                channel0 <= channel0_nxt;
+                channel1 <= channel1_nxt;
+                channel2 <= channel2_nxt;
+                channel3 <= channel3_nxt;
+        end
+
 endmodule
