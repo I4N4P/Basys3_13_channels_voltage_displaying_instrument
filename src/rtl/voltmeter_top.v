@@ -49,8 +49,9 @@ module voltmeter_top (
         clk_generator my_clk_generator
         (
                 .clk (clk),
-                .clk_65MHz (pclk),
                 .reset (rst),
+                
+                .clk_65MHz (pclk),
                 .locked (locked)
         );
 
@@ -64,6 +65,7 @@ module voltmeter_top (
         (
                 .pclk   (pclk),
                 .locked (locked),
+
                 .reset_out (reset)
         );
 
@@ -73,13 +75,16 @@ module voltmeter_top (
 
         wire [15:0] bcd0;
 
-        integrated_adc my_integrated_adc 
+        internal_adc my_internal_adc 
         (
                 .clk (pclk),
-                .iadcp1 (iadcp),
-                .iadcn1 (iadcn),
+                .rst (reset),
+
+                .iadcp (iadcp),
+                .iadcn (iadcn),
                 .vp_in (vp_in),
                 .vn_in (vn_in),
+
                 .dout (bcd0)
         );
 
@@ -93,7 +98,7 @@ module voltmeter_top (
         
         external_adc external_adc_JA(
                 .clk(pclk),
-                .rst(rst),
+                .rst(reset),
 
                 .AD2_SCL (AD2_SCL_JA), 
                 .AD2_SDA (AD2_SDA_JA),
@@ -101,12 +106,12 @@ module voltmeter_top (
                 .channel0(bcd1),
                 .channel1(bcd2),
                 .channel2(bcd3),
-                .channel3(bcd4)
-                
+                .channel3(bcd4)     
         );
+        
         external_adc external_adc_JB(
                 .clk(pclk),
-                .rst(rst),
+                .rst(reset),
 
                 .AD2_SCL (AD2_SCL_JB), 
                 .AD2_SDA (AD2_SDA_JB),
@@ -114,12 +119,12 @@ module voltmeter_top (
                 .channel0(bcd5),
                 .channel1(bcd6),
                 .channel2(bcd7),
-                .channel3(bcd8)
-                
+                .channel3(bcd8)   
         );
+
         external_adc external_adc_JC(
                 .clk(pclk),
-                .rst(rst),
+                .rst(reset),
 
                 .AD2_SCL (AD2_SCL_JC), 
                 .AD2_SDA (AD2_SDA_JC),
@@ -127,8 +132,7 @@ module voltmeter_top (
                 .channel0(bcd9),
                 .channel1(bcd10),
                 .channel2(bcd11),
-                .channel3(bcd12)
-                
+                .channel3(bcd12)      
         );
         
 
@@ -142,7 +146,7 @@ module voltmeter_top (
         uart_control my_uart_control
         (
                 .clk (pclk),
-                .rst (rst),
+                .rst (reset),
 
                 .in0 (bcd0),
                 .in1 (bcd1),
@@ -172,7 +176,7 @@ module voltmeter_top (
         my_uart 
         (
                 .clk (pclk),
-                .reset (rst),
+                .reset (reset),
                 .wr_uart (tick), 
                 .w_data (uart_data),
                 .tx_full (), 

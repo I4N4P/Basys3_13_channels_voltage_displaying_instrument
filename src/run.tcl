@@ -35,48 +35,33 @@ proc attach_rtl_files {} {
                 rtl/voltmeter_top.v
                 rtl/clk_generator.v
                 rtl/internal_reset.v
-                rtl/integrated_adc.v
-                rtl/xadc_wiz_0.v
-                rtl/bin2dec_ctl.v
-                rtl/bin2dec.v
+                
+                rtl/internal_adc.v
+                rtl/xadc.v
+                rtl/voltage_scaler.v
+                rtl/bin2bcd.v
+                
+                rtl/external_adc.v
+                rtl/pmod_control.v
+                
                 rtl/uart_control.v
                 rtl/uart.v
                 rtl/mod_m_counter.v
                 rtl/fifo.v
                 rtl/uart_tx.v
-                rtl/flag_buf.v
+                
+                
                 rtl/vga_timing.v
                 rtl/draw_background.v
                 rtl/top_draw_rect_char.v
-                rtl/image_rom.v
-                rtl/font_rom.v
-                rtl/text_rom_16x16.v
-                rtl/signal_synchronizer.v
-                rtl/delay.v 
-                rtl/draw_rect_ctl.v
                 rtl/draw_rect_char.v
-                rtl/image_rom.v
+                rtl/delay.v 
                 rtl/font_rom.v
-                rtl/text_rom_16x16.v
-                rtl/delay.v
-                rtl/xadc_wiz_0.v
-                rtl/bin2bcd.v
-                rtl/counter3bit.v
-                rtl/decoder3_8.v
-                rtl/DigitToSeg.v
-                rtl/mux4_4bus.v
-                rtl/sevensegdecoder.v
-                rtl/segClkDevider.v
-                rtl/bcd2ascii1_4.v
                 rtl/bcdword2ascii1_16.v
-                rtl/pmod_control.v
-                rtl/external_adc.v
-                rtl/voltage_scaler.v
+                rtl/bcd2ascii1_4.v
+                rtl/text_rom_16x16.v
         }
         
-        read_mem {
-                rtl/image_rom.data
-        }
 }
 
 # files for simulation

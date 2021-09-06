@@ -105,102 +105,102 @@ module uart_control (
                 tick_nxt        = tick;
                 word_number_nxt = word_number;
                 case(state)
-                IDLE:           counter_nxt = (counter >= TIME2WAIT)          ? 32'b0 : counter + 1;
+                IDLE:           counter_nxt     = (counter >= TIME2WAIT)      ? 32'b0 : counter + 1;
                 PREPARE_WORD:   word_number_nxt = (word_number >= WORD_SIZE)  ? 4'b0  : word_number + 1;
                 PREPARE_SIGN:   sign_number_nxt = (sign_number >= SIGN_SIZE)  ? 4'b0  : sign_number + 1; 
-                SEND_SIGN:      tick_nxt = (tick == 1'b0)                     ? 1'b1  : 1'b0;
+                SEND_SIGN:      tick_nxt        = (tick == 1'b0)              ? 1'b1  : 1'b0;
                 endcase
         end
 
         always @* begin            
                 case (word_number)
                 1: begin
-                        word_2_send_nxt = in0;
+                        word_2_send_nxt     = in0;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd1; 
+                        word_info_nxt[7:0]  = 8'd1; 
                 end 
                 2: begin
-                        word_2_send_nxt = in1;
+                        word_2_send_nxt     = in1;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd2; 
+                        word_info_nxt[7:0]  = 8'd2; 
                 end 
                 3: begin
-                        word_2_send_nxt = in2;
+                        word_2_send_nxt     = in2;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd3; 
+                        word_info_nxt[7:0]  = 8'd3; 
                 end 
                 4: begin
-                        word_2_send_nxt = in3;
+                        word_2_send_nxt     = in3;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd4; 
+                        word_info_nxt[7:0]  = 8'd4; 
                 end 
                 5: begin
-                        word_2_send_nxt = in4;
+                        word_2_send_nxt     = in4;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd5; 
+                        word_info_nxt[7:0]  = 8'd5; 
                 end 
                 6: begin
-                        word_2_send_nxt =in5;
+                        word_2_send_nxt     = in5;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd6; 
+                        word_info_nxt[7:0]  = 8'd6; 
                 end 
                 7: begin
-                        word_2_send_nxt =in6;
+                        word_2_send_nxt     = in6;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd7; 
+                        word_info_nxt[7:0]  = 8'd7; 
                 end 
                 8: begin
-                        word_2_send_nxt =in7;
+                        word_2_send_nxt     = in7;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd8; 
+                        word_info_nxt[7:0]  = 8'd8; 
                 end 
                 9: begin
-                        word_2_send_nxt =in8;
+                        word_2_send_nxt     = in8;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd9; 
+                        word_info_nxt[7:0]  = 8'd9; 
                 end 
                 10: begin
-                        word_2_send_nxt =in9;
+                        word_2_send_nxt     = in9;
                         word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0] = 8'd0; 
+                        word_info_nxt[7:0]  = 8'd0; 
                 end 
                 11: begin
-                        word_2_send_nxt =in10;
+                        word_2_send_nxt     = in10;
                         word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0] = 8'd1; 
+                        word_info_nxt[7:0]  = 8'd1; 
                 end 
                 12: begin
-                        word_2_send_nxt =in11;
+                        word_2_send_nxt     = in11;
                         word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0] = 8'd2; 
+                        word_info_nxt[7:0]  = 8'd2; 
                 end 
                 13: begin
-                        word_2_send_nxt =in12;
+                        word_2_send_nxt     = in12;
                         word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0] = 8'd3; 
+                        word_info_nxt[7:0]  = 8'd3; 
                 end 
                 default: begin
-                        word_2_send_nxt =in0;
+                        word_2_send_nxt     = in0;
                         word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0] = 8'd0; 
+                        word_info_nxt[7:0]  = 8'd0; 
                 end  
                 endcase
         end
 
         always @* begin            
                 case (sign_number)
-                0:   sign_2_send_nxt = 8'd86; //V
-                1:   sign_2_send_nxt = word_info[15:8]; //0
-                2:   sign_2_send_nxt = word_info[7:0]; //1
-                3:   sign_2_send_nxt = 8'd32; // 
-                4:   sign_2_send_nxt = 8'd45; // -
-                5:   sign_2_send_nxt = 8'd32; // 
+                0:   sign_2_send_nxt = 8'd86;                   //V
+                1:   sign_2_send_nxt = word_info[15:8];         //0
+                2:   sign_2_send_nxt = word_info[7:0];          //1
+                3:   sign_2_send_nxt = 8'd32;                   // 
+                4:   sign_2_send_nxt = 8'd45;                   // -
+                5:   sign_2_send_nxt = 8'd32;                   // 
                 6:   sign_2_send_nxt = {4'b0,word_2_send[15:12]};
                 7:   sign_2_send_nxt = {4'b0,word_2_send[11:8]};
                 8:   sign_2_send_nxt = {4'b0,word_2_send[7:4]};
                 9:   sign_2_send_nxt = {4'b0,word_2_send[3:0]};
-                10:  sign_2_send_nxt = 8'd32; // 
-                11:  sign_2_send_nxt = 8'd86; //V
+                10:  sign_2_send_nxt = 8'd32;                   // 
+                11:  sign_2_send_nxt = 8'd86;                   //V
                 12:  sign_2_send_nxt = 8'd10;
                 13:  sign_2_send_nxt = 8'd13;       
                 default: sign_2_send_nxt = 8'd45; 

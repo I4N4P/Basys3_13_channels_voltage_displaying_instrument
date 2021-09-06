@@ -91,16 +91,16 @@ module pmod_control (
         end
 
         always @* begin
-                counter_nxt     = counter;
+                counter_nxt             = counter;
                 for(i = 0;i < 4;i = i + 1)
                             channel_nxt[i] = channel[i];
-                tick_nxt        = tick;
-                channel_number_nxt = channel_number;
+                tick_nxt                = tick;
+                channel_number_nxt      = channel_number;
                 case(state)
-                IDLE:           counter_nxt = (counter > TIME2WAIT)           ? 32'b0 : counter + 1;
+                IDLE:           counter_nxt     = (counter > TIME2WAIT)         ? 32'b0 : counter + 1;
                 SAVE_DATA:      channel_nxt[channel_number] = in;
                 CHANGE_CHANNEL: channel_number_nxt = channel_number + 1; 
-                GENERATE_TICK:  tick_nxt = (tick == 1'b0)                     ? 1'b1  : 1'b0;
+                GENERATE_TICK:  tick_nxt        = (tick == 1'b0)                ? 1'b1  : 1'b0;
                 endcase
         end
 
@@ -115,10 +115,10 @@ module pmod_control (
         end
 
         always @* begin
-                channel0_nxt = channel[0];// * 805664) / 1_000_000;
-                channel1_nxt = channel[1];// * 805664) / 1_000_000;
-                channel2_nxt = channel[2];// * 805664) / 1_000_000;
-                channel3_nxt = channel[3];// * 805664) / 1_000_000;
+                channel0_nxt = channel[0];
+                channel1_nxt = channel[1];
+                channel2_nxt = channel[2];
+                channel3_nxt = channel[3];
         end
         
 endmodule

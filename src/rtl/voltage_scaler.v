@@ -1,5 +1,5 @@
 // File: voltage_scaler.v
-// This is the FSM for pmodAD2 that reads data from all channels
+// This is the module that scale input date to desired value
 
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
@@ -28,24 +28,24 @@ module voltage_scaler #(
 
         always @(posedge clk) begin
                 if(rst) begin
-                        out_pipe_2 <= 32'b0;
-                        out <= 12'b0;
+                        out_pipe_2      <= 27'b0;
+                        out_pipe_21     <= 32'b0;
+                        out_pipe_22     <= 22'b0;
+                        out             <= 12'b0;
                 end else begin
-                        out_pipe_2 <= out_pipe_2_nxt;
-                        out_pipe_21 <= out_pipe_21_nxt;
-                        out_pipe_22 <= out_pipe_22_nxt;
-                        out <= out_nxt;
+                        out_pipe_2      <= out_pipe_2_nxt;
+                        out_pipe_21     <= out_pipe_21_nxt;
+                        out_pipe_22     <= out_pipe_22_nxt;
+                        out             <= out_nxt;
                 end
         end
 
         always @* begin
-            out_pipe_nxt = in;
-            out_pipe_2_nxt = out_pipe_nxt * MUL;
-            out_pipe_21_nxt = out_pipe_2 * 32;
-            out_pipe_22_nxt = out_pipe_21 / 1_000;
-            out_nxt = out_pipe_22 / 1_000;
+                out_pipe_nxt = in;
+                out_pipe_2_nxt = out_pipe_nxt * MUL;
+                out_pipe_21_nxt = out_pipe_2 * 32;
+                out_pipe_22_nxt = out_pipe_21 / 1_000;
+                out_nxt = out_pipe_22 / 1_000;
             
         end
-
-
 endmodule
