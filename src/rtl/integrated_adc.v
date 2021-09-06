@@ -22,7 +22,7 @@ module integrated_adc (
     input wire iadcn1,
     input wire vp_in,
     input wire vn_in,
-    output reg [15:0] dout
+    output wire [15:0] dout
 );
     wire enable;
     wire b2d_start;
@@ -31,7 +31,6 @@ module integrated_adc (
     wire [15:0] b2d_din;
     wire [15:0] b2d_dout;
 
-    wire [15:0] dout_nxt;
 
         //xadc instantiation connect the eoc_out .den_in to get continuous conversion
     xadc_wiz_0  XLXI_7 (
@@ -58,36 +57,25 @@ module integrated_adc (
         .channel_out(),
         .drdy_out()
     );
-
-     bin2bcd my_bin2bcd_0 (
-                .bin(data[11:0]),  
-                .bcd0(dout_nxt[3:0]), 
-                .bcd1(dout_nxt[7:4]),
-                .bcd2(dout_nxt[11:8]), 
-                .bcd3(dout_nxt[15:12])
-        );
-
-        always @(posedge clk)
-                dout <= dout_nxt;
                  
     //binary to decimal conversion
 
-    // bin2dec_ctl mbin2dec_ctl(
-    //     .clk(clk),
-    //     .din(data),
-    //     .b2d_start(b2d_start),
-    //     .b2d_din(b2d_din),
-    //     .dout(dout),
-    //     .b2d_dout(b2d_dout),
-    //     .b2d_done(b2d_done)
-    // );
+    bin2dec_ctl mbin2dec_ctl(
+        .clk(clk),
+        .din(data),
+        .b2d_start(b2d_start),
+        .b2d_din(b2d_din),
+        .dout(dout),
+        .b2d_dout(b2d_dout),
+        .b2d_done(b2d_done)
+    );
 
-    // bin2dec m_b2d (
-    //     .clk(clk),
-    //     .start(b2d_start),
-    //     .din(b2d_din),
-    //     .done(b2d_done),
-    //     .dout(b2d_dout)
-    // );
+    bin2dec m_b2d (
+        .clk(clk),
+        .start(b2d_start),
+        .din(b2d_din),
+        .done(b2d_done),
+        .dout(b2d_dout)
+    );
     
 endmodule
