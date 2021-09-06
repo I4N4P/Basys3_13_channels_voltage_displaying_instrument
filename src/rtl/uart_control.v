@@ -38,7 +38,7 @@ module uart_control (
                         PREPARE_SIGN = 4'b0100,
                         SEND_SIGN = 4'b1000;
 
-        localparam TIME2WAIT = 100_000_000;
+        localparam TIME2WAIT = 65_000_000;
         localparam WORD_SIZE = 13;
         localparam SIGN_SIZE = 14;
 

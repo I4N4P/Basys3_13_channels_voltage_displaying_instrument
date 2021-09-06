@@ -49,8 +49,7 @@ module voltmeter_top (
         clk_generator my_clk_generator
         (
                 .clk (clk),
-                .clk_100Mhz (clk100Mhz),
-                .clk_65Mhz (pclk),
+                .clk_65MHz (pclk),
                 .reset (rst),
                 .locked (locked)
         );
@@ -76,7 +75,7 @@ module voltmeter_top (
 
         integrated_adc my_integrated_adc 
         (
-                .clk (clk100Mhz),
+                .clk (pclk),
                 .iadcp1 (iadcp),
                 .iadcn1 (iadcn),
                 .vp_in (vp_in),
@@ -93,7 +92,7 @@ module voltmeter_top (
                     bcd9,bcd10,bcd11,bcd12;
         
         external_adc external_adc_JA(
-                .clk(clk100Mhz),
+                .clk(pclk),
                 .rst(rst),
 
                 .AD2_SCL (AD2_SCL_JA), 
@@ -106,7 +105,7 @@ module voltmeter_top (
                 
         );
         external_adc external_adc_JB(
-                .clk(clk100Mhz),
+                .clk(pclk),
                 .rst(rst),
 
                 .AD2_SCL (AD2_SCL_JB), 
@@ -119,7 +118,7 @@ module voltmeter_top (
                 
         );
         external_adc external_adc_JC(
-                .clk(clk100Mhz),
+                .clk(pclk),
                 .rst(rst),
 
                 .AD2_SCL (AD2_SCL_JC), 
@@ -142,7 +141,7 @@ module voltmeter_top (
 
         uart_control my_uart_control
         (
-                .clk (clk100Mhz),
+                .clk (pclk),
                 .rst (rst),
 
                 .in0 (bcd0),
@@ -166,13 +165,13 @@ module voltmeter_top (
         #(
                 .DBIT (8),     
                 .SB_TICK (16),                   
-                .DVSR (326),   
+                .DVSR (212),   
                 .DVSR_BIT (9), 
                 .FIFO_W (8)    
         )
         my_uart 
         (
-                .clk (clk100Mhz),
+                .clk (pclk),
                 .reset (rst),
                 .wr_uart (tick), 
                 .w_data (uart_data),
@@ -180,7 +179,7 @@ module voltmeter_top (
                 .tx (tx_w)
         );
 
-        always @(posedge clk100Mhz) begin
+        always @(posedge pclk) begin
                 if(uart_enable)
                         tx <= tx_w;
         end

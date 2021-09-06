@@ -30,7 +30,7 @@ module pmod_control (
                         CHANGE_CHANNEL = 4'b0100,
                         GENERATE_TICK = 4'b1000;
 
-        localparam TIME2WAIT = 10_000_000;
+        localparam TIME2WAIT = 650_000;                 //reads data with 100 Hz frequency 
 
         integer i;
         reg [3:0] state,state_nxt;
@@ -115,10 +115,10 @@ module pmod_control (
         end
 
         always @* begin
-                channel0_nxt = (channel[0]*805664)/1_000_000;
-                channel1_nxt = (channel[1]*805664)/1_000_000;
-                channel2_nxt = (channel[2]*805664)/1_000_000;
-                channel3_nxt = (channel[3]*805664)/1_000_000;
+                channel0_nxt = channel[0];// * 805664) / 1_000_000;
+                channel1_nxt = channel[1];// * 805664) / 1_000_000;
+                channel2_nxt = channel[2];// * 805664) / 1_000_000;
+                channel3_nxt = channel[3];// * 805664) / 1_000_000;
         end
         
 endmodule

@@ -71,6 +71,7 @@ proc attach_rtl_files {} {
                 rtl/bcdword2ascii1_16.v
                 rtl/pmod_control.v
                 rtl/external_adc.v
+                rtl/voltage_scaler.v
         }
         
         read_mem {
