@@ -30,6 +30,7 @@ module integrated_adc (
     wire [15:0] data;
     wire [15:0] b2d_din;
     wire [15:0] b2d_dout;
+    wire [11:0] value;
 
 
         //xadc instantiation connect the eoc_out .den_in to get continuous conversion
@@ -58,24 +59,42 @@ module integrated_adc (
         .drdy_out()
     );
                  
+        voltage_scaler #(
+                .MUL(7_629)
+        ) m_voltage_scaler (
+                .clk(clk),
+                .rst(rst),
+                .in(data[15:4]),
+
+                .out(value)
+        );
+
+
+        bin2bcd my_bin2bcd (
+                .bin(value),  
+                .bcd0(dout[3:0]), 
+                .bcd1(dout[7:4]),
+                .bcd2(dout[11:8]), 
+                .bcd3(dout[15:12])
+        );
     //binary to decimal conversion
 
-    bin2dec_ctl mbin2dec_ctl(
-        .clk(clk),
-        .din(data),
-        .b2d_start(b2d_start),
-        .b2d_din(b2d_din),
-        .dout(dout),
-        .b2d_dout(b2d_dout),
-        .b2d_done(b2d_done)
-    );
+    // bin2dec_ctl mbin2dec_ctl(
+    //     .clk(clk),
+    //     .din(data),
+    //     .b2d_start(b2d_start),
+    //     .b2d_din(b2d_din),
+    //     .dout(dout),
+    //     .b2d_dout(b2d_dout),
+    //     .b2d_done(b2d_done)
+    // );
 
-    bin2dec m_b2d (
-        .clk(clk),
-        .start(b2d_start),
-        .din(b2d_din),
-        .done(b2d_done),
-        .dout(b2d_dout)
-    );
+    // bin2dec m_b2d (
+    //     .clk(clk),
+    //     .start(b2d_start),
+    //     .din(b2d_din),
+    //     .done(b2d_done),
+    //     .dout(b2d_dout)
+    // );
     
 endmodule

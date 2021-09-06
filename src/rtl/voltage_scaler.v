@@ -10,7 +10,9 @@
 // Declare the module and its ports. This is
 // using Verilog-2001 syntax.
 
-module voltage_scaler (
+module voltage_scaler #(
+                parameter MUL = 25_177
+        )(
                 input wire clk,
                 input wire rst,
                 input wire [11:0] in,
@@ -18,6 +20,7 @@ module voltage_scaler (
                 output reg [11:0] out
                 
         );
+
         reg [11:0] out_nxt,out_pipe_nxt;
         reg [26:0] out_pipe_2,out_pipe_2_nxt;
         reg [21:0] out_pipe_22,out_pipe_22_nxt;
@@ -37,7 +40,7 @@ module voltage_scaler (
 
         always @* begin
             out_pipe_nxt = in;
-            out_pipe_2_nxt = out_pipe_nxt * 25_177;
+            out_pipe_2_nxt = out_pipe_nxt * MUL;
             out_pipe_21_nxt = out_pipe_2 * 32;
             out_pipe_22_nxt = out_pipe_21 / 1_000;
             out_nxt = out_pipe_22 / 1_000;
