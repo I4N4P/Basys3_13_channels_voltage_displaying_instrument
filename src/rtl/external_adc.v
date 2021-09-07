@@ -25,9 +25,9 @@ module external_adc (
                 
         );
 
-        wire [7:0] adress;
+        wire [3:0] adress;
         wire flag;
-        wire [15:0] raw_data;
+        wire [11:0] raw_data;
         wire [11:0] value0,value1,value2,value3;
         wire [11:0] value01,value11,value21,value31;
         
@@ -36,14 +36,14 @@ module external_adc (
                 .SDA_mst(AD2_SDA),
                 .SCL_mst(AD2_SCL),
                 .wData0(raw_data),
-                .writeCfg(adress),
+                .writeCfg({adress,4'b0}),
                 .rst(flag)
         );
 
         pmod_control my_pmod_contol (
                 .clk (clk),
                 .rst (rst),
-                .in (raw_data[11:0]),
+                .in (raw_data),
                 .adress (adress),
                 .tick (flag),
                 .channel0 (value0),

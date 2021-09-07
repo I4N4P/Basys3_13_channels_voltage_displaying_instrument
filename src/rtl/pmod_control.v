@@ -15,7 +15,7 @@ module pmod_control (
                 input wire rst,
                 input wire [11:0] in,
 
-                output reg [7:0] adress,
+                output reg [3:0] adress,
                 output reg tick,
                 
                 output reg [11:0] channel0,
@@ -39,7 +39,7 @@ module pmod_control (
         reg tick_nxt;
         reg [11:0] channel [0:3],channel_nxt [0:3];
         reg [1:0]  channel_number,channel_number_nxt;
-        reg [7:0]  adress_nxt;
+        reg [3:0]  adress_nxt;
 
         reg [11:0] channel0_nxt;
         reg [11:0] channel1_nxt;
@@ -106,11 +106,11 @@ module pmod_control (
 
         always @* begin
                 case (channel_number)
-                0: adress_nxt = 8'b00010000;
-                1: adress_nxt = 8'b00100000;
-                2: adress_nxt = 8'b01000000;
-                3: adress_nxt = 8'b10000000;
-                default: adress_nxt = 8'b00100000;
+                0: adress_nxt = 4'b0001;
+                1: adress_nxt = 4'b0010;
+                2: adress_nxt = 4'b0100;
+                3: adress_nxt = 4'b1000;
+                default: adress_nxt = 4'b0010;
                 endcase  
         end
 

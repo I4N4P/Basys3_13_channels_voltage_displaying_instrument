@@ -51,7 +51,7 @@ entity pmodAD2_ctrl is
     Port ( mainClk	: in		STD_LOGIC;
            SDA_mst	: inout	STD_LOGIC;
            SCL_mst	: inout	STD_LOGIC;
-           wData0		: out		STD_LOGIC_VECTOR (15 downto 0);
+           wData0		: out		STD_LOGIC_VECTOR (11 downto 0);
 		   writeCfg		: in        STD_LOGIC_VECTOR(7 downto 0);
            rst			: in		STD_LOGIC);
 end pmodAD2_ctrl;
@@ -187,7 +187,7 @@ begin
 						if (fDone = '1') then
 							-- Send the proper pins high for the state change
 							stMain <= stRead2;
-							wData0(15 downto 8) <= curResponse(7 downto 0);
+							wData0(11 downto 8) <= curResponse(3 downto 0);
 						else
 							-- Force the pins low now that we're actually in the state.
 							stMain <= stRead1;
