@@ -37,9 +37,7 @@ module voltmeter (
                 output reg tx
         );
 
-
 /*******************CLOCK_GENERATION*********************************/
-
 
         wire clk100Mhz;
         wire clk_65MHz;
@@ -55,9 +53,7 @@ module voltmeter (
                 .locked (locked)
         );
 
-
 /*******************RESET_GENERATION*********************************/
-
 
         wire reset;
 
@@ -69,9 +65,7 @@ module voltmeter (
                 .reset_out (reset)
         );
 
-
-/*******************INTERNAL_ADC*********************************/	
-	
+/*******************INTERNAL_ADC*********************************/		
 
         wire [15:0] bcd [0:12];
 
@@ -88,8 +82,8 @@ module voltmeter (
                 .dout (bcd[0])
         );
 
-
 /*******************EXTERNAL_ADC*********************************/
+        
         wire AD2_SCL_JX [0:2];
         wire AD2_SDA_JX [0:2];
         
@@ -116,7 +110,6 @@ module voltmeter (
         assign {AD2_SCL_JC,AD2_SDA_JC} = {AD2_SCL_JX[2],AD2_SDA_JX[2]};
 
 /*******************UART_MODULE*********************************/
-        
         
         wire tx_w;
         wire tick;
@@ -168,10 +161,6 @@ module voltmeter (
         end
 
 /*******************VGA_CONTROL*********************************/
-        
-        
-        //wire [3:0] red_out,green_out,blue_out;
-        //wire vsync_out_M, hsync_out_M;
 
         wire vsync, hsync,vsync_out_b, hsync_out_b, vsync_out_c, hsync_out_c;
         wire vblnk, hblnk,vblnk_out_b, hblnk_out_b, vblnk_out_c, hblnk_out_c;

@@ -47,7 +47,6 @@ module vga_top_draw_char
                 output  wire [11:0] rgb_out
         );
 
-        //reg  [3:0]  text_line_r;
         wire [3:0]  text_line;
         wire [7:0]  text_xy;
         wire [6:0]  char_code;
@@ -122,9 +121,6 @@ module vga_top_draw_char
                 .text_xy(text_xy),
                 .char_code(char_code)
         );
-
-        // always @(posedge clk)
-        //         text_line_r <= text_line;
         
         always @* begin
                 in[0] = in0;

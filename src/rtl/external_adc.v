@@ -58,12 +58,14 @@ module external_adc (
                         voltage_scaler my_voltage_scaler (
                                 .clk(clk),
                                 .rst(rst),
+                                
                                 .in(value[i]),
 
                                 .out(value_out[i])
                         );
                         bin2bcd my_bin2bcd_0 (
                                 .bin(value_out[i]),  
+
                                 .bcd0(channel[i][3:0]), 
                                 .bcd1(channel[i][7:4]),
                                 .bcd2(channel[i][11:8]), 

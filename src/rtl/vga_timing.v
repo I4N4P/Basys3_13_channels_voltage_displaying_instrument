@@ -44,27 +44,23 @@ module vga_timing (
         reg horizontal_blank_nxt ;
         reg vertical_sync_nxt ;
         reg vertical_blank_nxt ;
-
-        // Describe the actual circuit for the assignment.
-        // Video timing controller set for 800x600@60fps
-        // using a 40 MHz pixel clock per VESA spec.
         
         // Synchronical logic
         always @(posedge clk) begin
                 if(rst) begin
-                        horizontal_blank <=  1'b0;
-                        vertical_blank   <=  1'b0;
-                        horizontal_sync  <=  1'b0;
-                        vertical_sync    <=  1'b0;
-                        vertical_counter <=  12'b0;
-                        horizontal_counter<= 12'b0;
+                        horizontal_blank   <=  1'b0;
+                        vertical_blank     <=  1'b0;
+                        horizontal_sync    <=  1'b0;
+                        vertical_sync      <=  1'b0;
+                        vertical_counter   <=  12'b0;
+                        horizontal_counter <= 12'b0;
                 end else begin
-                        horizontal_blank <=horizontal_blank_nxt;
-                        vertical_blank <=vertical_blank_nxt;
-                        horizontal_sync <= horizontal_sync_nxt;
-                        vertical_sync <= vertical_sync_nxt;
+                        horizontal_blank   <= horizontal_blank_nxt;
+                        vertical_blank     <= vertical_blank_nxt;
+                        horizontal_sync    <= horizontal_sync_nxt;
+                        vertical_sync      <= vertical_sync_nxt;
                         horizontal_counter <= horizontal_counter_nxt;
-                        vertical_counter <= vertical_counter_nxt;
+                        vertical_counter   <= vertical_counter_nxt;
                         
                 end
         end
@@ -83,23 +79,23 @@ module vga_timing (
                 else
                         vertical_blank_nxt = 1'b0; 
                 if (vertical_counter >= VER_SYNC_START && vertical_counter < (VER_SYNC_START + VER_SYNC_TIME))
-                        vertical_sync_nxt = 1'b1;
+                        vertical_sync_nxt  = 1'b1;
                 else
-                        vertical_sync_nxt = 1'b0;
+                        vertical_sync_nxt  = 1'b0;
         end else begin
                 horizontal_counter_nxt = horizontal_counter + 1;
-                vertical_counter_nxt = vertical_counter;
-                vertical_blank_nxt =vertical_blank;
-                vertical_sync_nxt =vertical_sync;
+                vertical_counter_nxt   = vertical_counter;
+                vertical_blank_nxt     = vertical_blank;
+                vertical_sync_nxt      =vertical_sync;
         end
         if (horizontal_counter >= HOR_BLANK_START && horizontal_counter < HOR_TOTAL_TIME)
                 horizontal_blank_nxt = 1'b1; 
         else
                 horizontal_blank_nxt = 1'b0;   
         if (horizontal_counter >= HOR_SYNC_START && horizontal_counter < (HOR_SYNC_START + HOR_SYNC_TIME ))
-                horizontal_sync_nxt = 1'b1;
+                horizontal_sync_nxt  = 1'b1;
         else
-                horizontal_sync_nxt = 1'b0;
+                horizontal_sync_nxt  = 1'b0;
         end
 
         assign   hcount = horizontal_counter;
