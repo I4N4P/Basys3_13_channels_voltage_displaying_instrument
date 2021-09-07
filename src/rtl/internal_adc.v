@@ -64,7 +64,7 @@ module internal_adc (
         //scale aquired data    
         
         voltage_scaler #(
-                .MUL(7_629)
+                .MUL(246)
         ) m_voltage_scaler (
                 .clk(clk),
                 .rst(rst),

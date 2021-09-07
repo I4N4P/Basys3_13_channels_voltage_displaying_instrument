@@ -11,7 +11,7 @@
 // using Verilog-2001 syntax.
 
 module voltage_scaler #(
-                parameter MUL = 25_177
+                parameter MUL = 812
         )(
                 input wire clk,
                 input wire rst,
@@ -22,20 +22,14 @@ module voltage_scaler #(
         );
 
         reg [11:0] out_nxt,out_pipe_nxt;
-        reg [26:0] out_pipe_2,out_pipe_2_nxt;
-        reg [21:0] out_pipe_22,out_pipe_22_nxt;
-        reg [31:0] out_pipe_21,out_pipe_21_nxt;
+        reg [21:0] out_pipe_2,out_pipe_2_nxt;
 
         always @(posedge clk) begin
                 if(rst) begin
-                        out_pipe_2      <= 27'b0;
-                        out_pipe_21     <= 32'b0;
-                        out_pipe_22     <= 22'b0;
+                        out_pipe_2      <= 22'b0;
                         out             <= 12'b0;
                 end else begin
                         out_pipe_2      <= out_pipe_2_nxt;
-                        out_pipe_21     <= out_pipe_21_nxt;
-                        out_pipe_22     <= out_pipe_22_nxt;
                         out             <= out_nxt;
                 end
         end
@@ -43,9 +37,8 @@ module voltage_scaler #(
         always @* begin
                 out_pipe_nxt = in;
                 out_pipe_2_nxt = out_pipe_nxt * MUL;
-                out_pipe_21_nxt = out_pipe_2 * 32;
-                out_pipe_22_nxt = out_pipe_21 / 1_000;
-                out_nxt = out_pipe_22 / 1_000;
+                out_nxt = out_pipe_2 / 1_000;
             
         end
+
 endmodule

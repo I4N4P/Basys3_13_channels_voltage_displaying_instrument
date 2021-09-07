@@ -47,14 +47,13 @@ module vga_top_draw_char
                 output  wire [11:0] rgb_out
         );
 
-        reg  [3:0]  text_line_r;
+        //reg  [3:0]  text_line_r;
         wire [3:0]  text_line;
         wire [7:0]  text_xy;
         wire [6:0]  char_code;
         wire [7:0]  char_pixel;
-        wire [27:0] ascii0,ascii1,ascii2,ascii3,
-                    ascii4,ascii5,ascii6,ascii7,
-                    ascii8,ascii9,ascii10,ascii11,ascii12;
+        wire [27:0] ascii [0:12];
+        reg  [15:0] in [0:12];
 
 
         vga_draw_char #(
@@ -85,139 +84,62 @@ module vga_top_draw_char
         (
                 .clk(clk),
         
-                .addr({char_code,text_line_r}),
+                .addr({char_code,text_line}),
                 .char_line_pixels(char_pixel)
         );
 
+        genvar    i;
+        generate
+                for (i = 0; i < 13 ; i = i + 1 ) begin
+                        bcdword2ascii1_16 my_bcdword2ascii1_16
+                        (
+                                .clk(clk),
+                                .rst(rst),
 
-        bcdword2ascii1_16 bcdword2ascii1_16_0
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in0),
-                .ascii_word(ascii0)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_1
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in1),
-                .ascii_word(ascii1)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_2
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in2),
-                .ascii_word(ascii2)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_3
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in3),
-                .ascii_word(ascii3)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_4
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in4),
-                .ascii_word(ascii4)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_5
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in5),
-                .ascii_word(ascii5)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_6
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in6),
-                .ascii_word(ascii6)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_7
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in7),
-                .ascii_word(ascii7)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_8
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in8),
-                .ascii_word(ascii8)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_9
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in9),
-                .ascii_word(ascii9)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_10
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in10),
-                .ascii_word(ascii10)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_11
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in11),
-                .ascii_word(ascii11)
-        );
-        bcdword2ascii1_16 bcdword2ascii1_16_12
-        (
-                .clk(clk),
-                .rst(rst),
-
-                .bcd_word(in12),
-                .ascii_word(ascii12)
-        );
-
-
+                                .bcd_word(in[i]),
+                                .ascii_word(ascii[i])
+                        );
+                end
+        endgenerate
+        
         vga_measurements_rom my_vga_measurements_rom
         (
                 .clk(clk),
 
-                .in0(ascii0),
-                .in1(ascii1),
-                .in2(ascii2),
-                .in3(ascii3),
-                .in4(ascii4),
-                .in5(ascii5),
-                .in6(ascii6),
-                .in7(ascii7),
-                .in8(ascii8),
-                .in9(ascii9),
-                .in10(ascii10),
-                .in11(ascii11),
-                .in12(ascii12),
+                .in0(ascii[0]),
+                .in1(ascii[1]),
+                .in2(ascii[2]),
+                .in3(ascii[3]),
+                .in4(ascii[4]),
+                .in5(ascii[5]),
+                .in6(ascii[6]),
+                .in7(ascii[7]),
+                .in8(ascii[8]),
+                .in9(ascii[9]),
+                .in10(ascii[10]),
+                .in11(ascii[11]),
+                .in12(ascii[12]),
                 .text_xy(text_xy),
                 .char_code(char_code)
         );
 
-        always @(posedge clk)
-                text_line_r <= text_line;
+        // always @(posedge clk)
+        //         text_line_r <= text_line;
+        
+        always @* begin
+                in[0] = in0;
+                in[1] = in1;
+                in[2] = in2;
+                in[3] = in3;
+                in[4] = in4;
+                in[5] = in5;
+                in[6] = in6;
+                in[7] = in7;
+                in[8] = in8;
+                in[9] = in9;
+                in[10] = in10;
+                in[11] = in11;
+                in[12] = in12; 
+        end
 
 endmodule

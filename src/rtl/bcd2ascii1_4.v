@@ -20,8 +20,6 @@ module bcd2ascii1_4
 
         // signal declaration
         reg [7:0] ascii_nxt;
-
-
         // body
         always @(posedge clk) begin
                 if(rst) 

@@ -73,7 +73,7 @@ module voltmeter (
 /*******************INTERNAL_ADC*********************************/	
 	
 
-        wire [15:0] bcd0;
+        wire [15:0] bcd [0:12];
 
         internal_adc my_internal_adc 
         (
@@ -85,56 +85,35 @@ module voltmeter (
                 .vp_in (vp_in),
                 .vn_in (vn_in),
 
-                .dout (bcd0)
+                .dout (bcd[0])
         );
 
 
 /*******************EXTERNAL_ADC*********************************/
+        wire AD2_SCL_JX [0:2];
+        wire AD2_SDA_JX [0:2];
         
+        genvar    i;
+        generate
+                for (i = 0; i < 3 ; i = i + 1 ) begin
+                        external_adc external_adc_JX(
+                                .clk(clk_65MHz),
+                                .rst(reset),
 
-        wire [15:0] bcd1,bcd2,bcd3,bcd4,
-                    bcd5,bcd6,bcd7,bcd8,
-                    bcd9,bcd10,bcd11,bcd12;
-        
-        external_adc external_adc_JA(
-                .clk(clk_65MHz),
-                .rst(reset),
+                                .AD2_SCL (AD2_SCL_JX[i]), 
+                                .AD2_SDA (AD2_SDA_JX[i]),
+                                
+                                .channel0(bcd[(4 * i) + 1]),
+                                .channel1(bcd[(4 * i) + 2]),
+                                .channel2(bcd[(4 * i) + 3]),
+                                .channel3(bcd[(4 * i) + 4])     
+                        );
+                end
+        endgenerate
 
-                .AD2_SCL (AD2_SCL_JA), 
-                .AD2_SDA (AD2_SDA_JA),
-                
-                .channel0(bcd1),
-                .channel1(bcd2),
-                .channel2(bcd3),
-                .channel3(bcd4)     
-        );
-        
-        external_adc external_adc_JB(
-                .clk(clk_65MHz),
-                .rst(reset),
-
-                .AD2_SCL (AD2_SCL_JB), 
-                .AD2_SDA (AD2_SDA_JB),
-                
-                .channel0(bcd5),
-                .channel1(bcd6),
-                .channel2(bcd7),
-                .channel3(bcd8)   
-        );
-
-        external_adc external_adc_JC(
-                .clk(clk_65MHz),
-                .rst(reset),
-
-                .AD2_SCL (AD2_SCL_JC), 
-                .AD2_SDA (AD2_SDA_JC),
-                
-                .channel0(bcd9),
-                .channel1(bcd10),
-                .channel2(bcd11),
-                .channel3(bcd12)      
-        );
-        
+        assign {AD2_SCL_JA,AD2_SDA_JA} = {AD2_SCL_JX[0],AD2_SDA_JX[0]};
+        assign {AD2_SCL_JB,AD2_SDA_JB} = {AD2_SCL_JX[1],AD2_SDA_JX[1]};
+        assign {AD2_SCL_JC,AD2_SDA_JC} = {AD2_SCL_JX[2],AD2_SDA_JX[2]};
 
 /*******************UART_MODULE*********************************/
         
@@ -148,19 +127,19 @@ module voltmeter (
                 .clk (clk_65MHz),
                 .rst (reset),
 
-                .in0 (bcd0),
-                .in1 (bcd1),
-                .in2 (bcd2),
-                .in3 (bcd3),
-                .in4 (bcd4),
-                .in5 (bcd5),
-                .in6 (bcd6),
-                .in7 (bcd7),
-                .in8 (bcd8),
-                .in9 (bcd9),
-                .in10 (bcd10),
-                .in11 (bcd11),
-                .in12 (bcd12),
+                .in0 (bcd[0]),
+                .in1 (bcd[1]),
+                .in2 (bcd[2]),
+                .in3 (bcd[3]),
+                .in4 (bcd[4]),
+                .in5 (bcd[5]),
+                .in6 (bcd[6]),
+                .in7 (bcd[7]),
+                .in8 (bcd[8]),
+                .in9 (bcd[9]),
+                .in10 (bcd[10]),
+                .in11 (bcd[11]),
+                .in12 (bcd[12]),
                 .sign (uart_data),
                 .tick (tick)        
         );
@@ -243,19 +222,19 @@ module voltmeter (
                 .clk (clk_65MHz),
                 .rst  (reset),
 
-                .in0 (bcd0),
-                .in1 (bcd1),
-                .in2 (bcd2),
-                .in3 (bcd3),
-                .in4 (bcd4),
-                .in5 (bcd5),
-                .in6 (bcd6),
-                .in7 (bcd7),
-                .in8 (bcd8),
-                .in9 (bcd9),
-                .in10 (bcd10),
-                .in11 (bcd11),
-                .in12 (bcd12),
+                .in0 (bcd[0]),
+                .in1 (bcd[1]),
+                .in2 (bcd[2]),
+                .in3 (bcd[3]),
+                .in4 (bcd[4]),
+                .in5 (bcd[5]),
+                .in6 (bcd[6]),
+                .in7 (bcd[7]),
+                .in8 (bcd[8]),
+                .in9 (bcd[9]),
+                .in10 (bcd[10]),
+                .in11 (bcd[11]),
+                .in12 (bcd[12]),
 
                 .vcount_in (vcount_out_b),
                 .vsync_in  (vsync_out_b),

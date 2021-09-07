@@ -28,8 +28,9 @@ module external_adc (
         wire [3:0] adress;
         wire flag;
         wire [11:0] raw_data;
-        wire [11:0] value0,value1,value2,value3;
-        wire [11:0] value01,value11,value21,value31;
+        wire [11:0] value [0:3];
+        wire [11:0] value_out [0:3];
+        wire [15:0] channel [0:3];
         
         pmodAD2_ctrl my_pmodAD2_ctrl (
                 .mainClk(clk),
@@ -46,68 +47,34 @@ module external_adc (
                 .in (raw_data),
                 .adress (adress),
                 .tick (flag),
-                .channel0 (value0),
-                .channel1 (value1),
-                .channel2 (value2),
-                .channel3 (value3)
+                .channel0 (value[0]),
+                .channel1 (value[1]),
+                .channel2 (value[2]),
+                .channel3 (value[3])
         );
+        genvar    i;
+        generate
+                for (i = 0; i < 4 ; i = i + 1 ) begin
+                        voltage_scaler my_voltage_scaler (
+                                .clk(clk),
+                                .rst(rst),
+                                .in(value[i]),
 
-        voltage_scaler m_voltage_scaler_0 (
-                .clk(clk),
-                .rst(rst),
-                .in(value0),
+                                .out(value_out[i])
+                        );
+                        bin2bcd my_bin2bcd_0 (
+                                .bin(value_out[i]),  
+                                .bcd0(channel[i][3:0]), 
+                                .bcd1(channel[i][7:4]),
+                                .bcd2(channel[i][11:8]), 
+                                .bcd3(channel[i][15:12])
+                        );
+                end
+        endgenerate
+        
+        assign channel0 = channel[0];
+        assign channel1 = channel[1];
+        assign channel2 = channel[2];
+        assign channel3 = channel[3];
 
-                .out(value01)
-        );
-
-        voltage_scaler m_voltage_scaler_1 (
-                .clk(clk),
-                .rst(rst),
-                .in(value1),
-
-                .out(value11)
-        );
-        voltage_scaler m_voltage_scaler_2 (
-                .clk(clk),
-                .rst(rst),
-                .in(value2),
-
-                .out(value21)
-        );
-        voltage_scaler m_voltage_scaler_3 (
-                .clk(clk),
-                .rst(rst),
-                .in(value3),
-
-                .out(value31)
-        );
-
-        bin2bcd my_bin2bcd_0 (
-                .bin(value01),  
-                .bcd0(channel0[3:0]), 
-                .bcd1(channel0[7:4]),
-                .bcd2(channel0[11:8]), 
-                .bcd3(channel0[15:12])
-        );
-        bin2bcd my_bin2bcd_1 (
-                .bin(value11),  
-                .bcd0(channel1[3:0]), 
-                .bcd1(channel1[7:4]),
-                .bcd2(channel1[11:8]), 
-                .bcd3(channel1[15:12])
-        );
-        bin2bcd my_bin2bcd_2 (
-                .bin(value21),  
-                .bcd0(channel2[3:0]), 
-                .bcd1(channel2[7:4]),
-                .bcd2(channel2[11:8]), 
-                .bcd3(channel2[15:12])
-        );
-        bin2bcd my_bin2bcd_3 (
-                .bin(value31),  
-                .bcd0(channel3[3:0]), 
-                .bcd1(channel3[7:4]),
-                .bcd2(channel3[11:8]), 
-                .bcd3(channel3[15:12])
-        );
 endmodule
