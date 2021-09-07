@@ -1,5 +1,5 @@
 set project voltmeter
-set top_module voltmeter_top
+set top_module voltmeter
 set target xc7a35tcpg236-1
 # if generate_rtl 1 then during executing bitstream will be created rtl_schematic pdf
 set generate_rtl 0
@@ -22,9 +22,8 @@ proc attach_rtl_files {} {
 
         remove_files [get_files -quiet]
         read_xdc {
-                constraints/vga_example.xdc
+                constraints/voltmeter.xdc
         }
-
 
         read_vhdl {
                 rtl/pmodAD2_ctrl.vhd
@@ -32,7 +31,7 @@ proc attach_rtl_files {} {
         }
 
         read_verilog {
-                rtl/voltmeter_top.v
+                rtl/voltmeter.v
                 rtl/clk_generator.v
                 rtl/internal_reset.v
                 
@@ -49,19 +48,17 @@ proc attach_rtl_files {} {
                 rtl/mod_m_counter.v
                 rtl/fifo.v
                 rtl/uart_tx.v
-                
-                
+                   
                 rtl/vga_timing.v
-                rtl/draw_background.v
-                rtl/top_draw_rect_char.v
-                rtl/draw_rect_char.v
+                rtl/vga_draw_background.v
+                rtl/vga_top_draw_char.v
+                rtl/vga_draw_char.v
                 rtl/delay.v 
-                rtl/font_rom.v
+                rtl/vga_font_rom.v
                 rtl/bcdword2ascii1_16.v
                 rtl/bcd2ascii1_4.v
-                rtl/text_rom_16x16.v
+                rtl/vga_measurements_rom.v
         }
-        
 }
 
 # files for simulation
@@ -77,7 +74,7 @@ proc attach_sim_files {} {
 
         #-------------------PUT YOUR CODE HERE-------------------
         read_xdc {
-                constraints/vga_example.xdc
+                constraints/voltmeter.xdc
         }
 
         # read_vhdl {

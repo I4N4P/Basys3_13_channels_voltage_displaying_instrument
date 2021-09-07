@@ -11,11 +11,11 @@
 
 module bcd2ascii1_4
         (
-        input  wire        clk,
-        input  wire        rst,
+                input  wire        clk,
+                input  wire        rst,
 
-        input   wire [3:0] bcd,
-        output   reg [6:0] ascii
+                input   wire [3:0] bcd,
+                output   reg [6:0] ascii
         );
 
         // signal declaration

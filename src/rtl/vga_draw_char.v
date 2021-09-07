@@ -1,5 +1,5 @@
 // File: draw_rect_char.v
-// This module draw a char on the backround.
+// This module draw a table of chars on the backround.
 
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
@@ -10,29 +10,29 @@
 // Declare the module and its ports. This is
 // using Verilog-2001 syntax.
 
-module draw_rect_char 
-        #( parameter
-                XPOS = 64,
-                YPOS = 40
+module vga_draw_char 
+        #( 
+                parameter XPOS = 64,
+                          YPOS = 40
         )
         (
-        input   wire pclk,
-        input   wire rst,
+                input   wire clk,
+                input   wire rst,
 
-        input   wire [11:0] vcount_in,
-        input   wire vsync_in, 
-        input   wire vblnk_in, 
-        input   wire [11:0] hcount_in,
-        input   wire hsync_in, 
-        input   wire hblnk_in, 
-        input   wire [11:0] rgb_in,
-        input   wire [7:0] char_pixel,
+                input   wire [11:0] vcount_in,
+                input   wire vsync_in, 
+                input   wire vblnk_in, 
+                input   wire [11:0] hcount_in,
+                input   wire hsync_in, 
+                input   wire hblnk_in, 
+                input   wire [11:0] rgb_in,
+                input   wire [7:0] char_pixel,
 
-        output  reg vsync_out,  
-        output  reg hsync_out,  
-        output  reg [11:0] rgb_out,
-        output  reg [7:0] text_xy,
-        output  reg [3:0] text_line
+                output  reg vsync_out,  
+                output  reg hsync_out,  
+                output  reg [11:0] rgb_out,
+                output  reg [7:0] text_xy,
+                output  reg [3:0] text_line
         );
 
         // This are the parameters of the rectangle.
@@ -59,7 +59,7 @@ module draw_rect_char
                 .WIDTH  (28),
                 .CLK_DEL(2)
         ) timing_delay (
-                .clk  (pclk),
+                .clk  (clk),
                 .rst  (rst),
                 .din  ({hcount_in, hsync_in, hblnk_in, vcount_in, vsync_in, vblnk_in}),
                 .dout ({hcount_out_d, hsync_out_d, hblnk_out_d, vcount_out_d, vsync_out_d, vblnk_out_d})
@@ -69,7 +69,7 @@ module draw_rect_char
                 .WIDTH (24),
                 .CLK_DEL(2)
         ) rgb_delay (
-                .clk  (pclk),
+                .clk  (clk),
                 .rst  (rst),
                 .din  ({hcount_pic_nxt,rgb_in}),
                 .dout ({hcount_out_d2,rgb_out_d})
@@ -77,7 +77,7 @@ module draw_rect_char
 
         // Synchronical logic
         
-        always @(posedge pclk) begin
+        always @(posedge clk) begin
                 // pass these through if rst not activ then put 0 on the output.
                 if (rst) begin
                         vsync_out  <= 1'b0; 
@@ -110,7 +110,7 @@ module draw_rect_char
                 hcount_pic_nxt = hcount_in - XPOS;
                 vcount_pic_nxt = vcount_in - YPOS;
                 // addr generator
-                if ((hcount_in >= XPOS) && (hcount_in <=XPOS + RECT_WIDTH) && (vcount_in >= YPOS) && (vcount_in <= YPOS + RECT_HEIGHT)
+                if ((hcount_in >= XPOS) && (hcount_in <= XPOS + RECT_WIDTH) && (vcount_in >= YPOS) && (vcount_in <= YPOS + RECT_HEIGHT)
                  && (hcount_pic == (RECT_WIDTH - 1)) && (vcount_pic == 15))
                         if((hcount_pic == (RECT_WIDTH - 1)) && (vcount_in == ((RECT_HEIGHT - 1) + YPOS)))
                                 offset_nxt = 0;

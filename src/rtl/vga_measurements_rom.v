@@ -9,26 +9,26 @@
 // Declare the module and its ports. This is
 // using Verilog-2001 syntax.
 
-module text_rom_16x16
+module vga_measurements_rom
         (
-        input  wire        clk,
+                input  wire        clk,
 
-        input wire [27:0] in0,
-        input wire [27:0] in1,
-        input wire [27:0] in2,
-        input wire [27:0] in3,
-        input wire [27:0] in4,
-        input wire [27:0] in5,
-        input wire [27:0] in6,
-        input wire [27:0] in7,
-        input wire [27:0] in8,
-        input wire [27:0] in9,
-        input wire [27:0] in10,
-        input wire [27:0] in11,
-        input wire [27:0] in12,
+                input wire [27:0] in0,
+                input wire [27:0] in1,
+                input wire [27:0] in2,
+                input wire [27:0] in3,
+                input wire [27:0] in4,
+                input wire [27:0] in5,
+                input wire [27:0] in6,
+                input wire [27:0] in7,
+                input wire [27:0] in8,
+                input wire [27:0] in9,
+                input wire [27:0] in10,
+                input wire [27:0] in11,
+                input wire [27:0] in12,
 
-        input  wire [7:0]  text_xy,            
-        output reg  [6:0]  char_code 
+                input  wire [7:0]  text_xy,            
+                output reg  [6:0]  char_code 
         );
 
         // signal declaration

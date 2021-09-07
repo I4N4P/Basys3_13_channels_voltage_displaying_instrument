@@ -1,7 +1,7 @@
 // Listing 4.11
 module mod_m_counter #(
-                parameter N=4, // number of bits in counter
-                        M=10 // mod-M
+                parameter N = 4, // number of bits in counter
+                          M = 10 // mod-M
         )
         (
                 input wire clk, reset,
@@ -15,7 +15,7 @@ module mod_m_counter #(
 
         // body
         // register
-        always @(posedge clk, posedge reset) begin
+        always @(posedge clk) begin
                 if (reset)
                         r_reg <= 0;
                 else

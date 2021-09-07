@@ -11,30 +11,30 @@
 // Declare the module and its ports. This is
 // using Verilog-2001 syntax.
 
-module voltmeter_top (
-        input wire clk,
-        input wire rst,
+module voltmeter (
+                input wire clk,
+                input wire rst,
 
-        input uart_enable,
-        
-        input iadcp,
-        input iadcn,
-        input vp_in,
-        input vn_in,
+                input uart_enable,
+                
+                input iadcp,
+                input iadcn,
+                input vp_in,
+                input vn_in,
 
-        inout wire AD2_SCL_JA, 
-        inout wire AD2_SDA_JA,
-        inout wire AD2_SCL_JB, 
-        inout wire AD2_SDA_JB,
-        inout wire AD2_SCL_JC, 
-        inout wire AD2_SDA_JC,
+                inout wire AD2_SCL_JA, 
+                inout wire AD2_SDA_JA,
+                inout wire AD2_SCL_JB, 
+                inout wire AD2_SDA_JB,
+                inout wire AD2_SCL_JC, 
+                inout wire AD2_SDA_JC,
 
-        output reg vs,
-        output reg hs,
-        output reg [3:0] r,
-        output reg [3:0] g,
-        output reg [3:0] b,
-        output reg tx
+                output reg vs,
+                output reg hs,
+                output reg [3:0] r,
+                output reg [3:0] g,
+                output reg [3:0] b,
+                output reg tx
         );
 
 
@@ -42,7 +42,7 @@ module voltmeter_top (
 
 
         wire clk100Mhz;
-        wire pclk;
+        wire clk_65MHz;
         wire locked;
 
 
@@ -51,7 +51,7 @@ module voltmeter_top (
                 .clk (clk),
                 .reset (rst),
                 
-                .clk_65MHz (pclk),
+                .clk_65MHz (clk_65MHz),
                 .locked (locked)
         );
 
@@ -63,7 +63,7 @@ module voltmeter_top (
 
         internal_reset my_internal_reset
         (
-                .pclk   (pclk),
+                .clk    (clk_65MHz),
                 .locked (locked),
 
                 .reset_out (reset)
@@ -77,7 +77,7 @@ module voltmeter_top (
 
         internal_adc my_internal_adc 
         (
-                .clk (pclk),
+                .clk (clk_65MHz),
                 .rst (reset),
 
                 .iadcp (iadcp),
@@ -97,7 +97,7 @@ module voltmeter_top (
                     bcd9,bcd10,bcd11,bcd12;
         
         external_adc external_adc_JA(
-                .clk(pclk),
+                .clk(clk_65MHz),
                 .rst(reset),
 
                 .AD2_SCL (AD2_SCL_JA), 
@@ -110,7 +110,7 @@ module voltmeter_top (
         );
         
         external_adc external_adc_JB(
-                .clk(pclk),
+                .clk(clk_65MHz),
                 .rst(reset),
 
                 .AD2_SCL (AD2_SCL_JB), 
@@ -123,7 +123,7 @@ module voltmeter_top (
         );
 
         external_adc external_adc_JC(
-                .clk(pclk),
+                .clk(clk_65MHz),
                 .rst(reset),
 
                 .AD2_SCL (AD2_SCL_JC), 
@@ -145,7 +145,7 @@ module voltmeter_top (
 
         uart_control my_uart_control
         (
-                .clk (pclk),
+                .clk (clk_65MHz),
                 .rst (reset),
 
                 .in0 (bcd0),
@@ -175,7 +175,7 @@ module voltmeter_top (
         )
         my_uart 
         (
-                .clk (pclk),
+                .clk (clk_65MHz),
                 .reset (reset),
                 .wr_uart (tick), 
                 .w_data (uart_data),
@@ -183,7 +183,7 @@ module voltmeter_top (
                 .tx (tx_w)
         );
 
-        always @(posedge pclk) begin
+        always @(posedge clk_65MHz) begin
                 if(uart_enable)
                         tx <= tx_w;
         end
@@ -201,7 +201,7 @@ module voltmeter_top (
 
         vga_timing my_timing 
         (
-                .pclk (pclk),
+                .clk (clk_65MHz),
                 .rst (reset),
                 
                 .vcount (vcount),
@@ -212,9 +212,9 @@ module voltmeter_top (
                 .hblnk  (hblnk)
         );
 
-        draw_background my_draw_background 
+        vga_draw_background my_vga_draw_background 
         (
-                .pclk(pclk),
+                .clk(clk_65MHz),
                 .rst (reset),
 
                 .vcount_in (vcount),
@@ -233,14 +233,14 @@ module voltmeter_top (
                 .rgb_out    (rgb_out_b)
         );
        
-        top_draw_rect_char 
+        vga_top_draw_char 
         #(
                 .XPOS (125),
                 .YPOS (99)
         ) 
-        my_top_draw_rect_char 
+        my_top_draw_char 
         (
-                .pclk (pclk),
+                .clk (clk_65MHz),
                 .rst  (reset),
 
                 .in0 (bcd0),
@@ -271,7 +271,7 @@ module voltmeter_top (
         );
 
         // Synchronical logic
-        always @(posedge pclk) begin
+        always @(posedge clk_65MHz) begin
                 // Just pass these through.
                 hs <= hsync_out_c;
                 vs <= vsync_out_c;
