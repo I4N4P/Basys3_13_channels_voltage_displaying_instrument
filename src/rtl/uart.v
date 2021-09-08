@@ -10,8 +10,7 @@ module uart #( // Default setting:
                 DVSR_BIT = 8, // # bits of DVSR
                 FIFO_W = 4    // # addr bits of FIFO
                         // # words in FIFO=2^FIFO_W
-        )
-        (
+        )(
                 input wire clk, reset,
                 input wire wr_uart,
                 input wire [7:0] w_data,
@@ -27,8 +26,7 @@ module uart #( // Default setting:
         mod_m_counter #(
                 .M (DVSR), 
                 .N (DVSR_BIT)
-        ) baud_gen_unit 
-        (
+        ) baud_gen_unit (
                 .clk (clk), 
                 .reset (reset), 
                 .q (), 
@@ -38,8 +36,7 @@ module uart #( // Default setting:
         fifo #(
                 .B (DBIT), 
                 .W (FIFO_W)
-        ) fifo_tx_unit 
-        (
+        ) fifo_tx_unit (
                 .clk (clk), 
                 .reset (reset), 
                 .rd (tx_done_tick),
@@ -53,8 +50,7 @@ module uart #( // Default setting:
         uart_tx #(
                 .DBIT (DBIT), 
                 .SB_TICK (SB_TICK)
-        ) uart_tx_unit 
-        (
+        ) uart_tx_unit (
                 .clk (clk), 
                 .reset (reset), 
                 .tx_start (tx_fifo_not_empty),
@@ -65,5 +61,4 @@ module uart #( // Default setting:
         );
 
         assign tx_fifo_not_empty = ~tx_empty;
-
 endmodule

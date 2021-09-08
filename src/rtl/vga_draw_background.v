@@ -10,31 +10,31 @@
 // Declare the module and its ports. This is
 // using Verilog-2001 syntax.
 
-module draw_background (
-        input   wire pclk,
-        input   wire rst,
+module vga_draw_background (
+                input   wire clk,
+                input   wire rst,
 
-        input   wire [11:0] vcount_in,
-        input   wire vsync_in, 
-        input   wire vblnk_in, 
-        input   wire [11:0] hcount_in,
-        input   wire hsync_in, 
-        input   wire hblnk_in, 
+                input   wire [11:0] vcount_in,
+                input   wire vsync_in, 
+                input   wire vblnk_in, 
+                input   wire [11:0] hcount_in,
+                input   wire hsync_in, 
+                input   wire hblnk_in, 
 
-        output  reg [11:0] vcount_out,
-        output  reg vsync_out, 
-        output  reg vblnk_out, 
-        output  reg [11:0] hcount_out,
-        output  reg hsync_out, 
-        output  reg hblnk_out, 
-        output  reg [11:0] rgb_out
+                output  reg [11:0] vcount_out,
+                output  reg vsync_out, 
+                output  reg vblnk_out, 
+                output  reg [11:0] hcount_out,
+                output  reg hsync_out, 
+                output  reg hblnk_out, 
+                output  reg [11:0] rgb_out
         );
   
         reg [11:0] rgb_out_nxt;
 
         // Synchronical logic
 
-        always @(posedge pclk) begin
+        always @(posedge clk) begin
         // pass these through if rst not activ then put 0 on the output.
                 if (rst) begin
                         vcount_out <= 12'b0;

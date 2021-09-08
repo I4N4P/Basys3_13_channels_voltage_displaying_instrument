@@ -1,5 +1,5 @@
 set project voltmeter
-set top_module voltmeter_top
+set top_module voltmeter
 set target xc7a35tcpg236-1
 # if generate_rtl 1 then during executing bitstream will be created rtl_schematic pdf
 set generate_rtl 0
@@ -22,54 +22,42 @@ proc attach_rtl_files {} {
 
         remove_files [get_files -quiet]
         read_xdc {
-                constraints/vga_example.xdc
+                constraints/voltmeter.xdc
         }
 
-        # read_vhdl {
-        # }
+        read_vhdl {
+                rtl/pmodAD2_ctrl.vhd
+                rtl/TWICtl.vhd
+        }
 
         read_verilog {
-                rtl/voltmeter_top.v
+                rtl/voltmeter.v
                 rtl/clk_generator.v
                 rtl/internal_reset.v
-                rtl/integrated_adc.v
-                rtl/xadc_wiz_0.v
-                rtl/bin2dec_ctl.v
-                rtl/bin2dec.v
+                
+                rtl/internal_adc.v
+                rtl/xadc.v
+                rtl/voltage_scaler.v
+                rtl/bin2bcd.v
+                
+                rtl/external_adc.v
+                rtl/pmod_control.v
+                
                 rtl/uart_control.v
                 rtl/uart.v
                 rtl/mod_m_counter.v
                 rtl/fifo.v
                 rtl/uart_tx.v
-                rtl/flag_buf.v
+                   
                 rtl/vga_timing.v
-                rtl/draw_background.v
-                rtl/top_draw_rect_char.v
-                rtl/image_rom.v
-                rtl/font_rom.v
-                rtl/text_rom_16x16.v
-                rtl/signal_synchronizer.v
+                rtl/vga_draw_background.v
+                rtl/vga_top_draw_char.v
+                rtl/vga_draw_char.v
                 rtl/delay.v 
-                rtl/draw_rect_ctl.v
-                rtl/draw_rect_char.v
-                rtl/image_rom.v
-                rtl/font_rom.v
-                rtl/text_rom_16x16.v
-                rtl/delay.v
-                rtl/xadc_wiz_0.v
-                rtl/bin2dec.v
-                rtl/counter3bit.v
-                rtl/decoder3_8.v
-                rtl/DigitToSeg.v
-                rtl/mux4_4bus.v
-                rtl/sevensegdecoder.v
-                rtl/segClkDevider.v
-                rtl/bcd2ascii1_4.v
+                rtl/vga_font_rom.v
                 rtl/bcdword2ascii1_16.v
-        }
-        
-        read_mem {
-                rtl/image_rom.data
+                rtl/bcd2ascii1_4.v
+                rtl/vga_measurements_rom.v
         }
 }
 
@@ -86,7 +74,7 @@ proc attach_sim_files {} {
 
         #-------------------PUT YOUR CODE HERE-------------------
         read_xdc {
-                constraints/vga_example.xdc
+                constraints/voltmeter.xdc
         }
 
         # read_vhdl {

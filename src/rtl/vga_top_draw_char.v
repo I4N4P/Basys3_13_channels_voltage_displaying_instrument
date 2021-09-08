@@ -1,0 +1,141 @@
+// File: top_draw_rect_char.v
+// This module draw a char on the backround.
+
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+
+`timescale 1 ns / 1 ps
+
+// Declare the module and its ports. This is
+// using Verilog-2001 syntax.
+
+module vga_top_draw_char 
+        #( 
+                parameter XPOS = 64,
+                          YPOS = 40
+        )
+        (
+                input   wire clk,
+                input   wire rst,
+
+                input wire [15:0] in0,
+                input wire [15:0] in1,
+                input wire [15:0] in2,
+                input wire [15:0] in3,
+                input wire [15:0] in4,
+                input wire [15:0] in5,
+                input wire [15:0] in6,
+                input wire [15:0] in7,
+                input wire [15:0] in8,
+                input wire [15:0] in9,
+                input wire [15:0] in10,
+                input wire [15:0] in11,
+                input wire [15:0] in12,
+
+                input   wire [11:0] vcount_in,
+                input   wire vsync_in, 
+                input   wire vblnk_in, 
+                input   wire [11:0] hcount_in,
+                input   wire hsync_in, 
+                input   wire hblnk_in, 
+                input   wire [11:0] rgb_in,
+
+
+                output  wire vsync_out, 
+                output  wire hsync_out, 
+                output  wire [11:0] rgb_out
+        );
+
+        wire [3:0]  text_line;
+        wire [7:0]  text_xy;
+        wire [6:0]  char_code;
+        wire [7:0]  char_pixel;
+        wire [27:0] ascii [0:12];
+        reg  [15:0] in [0:12];
+
+
+        vga_draw_char #(
+                .XPOS (XPOS),
+                .YPOS (YPOS)
+        ) my_vga_draw_char 
+        (
+                .clk (clk),
+                .rst  (rst),
+
+                .vcount_in(vcount_in),
+                .vsync_in(vsync_in),
+                .vblnk_in(vblnk_in),
+                .hcount_in(hcount_in),
+                .hsync_in(hsync_in),
+                .hblnk_in(hblnk_in),
+                .rgb_in(rgb_in),
+                .char_pixel(char_pixel),
+                
+                .vsync_out(vsync_out),
+                .hsync_out(hsync_out),
+                .rgb_out(rgb_out),
+                .text_xy(text_xy),
+                .text_line(text_line)
+        );
+
+        vga_font_rom my_vga_font_rom
+        (
+                .clk(clk),
+        
+                .addr({char_code,text_line}),
+                .char_line_pixels(char_pixel)
+        );
+
+        genvar    i;
+        generate
+                for (i = 0; i < 13 ; i = i + 1 ) begin
+                        bcdword2ascii1_16 my_bcdword2ascii1_16
+                        (
+                                .clk(clk),
+                                .rst(rst),
+
+                                .bcd_word(in[i]),
+                                .ascii_word(ascii[i])
+                        );
+                end
+        endgenerate
+        
+        vga_measurements_rom my_vga_measurements_rom
+        (
+                .clk(clk),
+
+                .in0(ascii[0]),
+                .in1(ascii[1]),
+                .in2(ascii[2]),
+                .in3(ascii[3]),
+                .in4(ascii[4]),
+                .in5(ascii[5]),
+                .in6(ascii[6]),
+                .in7(ascii[7]),
+                .in8(ascii[8]),
+                .in9(ascii[9]),
+                .in10(ascii[10]),
+                .in11(ascii[11]),
+                .in12(ascii[12]),
+                .text_xy(text_xy),
+                .char_code(char_code)
+        );
+        
+        always @* begin
+                in[0] = in0;
+                in[1] = in1;
+                in[2] = in2;
+                in[3] = in3;
+                in[4] = in4;
+                in[5] = in5;
+                in[6] = in6;
+                in[7] = in7;
+                in[8] = in8;
+                in[9] = in9;
+                in[10] = in10;
+                in[11] = in11;
+                in[12] = in12; 
+        end
+
+endmodule

@@ -11,15 +11,15 @@
 // using Verilog-2001 syntax.
 
 module internal_reset (
-        input   wire pclk,
+        input   wire clk,
         input   wire locked,
         output  reg  reset_out
         );
 
-        reg [6:0] counter,counter_nxt;
+        reg [1:0] counter,counter_nxt;
         reg reset_nxt = 1'b0;
 
-        always @(negedge pclk or negedge locked) begin
+        always @(negedge clk or negedge locked) begin
                 if(!locked) begin
                         counter <= 7'b0;
                 end else begin 
@@ -29,7 +29,7 @@ module internal_reset (
         end
 
         always @* begin
-                if (counter < 10) begin
+                if (counter < 2) begin
                         counter_nxt = counter + 1;
                         reset_nxt = 1'b1;
                 end else begin

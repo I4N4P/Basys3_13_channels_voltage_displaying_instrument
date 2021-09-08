@@ -11,47 +11,31 @@
 
 module bcdword2ascii1_16
         (
-        input  wire        clk,
-        input  wire        rst,
+                input  wire        clk,
+                input  wire        rst,
 
-        input   wire [15:0] bcd_word,
-        output  wire [27:0] ascii_word
+                input   wire [15:0] bcd_word,
+                output  wire [27:0] ascii_word
         );
 
-        bcd2ascii1_4 bcd2ascii1_4_1
-            (
-            .clk(clk),
-            .rst(rst),
+        wire [3:0] bcd_word_arr [0:3];
+        wire [6:0] ascii_word_arr [0:3];
 
-            .bcd(bcd_word[3:0]),
-            .ascii(ascii_word[6:0])
-            );
+        assign {bcd_word_arr[3],bcd_word_arr[2],bcd_word_arr[1],bcd_word_arr[0]} = bcd_word;
+        assign ascii_word = {ascii_word_arr[3],ascii_word_arr[2],ascii_word_arr[1],ascii_word_arr[0]};
 
-        bcd2ascii1_4 bcd2ascii1_4_2
-            (
-            .clk(clk),
-            .rst(rst),
+        genvar    i;
+        generate
+                for (i = 0; i < 4 ; i = i + 1 ) begin
+                        bcd2ascii1_4 my_bcd2ascii1_4
+                        (
+                                .clk(clk),
+                                .rst(rst),
 
-            .bcd(bcd_word[7:4]),
-            .ascii(ascii_word[13:7])
-            );
-            
-        bcd2ascii1_4 bcd2ascii1_4_3
-            (
-            .clk(clk),
-            .rst(rst),
+                                .bcd(bcd_word_arr[i]),
+                                .ascii(ascii_word_arr[i])
+                        );
+                end
+        endgenerate
 
-            .bcd(bcd_word[11:8]),
-            .ascii(ascii_word[20:14])
-            );
-        bcd2ascii1_4 bcd2ascii1_4_4
-            (
-            .clk(clk),
-            .rst(rst),
-
-            .bcd(bcd_word[15:12]),
-            .ascii(ascii_word[27:21])
-            );
-    
-        
 endmodule

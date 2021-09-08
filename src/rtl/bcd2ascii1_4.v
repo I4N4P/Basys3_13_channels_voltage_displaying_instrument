@@ -11,17 +11,15 @@
 
 module bcd2ascii1_4
         (
-        input  wire        clk,
-        input  wire        rst,
+                input  wire        clk,
+                input  wire        rst,
 
-        input   wire [3:0] bcd,
-        output   reg [6:0] ascii
+                input   wire [3:0] bcd,
+                output   reg [6:0] ascii
         );
 
         // signal declaration
         reg [7:0] ascii_nxt;
-
-
         // body
         always @(posedge clk) begin
                 if(rst) 
