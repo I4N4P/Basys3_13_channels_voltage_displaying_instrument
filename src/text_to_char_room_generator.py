@@ -1,12 +1,15 @@
 mydic = {
     "a" : "61",
     "b" : "62",
+    "B" : "42",
     "c" : "63",
     "d" : "64",
+    "D" : "44",
     "e" : "65",
     "f" : "66",
     "g" : "67",
     "h" : "68",
+    "H" : "48",
     "i" : "69",
     "j" : "6a",
     "k" : "6b",
@@ -18,6 +21,7 @@ mydic = {
     "q" : "71",
     "r" : "72",
     "s" : "73",
+    "S" : "53",
     "t" : "74",
     "u" : "75",
     "v" : "76",
@@ -47,7 +51,7 @@ def hex_calc(char):
     global mydic
     return mydic[char]
 
-mystring = "xyz" #input string to generate code
+mystring = "By Dawid Scechura Damian Herdus" #input string to generate code
 mytab = mystring.split(sep=' ')
 mynewstr = ""
 for w in mytab:
