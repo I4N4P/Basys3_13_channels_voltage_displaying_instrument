@@ -64,6 +64,8 @@ module vga_draw_char
         reg [11:0] hcount_pic,vcount_pic_nxt,hcount_pic_nxt;
         reg [3:0] vcount_pic2;
 
+        reg [7:0] pixels_nxt,pixels;
+
 
         wire vsync_out_d, hsync_out_d;
         wire vblnk_out_d, hblnk_out_d;
@@ -115,6 +117,8 @@ module vga_draw_char
                         
                         //vcount_pic <= vcount_pic2;
 
+                        pixels <= pixels_nxt;
+
                         text_xy    <= (hcount_pic_nxt[9:3] + offset_nxt);
 
                         offset     <= offset_nxt;
@@ -124,6 +128,7 @@ module vga_draw_char
         end
         // Combinational logic
         always @* begin
+                pixels_nxt = char_pixel;
                 hcount_pic_nxt = hcount_in - XPOS;
                 vcount_pic_nxt = vcount_in - YPOS;
                 vcount_pic2    = vcount_pic_nxt[3:0] / 1;
@@ -143,7 +148,7 @@ module vga_draw_char
                 end else begin
                         if (hcount_out_d >= XPOS && hcount_out_d <= XPOS + RECT_WIDTH 
                          && vcount_out_d >= YPOS && vcount_out_d <= YPOS + RECT_HEIGHT) begin
-                                if (char_pixel[(8 - hcount_out_d2)] == 1)
+                                if (pixels[(8 - hcount_out_d2)] == 1)
                                         rgb_nxt = WHITE; 
                                 else 
                                         rgb_nxt = BLACK;  

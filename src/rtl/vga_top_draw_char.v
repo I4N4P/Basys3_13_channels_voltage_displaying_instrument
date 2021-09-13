@@ -97,10 +97,10 @@ module vga_top_draw_char
 
         vga_font_rom my_vga_font_rom
         (
-                .clk(clk),
+                //.clk(clk),
         
                 .addr({char_code,text_line}),
-                .char_line_pixels(char_pixel)
+                .data(char_pixel)
         );
 
         genvar    i;

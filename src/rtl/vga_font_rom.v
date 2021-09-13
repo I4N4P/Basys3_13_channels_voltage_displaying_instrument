@@ -37,17 +37,17 @@
 
 module vga_font_rom
         (
-        input  wire        clk,
+        //input  wire        clk,
         input  wire [10:0] addr,            // {char_code[6:0], char_line[3:0]}
-        output reg  [7:0]  char_line_pixels // pixels of the character line
+        output reg  [7:0]  data // pixels of the character line
         );
 
         // signal declaration
-        reg [7:0] data;
+        //reg [7:0] data;
 
         // body
-        always @(posedge clk)
-                char_line_pixels <= data;
+        // always @(posedge clk)
+        //         char_line_pixels <= data;
 
         always @*
                 case (addr)
