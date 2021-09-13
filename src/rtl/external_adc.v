@@ -1,15 +1,31 @@
-// File: external_adc.v
-// This is the top level module for pmodAD2 that reads 
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         08.08.2021 
+// Design Name:         external_adc
+// Module Name:         external_adc
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This is the top level module for pmodAD2 that reads 
 // and translate measurments from U2 to bcd.
-
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+// 
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
-
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
 
 module external_adc (
                 input wire clk,

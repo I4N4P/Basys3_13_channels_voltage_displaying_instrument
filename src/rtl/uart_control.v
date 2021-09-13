@@ -1,15 +1,30 @@
-// File: uart_control.v
-// This is the top level design for Lab #3 that contains
-// all modules which are responsible for displaying data on screen  .
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         08.08.2021 
+// Design Name:         uart_control
+// Module Name:         uart_control
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This module is responisble for sending data from adc to pc via RS232.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+// 
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
-
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
 
 module uart_control (
                 input wire clk,

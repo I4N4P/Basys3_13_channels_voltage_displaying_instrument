@@ -1,8 +1,29 @@
 
-// file: clk_generator.v
-// 
+//////////////////////////////////////////////////////////////////////////////////
+//
 // (c) Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
 // 
+// Create Date:         08.09.2021 
+// Design Name:         clk_generator
+// Module Name:         clk_generator
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This is the module generates clock for whole project.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+//              
 // This file contains confidential and proprietary information
 // of Xilinx, Inc. and is protected under U.S. and
 // international copyright and other intellectual property
@@ -62,18 +83,18 @@
 // Input Clock   Freq (MHz)    Input Jitter (UI)
 //----------------------------------------------------------------------------
 // __primary_________100.000____________0.010
+//////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ps/1ps
 
 module clk_generator 
 
- (// Clock in ports
-  // Clock out ports
-  output        clk_65MHz,
-  // Status and control signals
+ (
+  input         clk,
   input         reset,
-  output        locked,
-  input         clk
+  
+  output        clk_65MHz,
+  output        locked
  );
   // Input buffering
   //------------------------------------
@@ -108,14 +129,14 @@ wire clk_in2_clk_wiz_0;
   wire        clkfbout_clk_wiz_0;
   wire        clkfbout_buf_clk_wiz_0;
   wire        clkfboutb_unused;
-    wire clkout0b_unused;
-   wire clkout1_unused;
-   wire clkout1b_unused;
-   wire clkout2_unused;
-   wire clkout2b_unused;
-   wire clkout3_unused;
-   wire clkout3b_unused;
-   wire clkout4_unused;
+  wire        clkout0b_unused;
+  wire        clkout1_unused;
+  wire        clkout1b_unused;
+  wire        clkout2_unused;
+  wire        clkout2b_unused;
+  wire        clkout3_unused;
+  wire        clkout3b_unused;
+  wire        clkout4_unused;
   wire        clkout5_unused;
   wire        clkout6_unused;
   wire        clkfbstopped_unused;
@@ -191,12 +212,6 @@ wire clk_in2_clk_wiz_0;
   BUFG clkf_buf
    (.O (clkfbout_buf_clk_wiz_0),
     .I (clkfbout_clk_wiz_0));
-
-
-
-
-
-
 
   BUFGCE clkout1_buf
    (.O   (clk_65MHz),

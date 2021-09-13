@@ -1,4 +1,36 @@
-//Listing 8.4
+//////////////////////////////////////////////////////////////////////////////////
+//
+// https://upel2.cel.agh.edu.pl/weaiib/course/view.php?id=1121
+// 
+// (C) Copyright 2016 AGH UST All Rights Reserved
+//
+// Company: AGH_University
+// Engineer: not known
+// 
+// Create Date:         2016 
+// Design Name:         uart
+// Module Name:         uart
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This top module for uart modules.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+// 
+// Listing 8.4
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1 ns / 1 ps
+
 module uart #( // Default setting:
         // 19,200 baud, 8 data bits, 1 stop bit, 2^2 FIFO
         parameter 

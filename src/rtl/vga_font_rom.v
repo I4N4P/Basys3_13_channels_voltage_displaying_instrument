@@ -1,10 +1,39 @@
-`timescale 1ns / 1ps
-// ROM with synchonous read (inferring Block RAM)
+//////////////////////////////////////////////////////////////////////////////////
+//
+// https://upel2.cel.agh.edu.pl/weaiib/course/view.php?id=1121
+// 
+// (C) Copyright 2016 AGH UST All Rights Reserved
+//
+// Company: AGH_University
+// Engineer: not known
+// 
+// Create Date:         2016 
+// Design Name:         vga_font_rom
+// Module Name:         vga_font_rom
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         ROM with synchonous read (inferring Block RAM).
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+// 
 // character ROM
 //  - 8-by-16 (8-by-2^4) font
 //  - 128 (2^7) characters
 //  - ROM size: 512-by-8 (2^11-by-8) bits
 //              16K bits: 1 BRAM
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1ns / 1ps
 
 module vga_font_rom
         (

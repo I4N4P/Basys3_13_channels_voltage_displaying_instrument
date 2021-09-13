@@ -1,29 +1,38 @@
-// File: bin2bcd.v
-// This is the module that translate U2 to bcd code.
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// https://upel2.cel.agh.edu.pl/weaiib/course/view.php?id=1121
+//
+// (C) Copyright 2016 AGH UST All Rights Reserved
+//
+// Company: AGH_University
+// Engineer: not known
+// 
+// Create Date:         2016 
+// Design Name:         bin2bcd
+// Module Name:         bin2bcd
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This is the module that translate U2 to bcd code.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+// 
+// ABSTRACT:  binary to BCD converter, three 8421 BCD digits
+//     Algorithm description:
+//     http://www.eng.utah.edu/~nmcdonal/Tutorials/BCDTutorial/BCDConversion.html
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
 
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
-/******************************************************************************
- * (C) Copyright 2016 AGH UST All Rights Reserved
- *
- * MODULE:    bin2bcd
- * DEVICE:    general
- * PROJECT:   stopwatch
- *
- * ABSTRACT:  binary to BCD converter, three 8421 BCD digits
- *            Algorithm description:
- *            http://www.eng.utah.edu/~nmcdonal/Tutorials/BCDTutorial/BCDConversion.html
- *
- * HISTORY:
- * 27 Jan 2020, IAmNotAProgramer - second version
- *
- *******************************************************************************/
 module bin2bcd (
                 input  wire [11:0] bin,     // input binary number
                 output reg  [3:0]  bcd0,    // LSB

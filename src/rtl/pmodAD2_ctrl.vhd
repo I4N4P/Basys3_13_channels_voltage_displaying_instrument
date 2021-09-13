@@ -1,3 +1,6 @@
+
+-- https://digilent.com/reference/pmod/pmodad2/start
+
 ------------------------------------------------------------------------
 --	pmodAD2_ctrl.vhd  -- Frame for TWI system for PmodAD2 controller
 ------------------------------------------------------------------------

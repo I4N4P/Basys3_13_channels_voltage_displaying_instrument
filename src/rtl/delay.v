@@ -1,5 +1,35 @@
-// The module delays the input data 'din' by the number of clock cycles
-// set by CLK_DEL input parameter
+//////////////////////////////////////////////////////////////////////////////////
+//
+// https://upel2.cel.agh.edu.pl/weaiib/course/view.php?id=1121
+// 
+// (C) Copyright 2016 AGH UST All Rights Reserved
+//
+// Company: AGH_University
+// Engineer: not known
+// 
+// Create Date:         2016 
+// Design Name:         bin2bcd
+// Module Name:         bin2bcd
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         The module delays the input data 'din' by the number of clock cycles
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+// 
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1 ns / 1 ps
+
 module delay
         #( 
                 parameter WIDTH   = 8, // bit width of the input/output data

@@ -1,4 +1,6 @@
 
+// https://digilent.com/reference/learn/programmable-logic/tutorials/basys-3-xadc/start
+
 // file: xadc.v
 // (c) Copyright 2009 - 2013 Xilinx, Inc. All rights reserved.
 // 

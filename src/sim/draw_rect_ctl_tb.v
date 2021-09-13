@@ -1,14 +1,30 @@
-// File: draw_rect_ctl_tb.v
-// This module generate the backround for vga
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         08.05.2021 
+// Design Name:         draw_rect_ctl_tb
+// Module Name:         draw_rect_ctl_tb
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This is the module to test FSM.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+// 
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
-
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
 
 module draw_rect_ctl_tb (
   input   wire pclk,

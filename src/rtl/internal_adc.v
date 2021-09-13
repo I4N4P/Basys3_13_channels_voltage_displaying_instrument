@@ -1,20 +1,30 @@
-`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: Digilent Inc.
-// Engineer: Arthur Brown
-// 
-// Create Date: 03/23/2017
-// Module Name: bcd
-// Project Name: OLED Demo
-// Target Devices: Nexys Video
-// Tool Versions: Vivado 2016.4
-// Description: converts an input in the range (0x0000-0xFFFF) to a hex string in the range (16'h0000-16'h1000)
-//              assert start & din, some amount of time later, done is asserted with valid dout
-// Dependencies: none
-// 
-// 03/23/2017(ArtVVB): Created
 //
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         30.08.2021 
+// Design Name:         internal_adc
+// Module Name:         internal_adc
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This is the top level module for xadc that reads 
+// and translate measurments from U2 to bcd.
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+// 
+//              
 //////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1ns / 1ps
 
 module internal_adc (
         input wire clk,

@@ -1,3 +1,6 @@
+
+-- https://digilent.com/reference/pmod/pmodad2/start
+
 ----------------------------------------------------------------------------------
 -- Company: Digilent Ro
 -- Engineer: Elod Gyorgy

@@ -1,13 +1,29 @@
-// File: bcd2ascii1_4.v
-// This module translate bcd word into ascii code .
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         17:20:14 29/08/2021 
+// Design Name:         bcdword2ascii1_4
+// Module Name:         bcdword2ascii1_4 
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This module translate bcd word into ascii code.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
 
 module bcdword2ascii1_16
         (

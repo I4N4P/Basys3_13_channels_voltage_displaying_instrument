@@ -1,8 +1,38 @@
+//////////////////////////////////////////////////////////////////////////////////
+//
+// https://upel2.cel.agh.edu.pl/weaiib/course/view.php?id=1121
+// 
+// (C) Copyright 2016 AGH UST All Rights Reserved
+//
+// Company: AGH_University
+// Engineer: not known
+// 
+// Create Date:         2016 
+// Design Name:         fifo
+// Module Name:         fifo
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This odule is a storeage of word that will be send by uart.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
+// The `timescale directive specifies what the
+// simulation time units are (1 ns here) and what
+// the simulator time step should be (1 ps here).
+// 
 // Listing 4.20
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
 module fifo
         #(
-                parameter B=8, // number of bits in a word
-                          W=4  // number of address bits
+                parameter B = 8,
+                          W = 4 
         )
         (
                 input wire clk, reset,
@@ -32,17 +62,17 @@ module fifo
         // fifo control logic
         // register for read and write pointers
         always @(posedge clk)
-        if (reset) begin
-                w_ptr_reg <= 0;
-                r_ptr_reg <= 0;
-                full_reg <= 1'b0;
-                empty_reg <= 1'b1;
-        end else begin
-                w_ptr_reg <= w_ptr_next;
-                r_ptr_reg <= r_ptr_next;
-                full_reg <= full_next;
-                empty_reg <= empty_next;
-        end
+                if (reset) begin
+                        w_ptr_reg <= 0;
+                        r_ptr_reg <= 0;
+                        full_reg <= 1'b0;
+                        empty_reg <= 1'b1;
+                end else begin
+                        w_ptr_reg <= w_ptr_next;
+                        r_ptr_reg <= r_ptr_next;
+                        full_reg <= full_next;
+                        empty_reg <= empty_next;
+                end
 
         // next-state logic for read and write pointers
         always @* begin

@@ -1,11 +1,29 @@
-// File: draw_rect_ctl_test.v
-// This is a top level testbench for the
-// vga_example design, which is part of
-// the EE178 Lab #4 assignment.
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         08.05.2021 
+// Design Name:         draw_rect_ctl_test
+// Module Name:         draw_rect_ctl_test
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         this is a top level testbench for the
+// vga_example design
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+// 
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
 

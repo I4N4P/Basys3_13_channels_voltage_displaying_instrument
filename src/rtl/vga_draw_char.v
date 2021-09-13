@@ -1,14 +1,30 @@
-// File: draw_rect_char.v
-// This module draw a table of chars on the backround.
 
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         15.04.2021 
+// Design Name:         vga_draw_rect_char
+// Module Name:         vga_draw_rect_char
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This module draw a table of chars on the backround.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
-
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
 
 module vga_draw_char 
         #( 
@@ -46,7 +62,7 @@ module vga_draw_char
         reg [11:0] rgb_nxt = 12'b0;
         reg [7:0] offset,offset_nxt;
         reg [11:0] hcount_pic,vcount_pic_nxt,hcount_pic_nxt;
-        reg [3:0] vcount_pic,vcount_pic2;
+        reg [3:0] vcount_pic2;
 
 
         wire vsync_out_d, hsync_out_d;
@@ -84,7 +100,7 @@ module vga_draw_char
                         vsync_out  <= 1'b0; 
                         hsync_out  <= 1'b0;
                         text_line  <= 4'b0;
-                        vcount_pic <= 12'b0;
+                        //vcount_pic <= 12'b0;
                         text_xy    <= 8'b0;
                         offset     <= 8'b0; 
                         hcount_pic <= 12'b0;
@@ -97,7 +113,7 @@ module vga_draw_char
                                   
                         text_line  <= vcount_pic2;
                         
-                        vcount_pic <= vcount_pic2;
+                        //vcount_pic <= vcount_pic2;
 
                         text_xy    <= (hcount_pic_nxt[9:3] + offset_nxt);
 
@@ -113,7 +129,7 @@ module vga_draw_char
                 vcount_pic2    = vcount_pic_nxt[3:0] / 1;
                 // addr generator
                 if ((hcount_in >= XPOS) && (hcount_in <= XPOS + RECT_WIDTH) && (vcount_in >= YPOS) && (vcount_in <= YPOS + RECT_HEIGHT)
-                 && (hcount_pic == (RECT_WIDTH - 1)) && (vcount_pic == 15))
+                 && (hcount_pic == (RECT_WIDTH - 1)) && (text_line == 15))
                         if((hcount_pic == (RECT_WIDTH - 1)) && (vcount_in == ((RECT_HEIGHT - 1) + YPOS)))
                                 offset_nxt = 0;
                         else 

@@ -1,13 +1,29 @@
-// File: char_rom_16x16.v
-// This module write text on the backround.
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         2016 
+// Design Name:         vga_measurements_rom
+// Module Name:         vga_measurements_rom
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         This module write text on the backround.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
 // the simulator time step should be (1 ps here).
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
-// Declare the module and its ports. This is
-// using Verilog-2001 syntax.
 
 module vga_measurements_rom
         (
