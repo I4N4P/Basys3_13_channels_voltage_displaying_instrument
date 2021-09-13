@@ -108,9 +108,9 @@ architecture Behavioral of TWICtl is
 	signal dSda, ddSda, dScl, ddScl : std_logic;
 	signal fStart, fStop : std_logic;
 	signal busState : busState_type := busUnknown;
-	signal errTypeR, errType : error_type;
+	-- signal errTypeR, errType : error_type;
    signal busFreeCnt, sclCnt : natural range TSCL_CYCLES downto 0 := TSCL_CYCLES;
-	signal timeOutCnt : natural range TIMEOUT_CYCLES downto 0 := TIMEOUT_CYCLES;
+	-- signal timeOutCnt : natural range TIMEOUT_CYCLES downto 0 := TIMEOUT_CYCLES;
 	signal slaveWait, arbLost : std_logic;
 	signal dataByte, loadByte : std_logic_vector(7 downto 0); --shift register and parallel load
 	signal currAddr : std_logic; -- std_logic_vector(7 downto 0); 			--shift register and parallel load
@@ -215,13 +215,13 @@ SCL_CNT: process (CLK)
 ---------------------------------------------------------------------------------- 
 TIMEOUT_CNT: process (CLK)
 	begin
-		if Rising_Edge(CLK) then
-			if (timeOutCnt = 0 or slaveWait = '0') then
-				timeOutCnt <= TIMEOUT_CYCLES;
-			elsif (slaveWait = '1') then -- count timeout on wait period inserted by slave
-				timeOutCnt <= timeOutCnt - 1;
-			end if;
-		end if;
+		--if Rising_Edge(CLK) then
+			--if (timeOutCnt = 0 or slaveWait = '0') then
+				--timeOutCnt <= TIMEOUT_CYCLES;
+			--elsif (slaveWait = '1') then -- count timeout on wait period inserted by slave
+				--timeOutCnt <= timeOutCnt - 1;
+			--end if;
+		--end if;
 	end process;
 	
 ----------------------------------------------------------------------------------
@@ -293,18 +293,18 @@ SYNC_PROC: process (CLK)
          rScl <= iScl;			
 			DONE_O <= iDone;
 			-- ERR_O <= iErr;
-			errTypeR <= errType;
+			-- errTypeR <= errType;
       end if;
    end process;
 
-OUTPUT_DECODE: process (nstate, subState, state, errTypeR, dataByte(0),
+OUTPUT_DECODE: process (nstate, subState, state, dataByte(0),
 	sclCnt, bitCount, rSda, rScl, dataBitOut, arbLost, dSda, addrNData)
    begin
 		iSda <= rSda; --no change by default
 		iScl <= rScl;
 		iDone <= '0';
 		iErr <= '0';
-		errType <= errTypeR; --keep error type
+		-- errType <= errTypeR; --keep error type
 		shiftBit <= '0';
 		latchAddr <= '0';
 		latchData <= '0';
@@ -418,7 +418,7 @@ OUTPUT_DECODE: process (nstate, subState, state, errTypeR, dataByte(0),
 			if (dSda = '1') then
 				iDone <= '1';
 				iErr <= '1'; --not acknowledged
-				errType <= errNAck;
+				--errType <= errNAck;
 			elsif (addrNData = '0') then
 				--we are done only when the data is sent too after the address
 				iDone <= '1';
@@ -432,7 +432,7 @@ OUTPUT_DECODE: process (nstate, subState, state, errTypeR, dataByte(0),
 		if (state = stWrite and arbLost = '1') then
 			iDone <= '1'; --write done
 			iErr <= '1'; --we lost the arbitration
-			errType <= errArb;
+			--errType <= errArb;
 		end if;
 		
 		if ((state = stWrite and sclCnt = 0 and subState = "11") or --shift at end of bit
