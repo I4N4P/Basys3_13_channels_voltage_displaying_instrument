@@ -76,7 +76,7 @@ entity TWICtl is
 		D_I : in  STD_LOGIC_VECTOR (7 downto 0); --data input bus
 		D_O : out  STD_LOGIC_VECTOR (7 downto 0); --data output bus
 		DONE_O : out  STD_LOGIC; --done status signal
-      ERR_O : out  STD_LOGIC; --error status
+      -- ERR_O : out  STD_LOGIC; --error status
 		CLK : in std_logic;
 		SRST : in std_logic;
 ----------------------------------------------------------------------------------
@@ -112,7 +112,8 @@ architecture Behavioral of TWICtl is
    signal busFreeCnt, sclCnt : natural range TSCL_CYCLES downto 0 := TSCL_CYCLES;
 	signal timeOutCnt : natural range TIMEOUT_CYCLES downto 0 := TIMEOUT_CYCLES;
 	signal slaveWait, arbLost : std_logic;
-	signal dataByte, loadByte, currAddr : std_logic_vector(7 downto 0); --shift register and parallel load
+	signal dataByte, loadByte : std_logic_vector(7 downto 0); --shift register and parallel load
+	signal currAddr : std_logic; -- std_logic_vector(7 downto 0); 			--shift register and parallel load
 	signal rSda, rScl : std_logic := '1';
 	signal subState : std_logic_vector(1 downto 0) := "00";
 	signal latchData, latchAddr, iDone, iErr, iSda, iScl, shiftBit, dataBitOut, rwBit, addrNData : std_logic;
@@ -261,12 +262,12 @@ CURRADDR_REG: process (CLK)
 	begin
 		if Rising_Edge(CLK) then
 			if (latchAddr = '1') then
-				currAddr <= A_I; --latch address/data
+				currAddr <= A_I(0); --latch address/data
 			end if;
 		end if;
 	end process;
 	
-	rwBit <= currAddr(0);
+	rwBit <= currAddr;
 ----------------------------------------------------------------------------------
 -- Title: Substate counter
 -- Description: Divides each state into 4, to respect the setup and hold times of
@@ -291,7 +292,7 @@ SYNC_PROC: process (CLK)
 			rSda <= iSda;
          rScl <= iScl;			
 			DONE_O <= iDone;
-			ERR_O <= iErr;
+			-- ERR_O <= iErr;
 			errTypeR <= errType;
       end if;
    end process;
@@ -485,7 +486,7 @@ SRST, subState, bitCount, int_Rst, dataByte, A_I, currAddr, rwBit, sclCnt, addrN
 								nstate <= stWrite;
 							end if;
 						elsif (STB_I = '1') then
-							if (MSG_I = '1' or currAddr /= A_I) then
+							if (MSG_I = '1' or currAddr /= A_I(0)) then
 								nstate <= stStart;
 							else
 								if (rwBit = '1') then
@@ -508,7 +509,7 @@ SRST, subState, bitCount, int_Rst, dataByte, A_I, currAddr, rwBit, sclCnt, addrN
 			when stRead =>
 				if (subState = "11" and sclCnt = 0 and bitCount = "111") then --bitCount will underflow
 					if (int_Rst = '0' and STB_I = '1') then
-						if (MSG_I = '1' or currAddr /= A_I) then
+						if (MSG_I = '1' or currAddr /= A_I(0)) then
 							nstate <= stMNAckStart;
 						else
 							nstate <= stMAck;

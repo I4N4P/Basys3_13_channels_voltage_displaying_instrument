@@ -159,7 +159,7 @@ module voltmeter (
                 if(uart_enable)
                         tx <= tx_w;
                 else    
-                        tx <= 8'h3C;
+                        tx <= 8'h0;
         end
 
 /*******************VGA_CONTROL*********************************/

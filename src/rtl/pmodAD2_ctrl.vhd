@@ -69,7 +69,7 @@ architecture Behavioral of pmodAD2_ctrl is
 					D_I			: in	STD_LOGIC_VECTOR (7 downto 0); --data input bus
 					D_O			: out	STD_LOGIC_VECTOR (7 downto 0); --data output bus
 					DONE_O		: out	STD_LOGIC; --done status signal
-					ERR_O			: out	STD_LOGIC; --error status
+					--ERR_O			: out	STD_LOGIC; --error status
 					CLK			: in	std_logic;	-- Input Clock
 					SRST			: in	std_logic; -- Reset
 
@@ -115,7 +115,7 @@ begin
 		D_I =>			writeCfg, -- The one and only output byte
 		D_O =>			curResponse,
 		DONE_O =>		fDone,
-		ERR_O =>			open,
+		--ERR_O =>			open,
 		CLK =>			mainClk,
 		SRST =>			rst,
 		SDA =>			SDA_mst,
