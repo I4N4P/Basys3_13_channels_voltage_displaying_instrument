@@ -46,12 +46,12 @@ module uart_control (
         reg [31:0] counter,counter_nxt;
 
         reg [3:0] sign_number,sign_number_nxt;
-        reg [7:0] sign_2_send,sign_2_send_nxt;
+        reg [6:0] sign_2_send,sign_2_send_nxt;
 
         reg [3:0]  word_number,word_number_nxt;
         reg [15:0] word_2_send,word_2_send_nxt;
 
-        reg [15:0] word_info,word_info_nxt;
+        reg [4:0] word_info,word_info_nxt;
 
         reg [7:0] sign_nxt;
         reg [7:0] sign_ascii;
@@ -79,11 +79,11 @@ module uart_control (
         always @(posedge clk) begin
                 if(rst) begin
                         counter         <= 32'b0;
-                        sign_2_send     <= 8'b0;
+                        sign_2_send     <= 7'b0;
                         word_2_send     <= 16'd10;
                         sign_number     <= 4'b0;
                         word_number     <= 4'b0;
-                        word_info       <= 16'd0;
+                        word_info       <= 5'b0;
                         tick            <= 1'b0;
                         sign            <= 8'b0;
                 end else begin
@@ -116,89 +116,89 @@ module uart_control (
                 case (word_number)
                 1: begin
                         word_2_send_nxt     = in0;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd1; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0001; 
                 end 
                 2: begin
                         word_2_send_nxt     = in1;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd2; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0010; 
                 end 
                 3: begin
                         word_2_send_nxt     = in2;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd3; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0011;
                 end 
                 4: begin
                         word_2_send_nxt     = in3;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd4; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0100; 
                 end 
                 5: begin
                         word_2_send_nxt     = in4;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd5; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0101;
                 end 
                 6: begin
                         word_2_send_nxt     = in5;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd6; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0110;
                 end 
                 7: begin
                         word_2_send_nxt     = in6;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd7; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0111; 
                 end 
                 8: begin
                         word_2_send_nxt     = in7;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd8; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b1000; 
                 end 
                 9: begin
                         word_2_send_nxt     = in8;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd9; 
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b1001;
                 end 
                 10: begin
                         word_2_send_nxt     = in9;
-                        word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0]  = 8'd0; 
+                        word_info_nxt[4]    = 1'b1; 
+                        word_info_nxt[3:0]  = 4'b0000;
                 end 
                 11: begin
                         word_2_send_nxt     = in10;
-                        word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0]  = 8'd1; 
+                        word_info_nxt[4]    = 1'b1; 
+                        word_info_nxt[3:0]  = 4'b0001; 
                 end 
                 12: begin
                         word_2_send_nxt     = in11;
-                        word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0]  = 8'd2; 
+                        word_info_nxt[4]    = 1'b1; 
+                        word_info_nxt[3:0]  = 4'b0010; 
                 end 
                 13: begin
                         word_2_send_nxt     = in12;
-                        word_info_nxt[15:8] = 8'd1; 
-                        word_info_nxt[7:0]  = 8'd3; 
+                        word_info_nxt[4]    = 1'b1; 
+                        word_info_nxt[3:0]  = 4'b0011; 
                 end 
                 default: begin
-                        word_2_send_nxt     = in0;
-                        word_info_nxt[15:8] = 8'd0; 
-                        word_info_nxt[7:0]  = 8'd0; 
+                        word_2_send_nxt     = 16'b1111_1111_1111_1111;
+                        word_info_nxt[4]    = 1'b0; 
+                        word_info_nxt[3:0]  = 4'b0000; 
                 end  
                 endcase
         end
 
         always @* begin            
                 case (sign_number)
-                0:   sign_2_send_nxt = 8'd86;                   //V
-                1:   sign_2_send_nxt = word_info[15:8];         //0
-                2:   sign_2_send_nxt = word_info[7:0];          //1
-                3:   sign_2_send_nxt = 8'd32;                   // 
-                4:   sign_2_send_nxt = 8'd45;                   // -
-                5:   sign_2_send_nxt = 8'd32;                   // 
-                6:   sign_2_send_nxt = {4'b0,word_2_send[15:12]};
-                7:   sign_2_send_nxt = {4'b0,word_2_send[11:8]};
-                8:   sign_2_send_nxt = {4'b0,word_2_send[7:4]};
-                9:   sign_2_send_nxt = {4'b0,word_2_send[3:0]};
+                0:   sign_2_send_nxt = 8'd86;                    //V
+                1:   sign_2_send_nxt = {6'b0,word_info[4]};      //0
+                2:   sign_2_send_nxt = {3'b0,word_info[3:0]};    //1
+                3:   sign_2_send_nxt = 8'd32;                    // 
+                4:   sign_2_send_nxt = 8'd45;                    // -
+                5:   sign_2_send_nxt = 8'd32;                    // 
+                6:   sign_2_send_nxt = {3'b0,word_2_send[15:12]};
+                7:   sign_2_send_nxt = {3'b0,word_2_send[11:8]};
+                8:   sign_2_send_nxt = {3'b0,word_2_send[7:4]};
+                9:   sign_2_send_nxt = {3'b0,word_2_send[3:0]};
                 10:  sign_2_send_nxt = 8'd32;                   // 
                 11:  sign_2_send_nxt = 8'd86;                   //V
                 12:  sign_2_send_nxt = 8'd10;
@@ -226,7 +226,7 @@ module uart_control (
                 48: sign_ascii = 8'b0011_0000;
                 49: sign_ascii = 8'b0011_0001;
                 86: sign_ascii = 8'b0101_0110;
-                default: sign_ascii = 8'b0011_0000; 
+                default: sign_ascii = 8'b1011_0000; 
                 endcase
         end
 endmodule
