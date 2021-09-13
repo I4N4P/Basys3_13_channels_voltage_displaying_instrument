@@ -158,6 +158,8 @@ module voltmeter (
         always @(posedge clk_65MHz) begin
                 if(uart_enable)
                         tx <= tx_w;
+                else    
+                        tx <= 8'h3C;
         end
 
 /*******************VGA_CONTROL*********************************/
