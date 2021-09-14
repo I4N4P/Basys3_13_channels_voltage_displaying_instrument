@@ -15,6 +15,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.02 - Add Prameter
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -36,7 +37,7 @@ module voltage_scaler #(
                 output reg [11:0] out
                 
         );
-        //(* keep = 1 *) reg [21:0] out_pipe_2;
+        //(* keep = 1 *) reg [21:0] out_pipe_2;  // attemp to solve problem with pipelining 
         reg [11:0] out_nxt,out_pipe_nxt;
         reg [21:0] out_pipe_2,out_pipe_2_nxt;
         //reg [21:0] out_pipe_20,out_pipe_20_nxt;

@@ -15,6 +15,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.01 - Macro Created
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -38,13 +39,14 @@ module uart_control (
                 output reg tick
                 
         );
+
         `ADC_INPUT_WIRE
         `ADC_SPLIT_INPUT(adc_in)
 
-        localparam      IDLE = 4'b0001,
-                        PREPARE_WORD = 4'b0010,
-                        PREPARE_SIGN = 4'b0100,
-                        SEND_SIGN = 4'b1000;
+        localparam      IDLE            = 4'b0001,
+                        PREPARE_WORD    = 4'b0010,
+                        PREPARE_SIGN    = 4'b0100,
+                        SEND_SIGN       = 4'b1000;
 
         localparam TIME2WAIT = 65_000_000;
         localparam WORD_SIZE = 13;

@@ -16,6 +16,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.02 - Macro Created
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -80,8 +81,6 @@ module vga_top_draw_char
 
         vga_font_rom my_vga_font_rom
         (
-                //.clk(clk),
-        
                 .addr({char_code,text_line}),
                 .data(char_pixel)
         );
@@ -102,7 +101,8 @@ module vga_top_draw_char
         
         vga_measurements_rom my_vga_measurements_rom
         (
-                .clk(clk),
+                .clk (clk),
+                .rst (rst),
 
                 .in0(ascii[0]),
                 .in1(ascii[1]),

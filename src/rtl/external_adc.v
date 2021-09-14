@@ -16,6 +16,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.02 - Macro Created
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the

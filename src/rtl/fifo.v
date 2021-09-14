@@ -13,7 +13,7 @@
 // Project Name:        voltmeter
 // Target Devices: 
 // Tool versions:       2018.2
-// Description:         This odule is a storeage of word that will be send by uart.
+// Description:         This module is a storeage of word that will be send by uart.
 //
 // Dependencies: 
 //

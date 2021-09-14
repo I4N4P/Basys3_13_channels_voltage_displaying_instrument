@@ -15,6 +15,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.02 - Removes Counter
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -27,9 +28,10 @@
 `timescale 1 ns / 1 ps
 
 module internal_reset (
-        input   wire clk,
-        input   wire locked,
-        output  reg  reset_out
+                input   wire clk,
+                input   wire locked,
+                
+                output  reg  reset_out
         );
 
         always @(negedge clk or negedge locked) begin

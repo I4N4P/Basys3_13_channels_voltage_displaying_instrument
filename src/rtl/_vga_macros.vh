@@ -1,3 +1,26 @@
+//////////////////////////////////////////////////////////////////////////////////
+//
+// https://upel2.cel.agh.edu.pl/weaiib/course/view.php?id=1121
+//
+// Company: AGH_University
+// Engineer: Not Known
+// 
+// Create Date:         2016 
+// Design Name:         _vga_macros
+// Module Name:         _vga_macros
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         this module provide prject with vga_macros.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
 `ifndef _vga_macros
 `define _vga_macros
 

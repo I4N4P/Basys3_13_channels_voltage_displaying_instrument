@@ -4,8 +4,8 @@
 // Engineer: Dawid Scechura
 // 
 // Create Date:         17:20:14 29/08/2021 
-// Design Name:         bcdword2ascii1_4
-// Module Name:         bcdword2ascii1_4 
+// Design Name:         bcdword2ascii1_16
+// Module Name:         bcdword2ascii1_16 
 // Project Name:        voltmeter
 // Target Devices: 
 // Tool versions:       2018.2

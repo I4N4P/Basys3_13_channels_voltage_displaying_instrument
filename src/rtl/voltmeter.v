@@ -208,7 +208,7 @@ module voltmeter (
 
                 .adc_in (adc_bus),
 
-                .vga_in(vga_bus[1]),
+                .vga_in (vga_bus[1]),
 
                 .vsync_out (vga_bus[2][37]),
                 .hsync_out (vga_bus[2][36]),

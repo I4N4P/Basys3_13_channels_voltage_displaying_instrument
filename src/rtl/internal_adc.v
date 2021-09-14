@@ -3,7 +3,7 @@
 // Company: AGH_University
 // Engineer: Dawid Scechura
 // 
-// Create Date:         30.08.2021 
+// Create Date:         24.07.2021 
 // Design Name:         internal_adc
 // Module Name:         internal_adc
 // Project Name:        voltmeter
@@ -15,6 +15,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.02 - Add bin2bcd
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -27,15 +28,15 @@
 `timescale 1ns / 1ps
 
 module internal_adc (
-        input wire clk,
-        input wire rst,
+                input wire clk,
+                input wire rst,
 
-        input wire iadcp,
-        input wire iadcn,
-        input wire vp_in,
-        input wire vn_in,
+                input wire iadcp,
+                input wire iadcn,
+                input wire vp_in,
+                input wire vn_in,
 
-        output wire [15:0] dout
+                output wire [15:0] dout
         );
 
         wire enable;

@@ -3,7 +3,7 @@
 // Company: AGH_University
 // Engineer: Dawid Scechura
 // 
-// Create Date:         2016 
+// Create Date:         05.09.2021 
 // Design Name:         pmod_control
 // Module Name:         pmod_control
 // Project Name:        voltmeter
@@ -40,10 +40,10 @@ module pmod_control (
                 
         );
 
-        localparam      IDLE = 4'b0001,
-                        SAVE_DATA = 4'b0010,
-                        CHANGE_CHANNEL = 4'b0100,
-                        GENERATE_TICK = 4'b1000;
+        localparam      IDLE            = 4'b0001,
+                        SAVE_DATA       = 4'b0010,
+                        CHANGE_CHANNEL  = 4'b0100,
+                        GENERATE_TICK   = 4'b1000;
 
         localparam TIME2WAIT = 650_000;                 //reads data with 100 Hz frequency 
 

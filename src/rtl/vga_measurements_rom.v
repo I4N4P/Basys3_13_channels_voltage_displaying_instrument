@@ -15,6 +15,7 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.01 - Add synch reset
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -27,7 +28,8 @@
 
 module vga_measurements_rom
         (
-                input  wire        clk,
+                input  wire       clk,
+                input  wire       rst,
 
                 input wire [27:0] in0,
                 input wire [27:0] in1,
@@ -58,16 +60,22 @@ module vga_measurements_rom
 
         // body
         always @(posedge clk) begin
-                char_code <= char_code1;
-                if(counter == 65_000_000) begin
+                if (rst) begin
+                        char_code <= 7'b0;
+                        counter <= 32'b0;
                         for(i = 0;i < 13;i = i + 1)
-                                out[i] <= nxt[i];
+                                out[i] <= 28'b0;
+                end else begin 
+                        char_code <= char_code1;
+                        if(counter == 65_000_000) begin
+                                for(i = 0;i < 13;i = i + 1)
+                                        out[i] <= nxt[i];
                                 counter <= 32'b0;
-                end else begin
-                        counter <= counter_nxt;
-                        for(i = 0;i < 13;i = i + 1)
-                                out[i] <= out[i];
-                        
+                        end else begin
+                                counter <= counter_nxt;
+                                for(i = 0;i < 13;i = i + 1)
+                                        out[i] <= out[i];    
+                        end
                 end
         end
 

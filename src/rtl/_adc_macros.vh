@@ -1,3 +1,24 @@
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Dawid Scechura
+// 
+// Create Date:         14.09.2021 
+// Design Name:         _adc_macros
+// Module Name:         _adc_macros
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         this module provide prject with adc_macros.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
 `ifndef _adc_macros
 `define _adc_macros
 
