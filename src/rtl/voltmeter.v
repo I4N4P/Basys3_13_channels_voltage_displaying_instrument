@@ -197,28 +197,14 @@ module voltmeter (
                 .vga_out (vga_bus[1])
         );
         
-        top_draw_rect my_top_draw_rect
+        vga_top_draw_pict my_vga_top_draw_pict
                 (
-                .pclk(clk_65MHz),
+                .clk (clk_65MHz),
                 .rst (reset),
-                .xpos (12'b0),
-                .ypos (12'b0),
 
-                .vcount_in (vcount_out_b),
-                .vsync_in  (vsync_out_b),
-                .vblnk_in  (vblnk_out_b),
-                .hcount_in (hcount_out_b),
-                .hsync_in  (hsync_out_b),
-                .hblnk_in  (hblnk_out_b),
+                .vga_in (vga_bus[1]),
 
-                .vcount_out (vcount_out_d),
-                .vsync_out  (vsync_out_d),
-                .vblnk_out  (vblnk_out_d),
-                .hcount_out (hcount_out_d),
-                .hsync_out  (hsync_out_d),
-                .hblnk_out  (hblnk_out_d),
-                .rgb_in (rgb_out_b),
-                .rgb_out    (rgb_out_d)
+                .vga_out (vga_bus[2])
         );
        
         vga_top_draw_char 
@@ -230,24 +216,24 @@ module voltmeter (
         (
                 .clk (clk_65MHz),
                 .rst  (reset),
-                
+
                 .adc_in (adc_bus),
 
-                .vga_in (vga_bus[1]),
+                .vga_in (vga_bus[2]),
 
-                .vsync_out (vga_bus[2][37]),
-                .hsync_out (vga_bus[2][36]),
-                .rgb_out   (vga_bus[2][35:24])
+                .vsync_out (vga_bus[3][37]),
+                .hsync_out (vga_bus[3][36]),
+                .rgb_out   (vga_bus[3][35:24])
         );
 
         // Synchronical logic
         always @(posedge clk_65MHz) begin
                 // Just pass these through.
-                hs <= vga_bus[2][36];
-                vs <= vga_bus[2][37];
+                hs <= vga_bus[3][36];
+                vs <= vga_bus[3][37];
 
-                r  <= vga_bus[2][35:32];
-                g  <= vga_bus[2][31:28];
-                b  <= vga_bus[2][27:24];
+                r  <= vga_bus[3][35:32];
+                g  <= vga_bus[3][31:28];
+                b  <= vga_bus[3][27:24];
         end
 endmodule

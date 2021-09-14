@@ -51,19 +51,16 @@ proc attach_rtl_files {} {
                    
                 rtl/vga_timing.v
                 rtl/vga_draw_background.v
-                rtl/image_rom.v
-                rtl/top_draw_rect.v
+                rtl/vga_image_rom.v
+                rtl/vga_top_draw_pict.v
                 rtl/vga_top_draw_char.v
-                rtl/draw_rect.v
+                rtl/vga_draw_pict.v
                 rtl/vga_draw_char.v
                 rtl/delay.v 
                 rtl/vga_font_rom.v
                 rtl/bcdword2ascii1_16.v
                 rtl/bcd2ascii1_4.v
                 rtl/vga_measurements_rom.v
-
-
-
         }
 }
 

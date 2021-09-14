@@ -120,6 +120,6 @@ module vga_timing (
         assign   vblnk_out  = vertical_blank;
         assign   hs_out     = horizontal_sync;
         assign   vs_out     = vertical_sync;
-        assign   rgb_out    = 12'b0;
+        assign   rgb_out    = 12'hf_f_f;
 
 endmodule

@@ -71,26 +71,27 @@ module vga_draw_background (
 
         always @* begin
                 rgb_dummy = rgb_in;
+                rgb_out_nxt = rgb_out;
                 // During blanking, make it it black.
                 if (vblnk_in || hblnk_in) begin  
                         rgb_out_nxt = 12'h0_0_0; 
                 end else begin
 
                         // M - left
-                        if ((hcount_in>=300)&&(hcount_in<=320)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=350)&&(hcount_in<=370)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=320)&&(hcount_in<=335)&&(vcount_in>= hcount_in + 315)&&(vcount_in<= hcount_in + 335)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=335)&&(hcount_in<=350)&&(vcount_in>= -hcount_in + 985)&&(vcount_in<= -hcount_in + 1005)) rgb_out_nxt <= 12'hf_b_0;
+                        if ((hcount_in >= 300) && (hcount_in <= 320) && (vcount_in >= 635) && (vcount_in <= 720)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 350) && (hcount_in <= 370) && (vcount_in >= 635) && (vcount_in <= 720)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 320) && (hcount_in <= 335) && (vcount_in >=  hcount_in + 315) && (vcount_in <= hcount_in + 335)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 335) && (hcount_in <= 350) && (vcount_in >=  -hcount_in + 985) && (vcount_in <= -hcount_in + 1005)) rgb_out_nxt = 12'hf_b_0;
 
                         // T 
-                        else if ((hcount_in>=375)&&(hcount_in<=425)&&(vcount_in>=655)&&(vcount_in<=670)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=395)&&(hcount_in<=405)&&(vcount_in>=670)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in >= 375) && (hcount_in <= 425) && (vcount_in >= 655) && (vcount_in <= 670)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 395) && (hcount_in <= 405) && (vcount_in >= 670) && (vcount_in <= 720)) rgb_out_nxt = 12'hf_b_0;
 
                         // M - right
-                        else if ((hcount_in>=430)&&(hcount_in<=450)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=480)&&(hcount_in<=500)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=450)&&(hcount_in<=465)&&(vcount_in>= hcount_in + 185)&&(vcount_in<= hcount_in + 205)) rgb_out_nxt <= 12'hf_b_0;
-                        else if ((hcount_in>=465)&&(hcount_in<=480)&&(vcount_in>= -hcount_in + 1115)&&(vcount_in<= -hcount_in + 1135)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in >= 430) && (hcount_in <= 450) && (vcount_in >= 635) && (vcount_in <= 720)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 480) && (hcount_in <= 500) && (vcount_in >= 635) && (vcount_in <= 720)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 450) && (hcount_in <= 465) && (vcount_in >=  hcount_in + 185) && (vcount_in <= hcount_in + 205)) rgb_out_nxt = 12'hf_b_0;
+                        else if ((hcount_in >= 465) && (hcount_in <= 480) && (vcount_in >=  -hcount_in + 1115) && (vcount_in <= -hcount_in + 1135)) rgb_out_nxt = 12'hf_b_0;
 
                         else rgb_out_nxt = 12'h1_8_9; 
 

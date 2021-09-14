@@ -100,7 +100,6 @@ module vga_draw_char
                         vsync_out  <= 1'b0; 
                         hsync_out  <= 1'b0;
                         text_line  <= 4'b0;
-                        //vcount_pic <= 12'b0;
                         text_xy    <= 8'b0;
                         offset     <= 8'b0; 
                         hcount_pic <= 12'b0;
@@ -112,8 +111,6 @@ module vga_draw_char
                         hsync_out  <= hsync_out_d;
                                   
                         text_line  <= vcount_pic2;
-                        
-                        //vcount_pic <= vcount_pic2;
 
                         pixels <= pixels_nxt;
 
