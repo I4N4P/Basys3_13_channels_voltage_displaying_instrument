@@ -231,19 +231,19 @@ module voltmeter (
 
                 .vga_in(vga_bus[1]),
 
-                .vsync_out  (vsync),
-                .hsync_out  (hsync),
-                .rgb_out    (rgb)
+                .vsync_out  (vga_bus[2][37]),
+                .hsync_out  (vga_bus[2][36]),
+                .rgb_out    (vga_bus[2][35:24])
         );
 
         // Synchronical logic
         always @(posedge clk_65MHz) begin
                 // Just pass these through.
-                hs <= hsync;
-                vs <= vsync;
+                hs <= vga_bus[2][36];
+                vs <= vga_bus[2][37];
 
-                r  <= rgb[11:8];
-                g  <= rgb[7:4];
-                b  <= rgb[3:0];
+                r  <= vga_bus[2][35:32];
+                g  <= vga_bus[2][31:28];
+                b  <= vga_bus[2][27:24];
         end
 endmodule

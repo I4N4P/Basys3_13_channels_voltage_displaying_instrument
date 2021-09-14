@@ -26,6 +26,8 @@
 
 `timescale 1 ns / 1 ps
 
+`include "_vga_macros.vh"
+
 module vga_draw_char 
         #( 
                 parameter XPOS = 64,
@@ -35,13 +37,15 @@ module vga_draw_char
                 input   wire clk,
                 input   wire rst,
 
-                input   wire [11:0] vcount_in,
-                input   wire vsync_in, 
-                input   wire vblnk_in, 
-                input   wire [11:0] hcount_in,
-                input   wire hsync_in, 
-                input   wire hblnk_in, 
-                input   wire [11:0] rgb_in,
+                // input   wire [11:0] vcount_in,
+                // input   wire vsync_in, 
+                // input   wire vblnk_in, 
+                // input   wire [11:0] hcount_in,
+                // input   wire hsync_in, 
+                // input   wire hblnk_in, 
+                // input   wire [11:0] rgb_in,
+                input   wire [`VGA_BUS_SIZE-1:0] vga_in,
+
                 input   wire [7:0] char_pixel,
 
                 output  reg vsync_out,  
@@ -51,6 +55,7 @@ module vga_draw_char
                 output  reg [3:0] text_line
         );
 
+        `VGA_SPLIT_INPUT(vga_in)
         // This are the parameters of the rectangle.
 
         localparam RECT_HEIGHT = 208;
@@ -80,7 +85,7 @@ module vga_draw_char
         ) timing_delay (
                 .clk  (clk),
                 .rst  (rst),
-                .din  ({hcount_in, hsync_in, hblnk_in, vcount_in, vsync_in, vblnk_in}),
+                .din  ({hcount_in, hs_in, hblnk_in, vcount_in, vs_in, vblnk_in}),
                 .dout ({hcount_out_d, hsync_out_d, hblnk_out_d, vcount_out_d, vsync_out_d, vblnk_out_d})
         );
 
