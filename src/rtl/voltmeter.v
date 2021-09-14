@@ -164,8 +164,9 @@ module voltmeter (
 
         wire vsync, hsync,vsync_out_b, hsync_out_b, vsync_out_c, hsync_out_c;
         wire vblnk, hblnk,vblnk_out_b, hblnk_out_b, vblnk_out_c, hblnk_out_c;
-        wire [11:0] vcount, hcount,vcount_out_b, hcount_out_b,vcount_out_c, hcount_out_c;
-        wire [11:0] rgb_out_b, rgb_out_c; 
+        wire hblnk_out_d, vblnk_out_d, hsync_out_d, vsync_out_d;
+        wire [11:0] vcount, hcount,vcount_out_b, hcount_out_b,vcount_out_c, hcount_out_c, vcount_out_d, hcount_out_d;
+        wire [11:0] rgb_out_b, rgb_out_c, rgb_out_d; 
 
         vga_timing my_timing 
         (
@@ -180,6 +181,7 @@ module voltmeter (
                 .hblnk  (hblnk)
         );
 
+   
         vga_draw_background my_vga_draw_background 
         (
                 .clk(clk_65MHz),
@@ -200,10 +202,34 @@ module voltmeter (
                 .hblnk_out  (hblnk_out_b),
                 .rgb_out    (rgb_out_b)
         );
+        
+        top_draw_rect my_top_draw_rect
+                (
+                .pclk(clk_65MHz),
+                .rst (reset),
+                .xpos (12'b0),
+                .ypos (12'b0),
+
+                .vcount_in (vcount_out_b),
+                .vsync_in  (vsync_out_b),
+                .vblnk_in  (vblnk_out_b),
+                .hcount_in (hcount_out_b),
+                .hsync_in  (hsync_out_b),
+                .hblnk_in  (hblnk_out_b),
+
+                .vcount_out (vcount_out_d),
+                .vsync_out  (vsync_out_d),
+                .vblnk_out  (vblnk_out_d),
+                .hcount_out (hcount_out_d),
+                .hsync_out  (hsync_out_d),
+                .hblnk_out  (hblnk_out_d),
+                .rgb_in (rgb_out_b),
+                .rgb_out    (rgb_out_d)
+        );
        
         vga_top_draw_char 
         #(
-                .XPOS (125),
+                .XPOS (464),
                 .YPOS (99)
         ) 
         my_top_draw_char 
@@ -225,13 +251,13 @@ module voltmeter (
                 .in11 (bcd[11]),
                 .in12 (bcd[12]),
 
-                .vcount_in (vcount_out_b),
-                .vsync_in  (vsync_out_b),
-                .vblnk_in  (vblnk_out_b),
-                .hcount_in (hcount_out_b),
-                .hsync_in  (hsync_out_b),
-                .hblnk_in  (hblnk_out_b),
-                .rgb_in    (rgb_out_b),
+                .vcount_in (vcount_out_d),
+                .vsync_in  (vsync_out_d),
+                .vblnk_in  (vblnk_out_d),
+                .hcount_in (hcount_out_d),
+                .hsync_in  (hsync_out_d),
+                .hblnk_in  (hblnk_out_d),
+                .rgb_in    (rgb_out_d),
 
                 .vsync_out  (vsync_out_c),
                 .hsync_out  (hsync_out_c),
