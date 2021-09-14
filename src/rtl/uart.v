@@ -43,7 +43,7 @@ module uart #( // Default setting:
                 FIFO_W = 4    // # addr bits of FIFO
                         // # words in FIFO=2^FIFO_W
         )(
-                input wire clk, reset,
+                input wire clk, rst,
                 input wire wr_uart,
                 input wire [7:0] w_data,
                 output wire tx_full, tx
@@ -60,7 +60,7 @@ module uart #( // Default setting:
                 .N (DVSR_BIT)
         ) baud_gen_unit (
                 .clk (clk), 
-                .reset (reset), 
+                .reset (rst), 
                 .q (), 
                 .max_tick (tick)
         );
@@ -70,7 +70,7 @@ module uart #( // Default setting:
                 .W (FIFO_W)
         ) fifo_tx_unit (
                 .clk (clk), 
-                .reset (reset), 
+                .reset (rst), 
                 .rd (tx_done_tick),
                 .wr (wr_uart), 
                 .w_data (w_data), 
@@ -84,7 +84,7 @@ module uart #( // Default setting:
                 .SB_TICK (SB_TICK)
         ) uart_tx_unit (
                 .clk (clk), 
-                .reset (reset), 
+                .reset (rst), 
                 .tx_start (tx_fifo_not_empty),
                 .s_tick (tick), 
                 .din (tx_fifo_out),

@@ -26,27 +26,20 @@
 
 `timescale 1 ns / 1 ps
 
+`include "_adc_macros.vh"
+
 module uart_control (
                 input wire clk,
                 input wire rst,
-                input wire [15:0] in0,
-                input wire [15:0] in1,
-                input wire [15:0] in2,
-                input wire [15:0] in3,
-                input wire [15:0] in4,
-                input wire [15:0] in5,
-                input wire [15:0] in6,
-                input wire [15:0] in7,
-                input wire [15:0] in8,
-                input wire [15:0] in9,
-                input wire [15:0] in10,
-                input wire [15:0] in11,
-                input wire [15:0] in12,
+
+                input   wire [`ADC_BUS_SIZE-1:0] adc_in,
 
                 output reg [7:0] sign,
                 output reg tick
                 
         );
+        `ADC_INPUT_WIRE
+        `ADC_SPLIT_INPUT(adc_in)
 
         localparam      IDLE = 4'b0001,
                         PREPARE_WORD = 4'b0010,
@@ -130,67 +123,67 @@ module uart_control (
         always @* begin            
                 case (word_number)
                 1: begin
-                        word_2_send_nxt     = in0;
+                        word_2_send_nxt     = in[0];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0001; 
                 end 
                 2: begin
-                        word_2_send_nxt     = in1;
+                        word_2_send_nxt     = in[1];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0010; 
                 end 
                 3: begin
-                        word_2_send_nxt     = in2;
+                        word_2_send_nxt     = in[2];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0011;
                 end 
                 4: begin
-                        word_2_send_nxt     = in3;
+                        word_2_send_nxt     = in[3];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0100; 
                 end 
                 5: begin
-                        word_2_send_nxt     = in4;
+                        word_2_send_nxt     = in[4];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0101;
                 end 
                 6: begin
-                        word_2_send_nxt     = in5;
+                        word_2_send_nxt     = in[5];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0110;
                 end 
                 7: begin
-                        word_2_send_nxt     = in6;
+                        word_2_send_nxt     = in[6];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b0111; 
                 end 
                 8: begin
-                        word_2_send_nxt     = in7;
+                        word_2_send_nxt     = in[7];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b1000; 
                 end 
                 9: begin
-                        word_2_send_nxt     = in8;
+                        word_2_send_nxt     = in[8];
                         word_info_nxt[4]    = 1'b0; 
                         word_info_nxt[3:0]  = 4'b1001;
                 end 
                 10: begin
-                        word_2_send_nxt     = in9;
+                        word_2_send_nxt     = in[9];
                         word_info_nxt[4]    = 1'b1; 
                         word_info_nxt[3:0]  = 4'b0000;
                 end 
                 11: begin
-                        word_2_send_nxt     = in10;
+                        word_2_send_nxt     = in[10];
                         word_info_nxt[4]    = 1'b1; 
                         word_info_nxt[3:0]  = 4'b0001; 
                 end 
                 12: begin
-                        word_2_send_nxt     = in11;
+                        word_2_send_nxt     = in[11];
                         word_info_nxt[4]    = 1'b1; 
                         word_info_nxt[3:0]  = 4'b0010; 
                 end 
                 13: begin
-                        word_2_send_nxt     = in12;
+                        word_2_send_nxt     = in[12];
                         word_info_nxt[4]    = 1'b1; 
                         word_info_nxt[3:0]  = 4'b0011; 
                 end 

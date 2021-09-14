@@ -27,6 +27,8 @@
 
 `timescale 1 ns / 1 ps
 
+`include "_adc_macros.vh"
+
 module external_adc (
                 input wire clk,
                 input wire rst,
@@ -34,19 +36,18 @@ module external_adc (
                 inout wire AD2_SCL, 
                 inout wire AD2_SDA,
                 
-                output wire [15:0] channel0,
-                output wire [15:0] channel1,
-                output wire [15:0] channel2,
-                output wire [15:0] channel3
+                output wire [`ADC_SMALL_BUS_SIZE - 1:0] adc_out
                 
         );
-
+        
+        `ADC_OUT_SMALL_WIRE
+        `ADC_SMALL_MERGE_OUTPUT(adc_out)
+        
         wire [3:0] adress;
         wire flag;
         wire [11:0] raw_data;
         wire [11:0] value [0:3];
         wire [11:0] value_out [0:3];
-        wire [15:0] channel [0:3];
         
         pmodAD2_ctrl my_pmodAD2_ctrl (
                 .mainClk(clk),
@@ -89,10 +90,4 @@ module external_adc (
                         );
                 end
         endgenerate
-        
-        assign channel0 = channel[0];
-        assign channel1 = channel[1];
-        assign channel2 = channel[2];
-        assign channel3 = channel[3];
-
 endmodule

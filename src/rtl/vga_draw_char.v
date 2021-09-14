@@ -37,13 +37,6 @@ module vga_draw_char
                 input   wire clk,
                 input   wire rst,
 
-                // input   wire [11:0] vcount_in,
-                // input   wire vsync_in, 
-                // input   wire vblnk_in, 
-                // input   wire [11:0] hcount_in,
-                // input   wire hsync_in, 
-                // input   wire hblnk_in, 
-                // input   wire [11:0] rgb_in,
                 input   wire [`VGA_BUS_SIZE-1:0] vga_in,
 
                 input   wire [7:0] char_pixel,

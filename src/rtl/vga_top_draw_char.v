@@ -27,6 +27,7 @@
 `timescale 1 ns / 1 ps
 
 `include "_vga_macros.vh"
+`include "_adc_macros.vh"
 
 module vga_top_draw_char 
         #( 
@@ -37,20 +38,7 @@ module vga_top_draw_char
                 input   wire clk,
                 input   wire rst,
 
-                input wire [15:0] in0,
-                input wire [15:0] in1,
-                input wire [15:0] in2,
-                input wire [15:0] in3,
-                input wire [15:0] in4,
-                input wire [15:0] in5,
-                input wire [15:0] in6,
-                input wire [15:0] in7,
-                input wire [15:0] in8,
-                input wire [15:0] in9,
-                input wire [15:0] in10,
-                input wire [15:0] in11,
-                input wire [15:0] in12,
- 
+                input   wire [`ADC_BUS_SIZE-1:0] adc_in,
                 input   wire [`VGA_BUS_SIZE-1:0] vga_in,
 
 
@@ -61,12 +49,14 @@ module vga_top_draw_char
 
         `VGA_SPLIT_INPUT(vga_in)
 
+        `ADC_INPUT_WIRE
+        `ADC_SPLIT_INPUT(adc_in)
+
         wire [3:0]  text_line;
         wire [7:0]  text_xy;
         wire [6:0]  char_code;
         wire [7:0]  char_pixel;
         wire [27:0] ascii [0:12];
-        reg  [15:0] in [0:12];
 
 
         vga_draw_char #(
@@ -131,20 +121,4 @@ module vga_top_draw_char
                 .char_code(char_code)
         );
         
-        always @* begin
-                in[0] = in0;
-                in[1] = in1;
-                in[2] = in2;
-                in[3] = in3;
-                in[4] = in4;
-                in[5] = in5;
-                in[6] = in6;
-                in[7] = in7;
-                in[8] = in8;
-                in[9] = in9;
-                in[10] = in10;
-                in[11] = in11;
-                in[12] = in12; 
-        end
-
 endmodule

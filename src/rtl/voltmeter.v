@@ -15,6 +15,8 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
+// Revision 0.02 - vga  Added
+// Revision 0.03 - adc  Added
 // Additional Comments:         using Verilog-2001 syntax.
 //
 // The `timescale directive specifies what the
@@ -27,6 +29,7 @@
 `timescale 1 ns / 1 ps
 
 `include "_vga_macros.vh"
+`include "_adc_macros.vh"
 
 module voltmeter (
                 input wire clk,
@@ -82,9 +85,12 @@ module voltmeter (
                 .reset_out (reset)
         );
 
-/*******************INTERNAL_ADC*********************************/		
+/*******************INTERNAL_ADC*********************************/	
 
-        wire [15:0] bcd [0:12];
+        wire [`ADC_BUS_SIZE-1:0] adc_bus;
+
+        `ADC_OUT_WIRE
+        `ADC_MERGE_OUTPUT(adc_bus)
 
         internal_adc my_internal_adc 
         (
@@ -96,7 +102,7 @@ module voltmeter (
                 .vp_in (vp_in),
                 .vn_in (vn_in),
 
-                .dout (bcd[0])
+                .dout (dout)
         );
 
 /*******************EXTERNAL_ADC*********************************/
@@ -108,16 +114,13 @@ module voltmeter (
         generate
                 for (i = 0; i < 3 ; i = i + 1 ) begin
                         external_adc external_adc_JX(
-                                .clk(clk_65MHz),
-                                .rst(reset),
+                                .clk (clk_65MHz),
+                                .rst (reset),
 
                                 .AD2_SCL (AD2_SCL_JX[i]), 
                                 .AD2_SDA (AD2_SDA_JX[i]),
                                 
-                                .channel0(bcd[(4 * i) + 1]),
-                                .channel1(bcd[(4 * i) + 2]),
-                                .channel2(bcd[(4 * i) + 3]),
-                                .channel3(bcd[(4 * i) + 4])     
+                                .adc_out (adc_out[i])    
                         );
                 end
         endgenerate
@@ -125,6 +128,7 @@ module voltmeter (
         assign {AD2_SCL_JA,AD2_SDA_JA} = {AD2_SCL_JX[0],AD2_SDA_JX[0]};
         assign {AD2_SCL_JB,AD2_SDA_JB} = {AD2_SCL_JX[1],AD2_SDA_JX[1]};
         assign {AD2_SCL_JC,AD2_SDA_JC} = {AD2_SCL_JX[2],AD2_SDA_JX[2]};
+
 
 /*******************UART_MODULE*********************************/
         
@@ -137,19 +141,8 @@ module voltmeter (
                 .clk (clk_65MHz),
                 .rst (reset),
 
-                .in0 (bcd[0]),
-                .in1 (bcd[1]),
-                .in2 (bcd[2]),
-                .in3 (bcd[3]),
-                .in4 (bcd[4]),
-                .in5 (bcd[5]),
-                .in6 (bcd[6]),
-                .in7 (bcd[7]),
-                .in8 (bcd[8]),
-                .in9 (bcd[9]),
-                .in10 (bcd[10]),
-                .in11 (bcd[11]),
-                .in12 (bcd[12]),
+                .adc_in (adc_bus),
+
                 .sign (uart_data),
                 .tick (tick)        
         );
@@ -165,7 +158,8 @@ module voltmeter (
         my_uart 
         (
                 .clk (clk_65MHz),
-                .reset (reset),
+                .rst (reset),
+
                 .wr_uart (tick), 
                 .w_data (uart_data),
                 .tx_full (), 
@@ -181,9 +175,6 @@ module voltmeter (
 
 /*******************VGA_CONTROL*********************************/
 
-        wire vsync;
-        wire vblnk;
-        wire [11:0] rgb; 
 
         wire [`VGA_BUS_SIZE-1:0] vga_bus [0:3];
 
@@ -192,7 +183,7 @@ module voltmeter (
                 .clk (clk_65MHz),
                 .rst (reset),
 
-                .vga_out    (vga_bus[0])
+                .vga_out (vga_bus[0])
         );
 
         vga_draw_background my_vga_draw_background 
@@ -215,25 +206,13 @@ module voltmeter (
                 .clk (clk_65MHz),
                 .rst  (reset),
 
-                .in0 (bcd[0]),
-                .in1 (bcd[1]),
-                .in2 (bcd[2]),
-                .in3 (bcd[3]),
-                .in4 (bcd[4]),
-                .in5 (bcd[5]),
-                .in6 (bcd[6]),
-                .in7 (bcd[7]),
-                .in8 (bcd[8]),
-                .in9 (bcd[9]),
-                .in10 (bcd[10]),
-                .in11 (bcd[11]),
-                .in12 (bcd[12]),
+                .adc_in (adc_bus),
 
                 .vga_in(vga_bus[1]),
 
-                .vsync_out  (vga_bus[2][37]),
-                .hsync_out  (vga_bus[2][36]),
-                .rgb_out    (vga_bus[2][35:24])
+                .vsync_out (vga_bus[2][37]),
+                .hsync_out (vga_bus[2][36]),
+                .rgb_out   (vga_bus[2][35:24])
         );
 
         // Synchronical logic
