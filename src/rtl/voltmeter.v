@@ -26,6 +26,7 @@
 
 `timescale 1 ns / 1 ps
 
+`include "_vga_macros.vh"
 
 module voltmeter (
                 input wire clk,
@@ -180,22 +181,18 @@ module voltmeter (
 
 /*******************VGA_CONTROL*********************************/
 
-        wire vsync, hsync,vsync_out_b, hsync_out_b, vsync_out_c, hsync_out_c;
-        wire vblnk, hblnk,vblnk_out_b, hblnk_out_b, vblnk_out_c, hblnk_out_c;
-        wire [11:0] vcount, hcount,vcount_out_b, hcount_out_b,vcount_out_c, hcount_out_c;
-        wire [11:0] rgb_out_b, rgb_out_c; 
+        wire vsync;
+        wire vblnk;
+        wire [11:0] rgb; 
+
+        wire [`VGA_BUS_SIZE-1:0] vga_bus [0:3];
 
         vga_timing my_timing 
         (
                 .clk (clk_65MHz),
                 .rst (reset),
-                
-                .vcount (vcount),
-                .vsync  (vsync),
-                .vblnk  (vblnk),
-                .hcount (hcount),
-                .hsync  (hsync),
-                .hblnk  (hblnk)
+
+                .vga_out    (vga_bus[0])
         );
 
         vga_draw_background my_vga_draw_background 
@@ -203,20 +200,9 @@ module voltmeter (
                 .clk(clk_65MHz),
                 .rst (reset),
 
-                .vcount_in (vcount),
-                .vsync_in  (vsync),
-                .vblnk_in  (vblnk),
-                .hcount_in (hcount),
-                .hsync_in  (hsync),
-                .hblnk_in  (hblnk),
+                .vga_in (vga_bus[0]),
 
-                .vcount_out (vcount_out_b),
-                .vsync_out  (vsync_out_b),
-                .vblnk_out  (vblnk_out_b),
-                .hcount_out (hcount_out_b),
-                .hsync_out  (hsync_out_b),
-                .hblnk_out  (hblnk_out_b),
-                .rgb_out    (rgb_out_b)
+                .vga_out (vga_bus[1])
         );
        
         vga_top_draw_char 
@@ -243,27 +229,21 @@ module voltmeter (
                 .in11 (bcd[11]),
                 .in12 (bcd[12]),
 
-                .vcount_in (vcount_out_b),
-                .vsync_in  (vsync_out_b),
-                .vblnk_in  (vblnk_out_b),
-                .hcount_in (hcount_out_b),
-                .hsync_in  (hsync_out_b),
-                .hblnk_in  (hblnk_out_b),
-                .rgb_in    (rgb_out_b),
+                .vga_in(vga_bus[1]),
 
-                .vsync_out  (vsync_out_c),
-                .hsync_out  (hsync_out_c),
-                .rgb_out    (rgb_out_c)
+                .vsync_out  (vsync),
+                .hsync_out  (hsync),
+                .rgb_out    (rgb)
         );
 
         // Synchronical logic
         always @(posedge clk_65MHz) begin
                 // Just pass these through.
-                hs <= hsync_out_c;
-                vs <= vsync_out_c;
+                hs <= hsync;
+                vs <= vsync;
 
-                r  <= rgb_out_c[11:8];
-                g  <= rgb_out_c[7:4];
-                b  <= rgb_out_c[3:0];
+                r  <= rgb[11:8];
+                g  <= rgb[7:4];
+                b  <= rgb[3:0];
         end
 endmodule

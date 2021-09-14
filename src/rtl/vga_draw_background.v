@@ -27,27 +27,22 @@
 
 `timescale 1 ns / 1 ps
 
+`include "_vga_macros.vh"
+
 module vga_draw_background (
                 input   wire clk,
                 input   wire rst,
 
-                input   wire [11:0] vcount_in,
-                input   wire vsync_in, 
-                input   wire vblnk_in, 
-                input   wire [11:0] hcount_in,
-                input   wire hsync_in, 
-                input   wire hblnk_in, 
-
-                output  reg [11:0] vcount_out,
-                output  reg vsync_out, 
-                output  reg vblnk_out, 
-                output  reg [11:0] hcount_out,
-                output  reg hsync_out, 
-                output  reg hblnk_out, 
-                output  reg [11:0] rgb_out
+                input   wire [`VGA_BUS_SIZE-1:0] vga_in,
+                output  wire [`VGA_BUS_SIZE-1:0] vga_out
         );
-  
+
+        `VGA_SPLIT_INPUT(vga_in)
+        `VGA_OUT_REG
+        `VGA_MERGE_OUTPUT(vga_out)
+
         reg [11:0] rgb_out_nxt;
+        reg [11:0] rgb_dummy;
 
         // Synchronical logic
 
@@ -56,16 +51,17 @@ module vga_draw_background (
                 if (rst) begin
                         vcount_out <= 12'b0;
                         hcount_out <= 12'b0;
-                        vsync_out  <= 1'b0;
+                        vs_out     <= 1'b0;
                         vblnk_out  <= 1'b0; 
-                        hsync_out  <= 1'b0;
+                        hs_out     <= 1'b0;
                         hblnk_out  <= 1'b0; 
+                        rgb_out    <= rgb_in;
                 end else begin
                         vcount_out <= vcount_in;
                         hcount_out <= hcount_in;
-                        vsync_out  <= vsync_in;
+                        vs_out     <= vs_in;
                         vblnk_out  <= vblnk_in; 
-                        hsync_out  <= hsync_in;
+                        hs_out     <= hs_in;
                         hblnk_out  <= hblnk_in; 
                         rgb_out    <= rgb_out_nxt;
                 end
@@ -74,6 +70,7 @@ module vga_draw_background (
         // Combinational logic
 
         always @* begin
+                rgb_dummy = rgb_in;
                 // During blanking, make it it black.
                 if (vblnk_in || hblnk_in) begin  
                         rgb_out_nxt = 12'h0_0_0; 

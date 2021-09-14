@@ -1,4 +1,3 @@
-
 //////////////////////////////////////////////////////////////////////////////////
 //
 // Company: AGH_University
@@ -12,7 +11,7 @@
 // Tool versions:       2018.2
 // Description:         This is the vga timing design for Lab #3 generats
 // signals that control the screen .
-//
+// 
 // Dependencies: 
 //
 // Revision: 
@@ -27,17 +26,17 @@
 
 `timescale 1 ns / 1 ps
 
+`include "_vga_macros.vh"
+
 module vga_timing (
                 input  wire clk,
                 input  wire rst,
 
-                output wire [11:0] vcount,
-                output wire vsync, 
-                output wire vblnk, 
-                output wire [11:0] hcount,
-                output wire hsync,  
-                output wire hblnk  
+                output  wire [`VGA_BUS_SIZE-1:0] vga_out
         );
+
+        `VGA_OUT_WIRE
+        `VGA_MERGE_OUTPUT(vga_out)
 
         localparam HOR_TOTAL_TIME = 1343;
         localparam VER_TOTAL_TIME = 805;
@@ -48,12 +47,12 @@ module vga_timing (
         localparam HOR_SYNC_TIME = 136;
         localparam VER_SYNC_TIME = 3;
 
-        reg [11:0] horizontal_counter = 12'b0;
-        reg [11:0] vertical_counter= 12'b0;
-        reg horizontal_sync = 1'b0;
-        reg horizontal_blank = 1'b0;
-        reg vertical_sync = 1'b0;
-        reg vertical_blank = 1'b0;
+        reg [11:0] horizontal_counter;
+        reg [11:0] vertical_counter;
+        reg horizontal_sync;
+        reg horizontal_blank;
+        reg vertical_sync;
+        reg vertical_blank;
 
         reg [11:0] horizontal_counter_nxt;
         reg [11:0] vertical_counter_nxt;
@@ -103,7 +102,7 @@ module vga_timing (
                 horizontal_counter_nxt = horizontal_counter + 1;
                 vertical_counter_nxt   = vertical_counter;
                 vertical_blank_nxt     = vertical_blank;
-                vertical_sync_nxt      =vertical_sync;
+                vertical_sync_nxt      = vertical_sync;
         end
         if (horizontal_counter >= HOR_BLANK_START && horizontal_counter < HOR_TOTAL_TIME)
                 horizontal_blank_nxt = 1'b1; 
@@ -115,11 +114,12 @@ module vga_timing (
                 horizontal_sync_nxt  = 1'b0;
         end
 
-        assign   hcount = horizontal_counter;
-        assign   vcount = vertical_counter;
-        assign   hblnk  = horizontal_blank;
-        assign   vblnk  = vertical_blank;
-        assign   hsync  = horizontal_sync;
-        assign   vsync  = vertical_sync;
+        assign   hcount_out = horizontal_counter;
+        assign   vcount_out = vertical_counter;
+        assign   hblnk_out  = horizontal_blank;
+        assign   vblnk_out  = vertical_blank;
+        assign   hs_out     = horizontal_sync;
+        assign   vs_out     = vertical_sync;
+        assign   rgb_out    = 12'b0;
 
 endmodule

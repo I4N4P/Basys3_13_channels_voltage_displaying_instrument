@@ -4,7 +4,7 @@
 // Company: AGH_University
 // Engineer: Dawid Scechura
 // 
-// Create Date:         15.04.2021 
+// Create Date:         10.05.2021 
 // Design Name:         vga_top_draw_char
 // Module Name:         vga_top_draw_char
 // Project Name:        voltmeter
@@ -25,6 +25,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
+
+`include "_vga_macros.vh"
 
 module vga_top_draw_char 
         #( 
@@ -48,20 +50,16 @@ module vga_top_draw_char
                 input wire [15:0] in10,
                 input wire [15:0] in11,
                 input wire [15:0] in12,
-
-                input   wire [11:0] vcount_in,
-                input   wire vsync_in, 
-                input   wire vblnk_in, 
-                input   wire [11:0] hcount_in,
-                input   wire hsync_in, 
-                input   wire hblnk_in, 
-                input   wire [11:0] rgb_in,
+ 
+                input   wire [`VGA_BUS_SIZE-1:0] vga_in,
 
 
                 output  wire vsync_out, 
                 output  wire hsync_out, 
                 output  wire [11:0] rgb_out
         );
+
+        `VGA_SPLIT_INPUT(vga_in)
 
         wire [3:0]  text_line;
         wire [7:0]  text_xy;
@@ -79,13 +77,8 @@ module vga_top_draw_char
                 .clk (clk),
                 .rst  (rst),
 
-                .vcount_in(vcount_in),
-                .vsync_in(vsync_in),
-                .vblnk_in(vblnk_in),
-                .hcount_in(hcount_in),
-                .hsync_in(hsync_in),
-                .hblnk_in(hblnk_in),
-                .rgb_in(rgb_in),
+                .vga_in (vga_in),
+
                 .char_pixel(char_pixel),
                 
                 .vsync_out(vsync_out),
