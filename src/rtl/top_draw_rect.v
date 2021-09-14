@@ -1,10 +1,23 @@
-// File: top_draw_rect.v
-// This module draw a char on the backround.
-
-// The `timescale directive specifies what the
-// simulation time units are (1 ns here) and what
-// the simulator time step should be (1 ps here).
-
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Damian Herduś
+// 
+// Create Date:         08.09.2021 
+// Design Name:         top_draw_rect
+// Module Name:         top_draw_rect
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         this module provide prject with adc_macros.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//              
+//////////////////////////////////////////////////////////////////////////////////
 `timescale 1 ns / 1 ps
 
 // Declare the module and its ports. This is
@@ -35,7 +48,8 @@ module top_draw_rect
         output  wire [11:0] rgb_out
         );
         
-        wire [11:0] rgb_pixel,pixel_addr;
+        wire [11:0] rgb_pixel;
+        wire [15:0] pixel_addr;
 
         draw_rect my_draw_rect 
         (

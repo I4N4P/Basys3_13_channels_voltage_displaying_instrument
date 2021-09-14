@@ -1,9 +1,23 @@
-// File: draw_rect.v
-// This module draw a rectangle on the backround.
-
-// The `timescale directive specifies what the
-// simulation time units are (1 ns here) and what
-// the simulator time step should be (1 ps here).
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Company: AGH_University
+// Engineer: Damian Herduś
+// 
+// Create Date:         08.09.2021 
+// Design Name:         draw_rect
+// Module Name:         draw_rect
+// Project Name:        voltmeter
+// Target Devices: 
+// Tool versions:       2018.2
+// Description:         this module provide prject with adc_macros.
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments:         using Verilog-2001 syntax.
+//              
+//////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1 ns / 1 ps
 
@@ -33,16 +47,19 @@ module draw_rect (
         output  reg hsync_out, 
         output  reg hblnk_out, 
         output  reg [11:0] rgb_out,
-        output  reg [11:0] pixel_addr
+        output  reg [15:0] pixel_addr
         );
 
         // This are the parameters of the rectangle.
 
-        localparam RECT_HEIGHT = 64;
-        localparam RECT_WIDTH = 48;
+        localparam RECT_HEIGHT = 260;
+        localparam RECT_WIDTH = 240;
+
+        localparam XPOS = 0;
+        localparam YPOS = 500;
         
-        reg [11:0] rgb_nxt = 12'b0;
-        reg [11:0] pixel_addr_nxt = 12'b0;
+        reg [11:0] rgb_nxt;
+        reg [15:0] pixel_addr_nxt;
         
 
         wire [11:0] vcount_out_s,hcount_out_s,vcount_out_s2,hcount_out_s2; 
@@ -72,52 +89,7 @@ module draw_rect (
         );
 
 
-/************************************* ONLY SAD REACTION FOR OUR DEAD FREINDS ********************************************/
-        // signal_synchronizer my_signal_synchronizer
-        // (
-        //         .pclk(pclk),
-        //         .rst(rst),
 
-        //         .vcount_in(vcount_in),
-        //         .vsync_in(vsync_in),
-        //         .vblnk_in(vblnk_in),
-
-        //         .hcount_in(hcount_in),
-        //         .hsync_in(hsync_in),
-        //         .hblnk_in(hblnk_in),
-        //         .rgb_in(rgb_in),
-
-        //         .vcount_out(vcount_out_s),
-        //         .vsync_out(vsync_out_s),
-        //         .vblnk_out(vblnk_out_s),
-        //         .hcount_out(hcount_out_s),
-        //         .hsync_out(hsync_out_s),
-        //         .hblnk_out(hblnk_out_s),
-        //         .rgb_out(rgb_out_s)
-
-        // );
-        // signal_synchronizer my2_signal_synchronizer
-        // (
-        //         .pclk(pclk),
-        //         .rst(rst),
-
-        //         .vcount_in(vcount_out_s),
-        //         .vsync_in(vsync_out_s),
-        //         .vblnk_in(vblnk_out_s),
-        //         .hcount_in(hcount_out_s),
-        //         .hsync_in(hsync_out_s),
-        //         .hblnk_in(hblnk_out_s),
-        //         .rgb_in(rgb_out_s),
-
-        //         .vcount_out(vcount_out_s2),
-        //         .vsync_out(vsync_out_s2),
-        //         .vblnk_out(vblnk_out_s2),
-        //         .hcount_out(hcount_out_s2),
-        //         .hsync_out(hsync_out_s2),
-        //         .hblnk_out(hblnk_out_s2),
-        //         .rgb_out(rgb_out_s2)
-        // );
-        
 
         // Synchronical logic
         
@@ -158,11 +130,11 @@ module draw_rect (
                 if (hblnk_out_s2 || vblnk_out_s2) begin
                         rgb_nxt = rgb_out_s2;
                 end else begin
-                        if (hcount_out_s2 >= xpos && hcount_out_s2 < xpos + RECT_WIDTH && vcount_out_s2 >= ypos && vcount_out_s2 < ypos + RECT_HEIGHT)
+                        if (hcount_out_s2 >= XPOS && hcount_out_s2 <= XPOS + RECT_WIDTH && vcount_out_s2 >= YPOS && vcount_out_s2 <= YPOS + RECT_HEIGHT)
                                 rgb_nxt = rgb_pixel; 
                         else 
                                 rgb_nxt = rgb_out_s2;  
                 end
-                pixel_addr_nxt = {(vcount_in[5:0]-ypos[5:0]), (hcount_in[5:0]-xpos[5:0])};
+                pixel_addr_nxt = {vcount_in[7:0], hcount_in[7:0]};
         end
 endmodule
