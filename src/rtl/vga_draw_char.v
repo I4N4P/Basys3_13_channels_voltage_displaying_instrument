@@ -54,7 +54,7 @@ module vga_draw_char
         localparam RECT_HEIGHT = 208;
         localparam RECT_WIDTH  = 96;
 
-        localparam BLACK = 12'h0_0_0;
+        localparam BLUE = 12'h1_4_7;
         localparam WHITE = 12'hf_f_f;
         
         reg [11:0] rgb_nxt = 12'b0;
@@ -149,7 +149,7 @@ module vga_draw_char
                                 if (pixels[(8 - hcount_out_d2)] == 1)
                                         rgb_nxt = WHITE; 
                                 else 
-                                        rgb_nxt = BLACK;  
+                                        rgb_nxt = BLUE;  
                         end else begin
                                         rgb_nxt = rgb_out_d;
                         end

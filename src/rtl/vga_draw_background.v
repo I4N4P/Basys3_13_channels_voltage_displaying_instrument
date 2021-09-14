@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 //
 // Company: AGH_University
-// Engineer: Dawid Scechura
+// Engineer: Damian Herduś
 // 
-// Create Date:         15.04.2021 
+// Create Date:         14.09.2021 
 // Design Name:         vga_draw_background
 // Module Name:         vga_draw_background
 // Project Name:        voltmeter
@@ -75,22 +75,25 @@ module vga_draw_background (
                 if (vblnk_in || hblnk_in) begin  
                         rgb_out_nxt = 12'h0_0_0; 
                 end else begin
-                        // Active display, top edge, make a yellow line.
-                        if (vcount_in == 0) rgb_out_nxt = 12'hf_f_0;
-                        // Active display, bottom edge, make a red line.
-                        else if (vcount_in == 767) rgb_out_nxt = 12'hf_0_0;
-                        // Active display, left edge, make a green line.
-                        else if (hcount_in == 0) rgb_out_nxt = 12'h0_f_0;
-                        // Active display, right edge, make a blue line.
-                        else if (hcount_in == 1023) rgb_out_nxt = 12'h0_0_f;
-                        // Active display, interior, fill with gray.
-                        else if (hcount_in >= 100 && vcount_in >= 50 && hcount_in <= 150 && vcount_in <= 550 
-                        || hcount_in >= 100+ vcount_in -50 && vcount_in >= 50&& vcount_in <= 200&& hcount_in  <= (100+ vcount_in)
-                        || hcount_in >= 250 && vcount_in > 200&& vcount_in <= 400&& hcount_in  <= 300|| hcount_in >= 250- vcount_in +400 && vcount_in > 400&& vcount_in <= 550&& hcount_in  <= (300- vcount_in+400)
-                        || hcount_in >= 400 && vcount_in >= 50 && hcount_in <= 600 && vcount_in <= 100|| hcount_in >= 400 && vcount_in >= 100 && hcount_in <= 450 && vcount_in <= 275 
-                        || hcount_in >= 400 && vcount_in >=275 && hcount_in <= 600 && vcount_in <= 325 || hcount_in >= 550 && vcount_in >= 325 && hcount_in <= 600 && vcount_in <= 500
-                        || hcount_in >= 400 && vcount_in >= 500 && hcount_in <= 600 && vcount_in <= 550) rgb_out_nxt = 12'h4_4_f;
-                        else rgb_out_nxt = 12'h8_8_8;    
+
+                        // M - left
+                        if ((hcount_in>=300)&&(hcount_in<=320)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=350)&&(hcount_in<=370)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=320)&&(hcount_in<=335)&&(vcount_in>= hcount_in + 315)&&(vcount_in<= hcount_in + 335)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=335)&&(hcount_in<=350)&&(vcount_in>= -hcount_in + 985)&&(vcount_in<= -hcount_in + 1005)) rgb_out_nxt <= 12'hf_b_0;
+
+                        // T 
+                        else if ((hcount_in>=375)&&(hcount_in<=425)&&(vcount_in>=655)&&(vcount_in<=670)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=395)&&(hcount_in<=405)&&(vcount_in>=670)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
+
+                        // M - right
+                        else if ((hcount_in>=430)&&(hcount_in<=450)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=480)&&(hcount_in<=500)&&(vcount_in>=635)&&(vcount_in<=720)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=450)&&(hcount_in<=465)&&(vcount_in>= hcount_in + 185)&&(vcount_in<= hcount_in + 205)) rgb_out_nxt <= 12'hf_b_0;
+                        else if ((hcount_in>=465)&&(hcount_in<=480)&&(vcount_in>= -hcount_in + 1115)&&(vcount_in<= -hcount_in + 1135)) rgb_out_nxt <= 12'hf_b_0;
+
+                        else rgb_out_nxt = 12'h1_8_9; 
+
                 end
         end
 

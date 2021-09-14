@@ -2,6 +2,7 @@
 //
 // Company: AGH_University
 // Engineer: Dawid Scechura
+// Engineer: Damian Herduś
 // 
 // Create Date:         08.08.2021 
 // Design Name:         voltmeter
@@ -175,7 +176,6 @@ module voltmeter (
 
 /*******************VGA_CONTROL*********************************/
 
-
         wire [`VGA_BUS_SIZE-1:0] vga_bus [0:3];
 
         vga_timing my_timing 
@@ -186,6 +186,7 @@ module voltmeter (
                 .vga_out (vga_bus[0])
         );
 
+   
         vga_draw_background my_vga_draw_background 
         (
                 .clk(clk_65MHz),
@@ -195,17 +196,41 @@ module voltmeter (
 
                 .vga_out (vga_bus[1])
         );
+        
+        top_draw_rect my_top_draw_rect
+                (
+                .pclk(clk_65MHz),
+                .rst (reset),
+                .xpos (12'b0),
+                .ypos (12'b0),
+
+                .vcount_in (vcount_out_b),
+                .vsync_in  (vsync_out_b),
+                .vblnk_in  (vblnk_out_b),
+                .hcount_in (hcount_out_b),
+                .hsync_in  (hsync_out_b),
+                .hblnk_in  (hblnk_out_b),
+
+                .vcount_out (vcount_out_d),
+                .vsync_out  (vsync_out_d),
+                .vblnk_out  (vblnk_out_d),
+                .hcount_out (hcount_out_d),
+                .hsync_out  (hsync_out_d),
+                .hblnk_out  (hblnk_out_d),
+                .rgb_in (rgb_out_b),
+                .rgb_out    (rgb_out_d)
+        );
        
         vga_top_draw_char 
         #(
-                .XPOS (125),
+                .XPOS (464),
                 .YPOS (99)
         ) 
         my_top_draw_char 
         (
                 .clk (clk_65MHz),
                 .rst  (reset),
-
+                
                 .adc_in (adc_bus),
 
                 .vga_in (vga_bus[1]),
